@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\DataFac.Template\DataFac.Template.csproj" />
+	  <ProjectReference Include="..\DTOMakerV10.Models\DTOMakerV10.Models.csproj" />
 	</ItemGroup>
 
 </Project>

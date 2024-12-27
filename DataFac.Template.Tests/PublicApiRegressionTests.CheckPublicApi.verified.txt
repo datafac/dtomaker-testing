@@ -1,8 +1,0 @@
-﻿namespace DataFac.Template
-{
-    public sealed class MyClass
-    {
-        public MyClass() { }
-        public string GetGreeting(string name) { }
-    }
-}
