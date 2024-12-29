@@ -1,4 +1,5 @@
 ﻿using DataFac.Runtime;
+using DTOMaker.Runtime.MemBlocks;
 using DTOMakerV10.Models.MemBlocks;
 using FluentAssertions;
 using System;
@@ -9,7 +10,7 @@ namespace DTOMakerV10.Tests
 {
     public class MemBlocksTests
     {
-        private void Roundtrip2<TValue, TMsg>(TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
+        private void Roundtrip<TValue, TMsg>(TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
             where TMsg : EntityBase, IFreezable, new()
         {
             var sendMsg = new TMsg();
@@ -19,10 +20,9 @@ namespace DTOMakerV10.Tests
             // act
             var entityId = sendMsg.GetEntityId();
             var buffers = sendMsg.GetBuffers();
-            var newBase = EntityBase.CreateFrom(entityId, buffers);
-            newBase.Should().NotBeNull();
-            newBase.Should().BeOfType<TMsg>();
-            TMsg recdMsg = (TMsg)newBase;
+            TMsg recdMsg = new TMsg();
+            recdMsg.LoadBuffers(buffers);
+            recdMsg.Freeze();
 
             // assert
             // - value
@@ -58,7 +58,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int16, Models.MemBlocks.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip<Int16, Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -79,7 +79,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int32, Models.MemBlocks.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip<Int32, Models.MemBlocks.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -100,7 +100,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int64, Models.MemBlocks.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip<Int64, Models.MemBlocks.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
     }
