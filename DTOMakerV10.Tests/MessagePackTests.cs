@@ -38,6 +38,44 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.Default, "92-C0-00")]
         [InlineData(ValueKind.PosUnit, "92-C0-01")]
         [InlineData(ValueKind.NegUnit, "92-C0-FF")]
+        [InlineData(ValueKind.MaxValue, "92-C0-7F")]
+        [InlineData(ValueKind.MinValue, "92-C0-D0-80")]
+        public void Roundtrip_SByte(ValueKind kind, string expectedBytes)
+        {
+            SByte value = kind switch
+            {
+                ValueKind.Default => 0,
+                ValueKind.PosUnit => 1,
+                ValueKind.NegUnit => -1,
+                ValueKind.MaxValue => SByte.MaxValue,
+                ValueKind.MinValue => SByte.MinValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<SByte, Models.Basics.MessagePack.Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Default, "92-C0-00")]
+        [InlineData(ValueKind.PosUnit, "92-C0-01")]
+        [InlineData(ValueKind.MaxValue, "92-C0-CC-FF")]
+        public void Roundtrip_Byte(ValueKind kind, string expectedBytes)
+        {
+            Byte value = kind switch
+            {
+                ValueKind.Default => 0,
+                ValueKind.PosUnit => 1,
+                ValueKind.MaxValue => Byte.MaxValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Byte, Models.Basics.MessagePack.Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Default, "92-C0-00")]
+        [InlineData(ValueKind.PosUnit, "92-C0-01")]
+        [InlineData(ValueKind.NegUnit, "92-C0-FF")]
         [InlineData(ValueKind.MaxValue, "92-C0-CD-7F-FF")]
         [InlineData(ValueKind.MinValue, "92-C0-D1-80-00")]
         public void Roundtrip_Int16(ValueKind kind, string expectedBytes)
@@ -52,7 +90,24 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int16, Models.MessagePack.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int16, Models.Basics.MessagePack.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Default, "92-C0-00")]
+        [InlineData(ValueKind.PosUnit, "92-C0-01")]
+        [InlineData(ValueKind.MaxValue, "92-C0-CD-FF-FF")]
+        public void Roundtrip_UInt16(ValueKind kind, string expectedBytes)
+        {
+            UInt16 value = kind switch
+            {
+                ValueKind.Default => 0,
+                ValueKind.PosUnit => 1,
+                ValueKind.MaxValue => UInt16.MaxValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<UInt16, Models.Basics.MessagePack.Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -73,7 +128,24 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int32, Models.MessagePack.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int32, Models.Basics.MessagePack.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Default, "92-C0-00")]
+        [InlineData(ValueKind.PosUnit, "92-C0-01")]
+        [InlineData(ValueKind.MaxValue, "92-C0-CE-FF-FF-FF-FF")]
+        public void Roundtrip_UInt32(ValueKind kind, string expectedBytes)
+        {
+            UInt32 value = kind switch
+            {
+                ValueKind.Default => 0,
+                ValueKind.PosUnit => 1,
+                ValueKind.MaxValue => UInt32.MaxValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<UInt32, Models.Basics.MessagePack.Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -94,7 +166,24 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int64, Models.MessagePack.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int64, Models.Basics.MessagePack.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Default, "92-C0-00")]
+        [InlineData(ValueKind.PosUnit, "92-C0-01")]
+        [InlineData(ValueKind.MaxValue, "92-C0-CF-FF-FF-FF-FF-FF-FF-FF-FF")]
+        public void Roundtrip_UInt64(ValueKind kind, string expectedBytes)
+        {
+            UInt64 value = kind switch
+            {
+                ValueKind.Default => 0,
+                ValueKind.PosUnit => 1,
+                ValueKind.MaxValue => UInt64.MaxValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<UInt64, Models.Basics.MessagePack.Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
     }
