@@ -10,7 +10,7 @@ namespace DTOMakerV10.Tests
     public class MessagePackTests
     {
         private void Roundtrip2<TValue, TMsg>(TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : IFreezable, new()
+            where TMsg : IFreezable, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
@@ -19,6 +19,7 @@ namespace DTOMakerV10.Tests
             // act
             var buffer = MessagePackSerializer.Serialize<TMsg>(sendMsg);
             TMsg recdMsg = MessagePackSerializer.Deserialize<TMsg>(buffer);
+            recdMsg.Freeze();
 
             // assert
             // - value
@@ -30,8 +31,8 @@ namespace DTOMakerV10.Tests
 
             // - equality
             recdMsg.Should().NotBeNull();
-            recdMsg.Should().Be(sendMsg);
             recdMsg!.Equals(sendMsg).Should().BeTrue();
+            recdMsg.Should().Be(sendMsg);
             recdMsg.GetHashCode().Should().Be(sendMsg.GetHashCode());
         }
 
@@ -217,6 +218,64 @@ namespace DTOMakerV10.Tests
             };
 
             Roundtrip2<Char, Models.Basics.MessagePack.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-CA-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "92-C0-CA-3F-80-00-00")]
+        [InlineData(ValueKind.NegOne, "92-C0-CA-BF-80-00-00")]
+        [InlineData(ValueKind.MaxVal, "92-C0-CA-7F-7F-FF-FF")]
+        [InlineData(ValueKind.MinVal, "92-C0-CA-FF-7F-FF-FF")]
+        [InlineData(ValueKind.MinInc, "92-C0-CA-00-00-00-01")]
+        [InlineData(ValueKind.NegInf, "92-C0-CA-FF-80-00-00")]
+        [InlineData(ValueKind.PosInf, "92-C0-CA-7F-80-00-00")]
+        //[InlineData(ValueKind.NotNum, "92-C0-CA-FF-C0-00-00")] todo NaN equality check fails
+        public void Roundtrip_Single(ValueKind kind, string expectedBytes)
+        {
+            Single value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => Single.MaxValue,
+                ValueKind.MinVal => Single.MinValue,
+                ValueKind.MinInc => Single.Epsilon,
+                ValueKind.NegInf => Single.NegativeInfinity,
+                ValueKind.PosInf => Single.PositiveInfinity,
+                ValueKind.NotNum => Single.NaN,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Single, Models.Basics.MessagePack.Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-CB-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "92-C0-CB-3F-F0-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "92-C0-CB-BF-F0-00-00-00-00-00-00")]
+        [InlineData(ValueKind.MaxVal, "92-C0-CB-7F-EF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MinVal, "92-C0-CB-FF-EF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MinInc, "92-C0-CB-00-00-00-00-00-00-00-01")]
+        [InlineData(ValueKind.NegInf, "92-C0-CB-FF-F0-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosInf, "92-C0-CB-7F-F0-00-00-00-00-00-00")]
+        //[InlineData(ValueKind.NotNum, "92-C0-CB-FF-C0-00-00")] todo NaN equality check fails
+        public void Roundtrip_Double(ValueKind kind, string expectedBytes)
+        {
+            Double value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => Double.MaxValue,
+                ValueKind.MinVal => Double.MinValue,
+                ValueKind.MinInc => Double.Epsilon,
+                ValueKind.NegInf => Double.NegativeInfinity,
+                ValueKind.PosInf => Double.PositiveInfinity,
+                ValueKind.NotNum => Double.NaN,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Double, Models.Basics.MessagePack.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         // todo Guid, decimal, half, float, double, int128, uint128

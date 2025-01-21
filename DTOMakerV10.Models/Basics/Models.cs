@@ -15,6 +15,12 @@ namespace DTOMakerV10.Models.Basics
     [Entity][EntityKey(8)][Layout(LayoutMethod.Linear)] public interface IData_UInt64 { [Member(1)] ulong Value { get; set; } }
     [Entity][EntityKey(9)][Layout(LayoutMethod.Linear)] public interface IData_Boolean { [Member(1)] bool Value { get; set; } }
     [Entity][EntityKey(10)][Layout(LayoutMethod.Linear)] public interface IData_Char { [Member(1)] char Value { get; set; } }
-    [Entity][EntityKey(12)][Layout(LayoutMethod.Linear)] public interface IData_Single { [Member(1)] float Value { get; set; } }
-    [Entity][EntityKey(13)][Layout(LayoutMethod.Linear)] public interface IData_Double { [Member(1)] double Value { get; set; } }
+    [Entity][EntityKey(11)][Layout(LayoutMethod.Linear)] public interface IData_Single { [Member(1)] float Value { get; set; } }
+    [Entity][EntityKey(12)][Layout(LayoutMethod.Linear)] public interface IData_Double { [Member(1)] double Value { get; set; } }
+    [Entity][EntityKey(13)][Layout(LayoutMethod.Linear)] public interface IData_Decimal { [Member(1)] decimal Value { get; set; } }
+#if NET5_0_OR_GREATER
+    [Entity][EntityKey(21)][Layout(LayoutMethod.Linear)] public interface IData_Half { [Member(1)] Half Value { get; set; } }
+#endif
+    // todo Guid, Int128, UInt128
+    // todo String
 }
