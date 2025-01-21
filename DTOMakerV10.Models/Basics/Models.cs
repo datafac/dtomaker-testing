@@ -14,4 +14,7 @@ namespace DTOMakerV10.Models.Basics
     [Entity][EntityKey(7)][Layout(LayoutMethod.Linear)] public interface IData_Int64 { [Member(1)] long Value { get; set; } }
     [Entity][EntityKey(8)][Layout(LayoutMethod.Linear)] public interface IData_UInt64 { [Member(1)] ulong Value { get; set; } }
     [Entity][EntityKey(9)][Layout(LayoutMethod.Linear)] public interface IData_Boolean { [Member(1)] bool Value { get; set; } }
+    [Entity][EntityKey(10)][Layout(LayoutMethod.Linear)] public interface IData_Char { [Member(1)] char Value { get; set; } }
+    [Entity][EntityKey(12)][Layout(LayoutMethod.Linear)] public interface IData_Single { [Member(1)] float Value { get; set; } }
+    [Entity][EntityKey(13)][Layout(LayoutMethod.Linear)] public interface IData_Double { [Member(1)] double Value { get; set; } }
 }

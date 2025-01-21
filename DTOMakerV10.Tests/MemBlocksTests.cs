@@ -39,23 +39,39 @@ namespace DTOMakerV10.Tests
             recdMsg.Should().NotBeNull();
             recdMsg.Should().Be(sendMsg);
             recdMsg!.Equals(sendMsg).Should().BeTrue();
+            recdMsg.GetHashCode().Should().Be(sendMsg.GetHashCode());
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00")]
-        [InlineData(ValueKind.PosUnit, "01")]
-        [InlineData(ValueKind.NegUnit, "FF")]
-        [InlineData(ValueKind.MaxValue, "7F")]
-        [InlineData(ValueKind.MinValue, "80")]
+        [InlineData(ValueKind.DefVal, "00")]
+        [InlineData(ValueKind.PosOne, "01")]
+        public void Roundtrip_Boolean(ValueKind kind, string expectedBytes)
+        {
+            Boolean value = kind switch
+            {
+                ValueKind.DefVal => false,
+                ValueKind.PosOne => true,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip<Boolean, Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "00")]
+        [InlineData(ValueKind.PosOne, "01")]
+        [InlineData(ValueKind.NegOne, "FF")]
+        [InlineData(ValueKind.MaxVal, "7F")]
+        [InlineData(ValueKind.MinVal, "80")]
         public void Roundtrip_SByte(ValueKind kind, string expectedBytes)
         {
             SByte value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.NegUnit => -1,
-                ValueKind.MaxValue => SByte.MaxValue,
-                ValueKind.MinValue => SByte.MinValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => SByte.MaxValue,
+                ValueKind.MinVal => SByte.MinValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -63,16 +79,16 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00")]
-        [InlineData(ValueKind.PosUnit, "01")]
-        [InlineData(ValueKind.MaxValue, "FF")]
+        [InlineData(ValueKind.DefVal, "00")]
+        [InlineData(ValueKind.PosOne, "01")]
+        [InlineData(ValueKind.MaxVal, "FF")]
         public void Roundtrip_Byte(ValueKind kind, string expectedBytes)
         {
             Byte value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.MaxValue => Byte.MaxValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.MaxVal => Byte.MaxValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -80,20 +96,20 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00-00")]
-        [InlineData(ValueKind.PosUnit, "01-00")]
-        [InlineData(ValueKind.NegUnit, "FF-FF")]
-        [InlineData(ValueKind.MaxValue, "FF-7F")]
-        [InlineData(ValueKind.MinValue, "00-80")]
+        [InlineData(ValueKind.DefVal, "00-00")]
+        [InlineData(ValueKind.PosOne, "01-00")]
+        [InlineData(ValueKind.NegOne, "FF-FF")]
+        [InlineData(ValueKind.MaxVal, "FF-7F")]
+        [InlineData(ValueKind.MinVal, "00-80")]
         public void Roundtrip_Int16(ValueKind kind, string expectedBytes)
         {
             Int16 value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.NegUnit => -1,
-                ValueKind.MaxValue => Int16.MaxValue,
-                ValueKind.MinValue => Int16.MinValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => Int16.MaxValue,
+                ValueKind.MinVal => Int16.MinValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -101,16 +117,16 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00-00")]
-        [InlineData(ValueKind.PosUnit, "01-00")]
-        [InlineData(ValueKind.MaxValue, "FF-FF")]
+        [InlineData(ValueKind.DefVal, "00-00")]
+        [InlineData(ValueKind.PosOne, "01-00")]
+        [InlineData(ValueKind.MaxVal, "FF-FF")]
         public void Roundtrip_UInt16(ValueKind kind, string expectedBytes)
         {
             UInt16 value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.MaxValue => UInt16.MaxValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.MaxVal => UInt16.MaxValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -118,20 +134,20 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00-00-00-00")]
-        [InlineData(ValueKind.PosUnit, "01-00-00-00")]
-        [InlineData(ValueKind.NegUnit, "FF-FF-FF-FF")]
-        [InlineData(ValueKind.MaxValue, "FF-FF-FF-7F")]
-        [InlineData(ValueKind.MinValue, "00-00-00-80")]
+        [InlineData(ValueKind.DefVal, "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "01-00-00-00")]
+        [InlineData(ValueKind.NegOne, "FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "00-00-00-80")]
         public void Roundtrip_Int32(ValueKind kind, string expectedBytes)
         {
             Int32 value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.NegUnit => -1,
-                ValueKind.MaxValue => Int32.MaxValue,
-                ValueKind.MinValue => Int32.MinValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => Int32.MaxValue,
+                ValueKind.MinVal => Int32.MinValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -139,16 +155,16 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00-00-00-00")]
-        [InlineData(ValueKind.PosUnit, "01-00-00-00")]
-        [InlineData(ValueKind.MaxValue, "FF-FF-FF-FF")]
+        [InlineData(ValueKind.DefVal, "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "01-00-00-00")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF")]
         public void Roundtrip_UInt32(ValueKind kind, string expectedBytes)
         {
             UInt32 value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.MaxValue => UInt32.MaxValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.MaxVal => UInt32.MaxValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -156,20 +172,20 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.PosUnit, "01-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.NegUnit, "FF-FF-FF-FF-FF-FF-FF-FF")]
-        [InlineData(ValueKind.MaxValue, "FF-FF-FF-FF-FF-FF-FF-7F")]
-        [InlineData(ValueKind.MinValue, "00-00-00-00-00-00-00-80")]
+        [InlineData(ValueKind.DefVal, "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "00-00-00-00-00-00-00-80")]
         public void Roundtrip_Int64(ValueKind kind, string expectedBytes)
         {
             Int64 value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.NegUnit => -1,
-                ValueKind.MaxValue => Int64.MaxValue,
-                ValueKind.MinValue => Int64.MinValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => Int64.MaxValue,
+                ValueKind.MinVal => Int64.MinValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -177,16 +193,16 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.PosUnit, "01-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.MaxValue, "FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.DefVal, "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-FF-FF")]
         public void Roundtrip_UInt64(ValueKind kind, string expectedBytes)
         {
             UInt64 value = kind switch
             {
-                ValueKind.Default => 0,
-                ValueKind.PosUnit => 1,
-                ValueKind.MaxValue => UInt64.MaxValue,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.MaxVal => UInt64.MaxValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
@@ -194,21 +210,81 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.Default, "00")]
-        [InlineData(ValueKind.PosUnit, "01")]
-        public void Roundtrip_Boolean(ValueKind kind, string expectedBytes)
+        [InlineData(ValueKind.DefVal, "00-00")]
+        [InlineData(ValueKind.PosOne, "20-00")]
+        [InlineData(ValueKind.MaxVal, "FF-FF")]
+        public void Roundtrip_Char(ValueKind kind, string expectedBytes)
         {
-            Boolean value = kind switch
+            Char value = kind switch
             {
-                ValueKind.Default => false,
-                ValueKind.PosUnit => true,
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => ' ',
+                ValueKind.MaxVal => Char.MaxValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Boolean, Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip<Char, Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo Guid, decimal, half, float, double, int128, uint128
+        [Theory]
+        [InlineData(ValueKind.DefVal, "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "00-00-80-3F")]
+        [InlineData(ValueKind.NegOne, "00-00-80-BF")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-7F-7F")]
+        [InlineData(ValueKind.MinVal, "FF-FF-7F-FF")]
+        [InlineData(ValueKind.MinInc, "01-00-00-00")]
+        [InlineData(ValueKind.NegInf, "00-00-80-FF")]
+        [InlineData(ValueKind.PosInf, "00-00-80-7F")]
+        [InlineData(ValueKind.NotNum, "00-00-C0-FF")]
+        public void Roundtrip_Single(ValueKind kind, string expectedBytes)
+        {
+            Single value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1F,
+                ValueKind.NegOne => -1F,
+                ValueKind.MaxVal => Single.MaxValue,
+                ValueKind.MinVal => Single.MinValue,
+                ValueKind.MinInc => Single.Epsilon,
+                ValueKind.NegInf => Single.NegativeInfinity,
+                ValueKind.PosInf => Single.PositiveInfinity,
+                ValueKind.NotNum => Single.NaN,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip<Single, Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "00-00-00-00-00-00-F0-3F")]
+        [InlineData(ValueKind.NegOne, "00-00-00-00-00-00-F0-BF")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-EF-7F")]
+        [InlineData(ValueKind.MinVal, "FF-FF-FF-FF-FF-FF-EF-FF")]
+        [InlineData(ValueKind.MinInc, "01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegInf, "00-00-00-00-00-00-F0-FF")]
+        [InlineData(ValueKind.PosInf, "00-00-00-00-00-00-F0-7F")]
+        [InlineData(ValueKind.NotNum, "00-00-00-00-00-00-F8-FF")]
+        public void Roundtrip_Double(ValueKind kind, string expectedBytes)
+        {
+            Double value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1F,
+                ValueKind.NegOne => -1F,
+                ValueKind.MaxVal => Double.MaxValue,
+                ValueKind.MinVal => Double.MinValue,
+                ValueKind.MinInc => Double.Epsilon,
+                ValueKind.NegInf => Double.NegativeInfinity,
+                ValueKind.PosInf => Double.PositiveInfinity,
+                ValueKind.NotNum => Double.NaN,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip<Double, Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        // todo Guid, decimal, half, int128, uint128
 
     }
 }

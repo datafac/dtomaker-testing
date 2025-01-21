@@ -2,11 +2,14 @@
 {
     public enum ValueKind
     {
-        Default,
-        Epsilon,
-        PosUnit,
-        NegUnit,
-        MaxValue,
-        MinValue,
+        DefVal,
+        PosOne,
+        NegOne,
+        MaxVal,
+        MinVal,
+        MinInc,
+        NegInf,
+        PosInf,
+        NotNum,
     }
 }
