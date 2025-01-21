@@ -270,8 +270,8 @@ namespace DTOMakerV10.Tests
             Double value = kind switch
             {
                 ValueKind.DefVal => default,
-                ValueKind.PosOne => 1F,
-                ValueKind.NegOne => -1F,
+                ValueKind.PosOne => 1D,
+                ValueKind.NegOne => -1D,
                 ValueKind.MaxVal => Double.MaxValue,
                 ValueKind.MinVal => Double.MinValue,
                 ValueKind.MinInc => Double.Epsilon,
@@ -284,7 +284,28 @@ namespace DTOMakerV10.Tests
             Roundtrip<Double, Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo Guid, decimal, half, int128, uint128
+        [Theory]
+        [InlineData(ValueKind.DefVal, "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80")]
+        [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-00")]
+        [InlineData(ValueKind.MinVal, "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-80")]
+        public void Roundtrip_Decimal(ValueKind kind, string expectedBytes)
+        {
+            Decimal value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => Decimal.One,
+                ValueKind.NegOne => Decimal.MinusOne,
+                ValueKind.MaxVal => Decimal.MaxValue,
+                ValueKind.MinVal => Decimal.MinValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip<Decimal, Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        // todo Guid, half, int128, uint128
 
     }
 }

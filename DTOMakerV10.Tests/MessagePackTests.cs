@@ -278,7 +278,28 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Double, Models.Basics.MessagePack.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo Guid, decimal, half, float, double, int128, uint128
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-A1-30")]
+        [InlineData(ValueKind.PosOne, "92-C0-A1-31")]
+        [InlineData(ValueKind.NegOne, "92-C0-A2-2D-31")]
+        [InlineData(ValueKind.MaxVal, "92-C0-BD-37-39-32-32-38-31-36-32-35-31-34-32-36-34-33-33-37-35-39-33-35-34-33-39-35-30-33-33-35")]
+        [InlineData(ValueKind.MinVal, "92-C0-BE-2D-37-39-32-32-38-31-36-32-35-31-34-32-36-34-33-33-37-35-39-33-35-34-33-39-35-30-33-33-35")]
+        public void Roundtrip_Decimal(ValueKind kind, string expectedBytes)
+        {
+            Decimal value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => Decimal.One,
+                ValueKind.NegOne => Decimal.MinusOne,
+                ValueKind.MaxVal => Decimal.MaxValue,
+                ValueKind.MinVal => Decimal.MinValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Decimal, Models.Basics.MessagePack.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        // todo Guid, half, int128, uint128
 
     }
 }
