@@ -1,9 +1,9 @@
-﻿using DTOMaker.Models;
+﻿using System;
+using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
 using DTOMaker.Models.MessagePack;
-using System;
 
-namespace DTOMakerV10.Models.Basics
+namespace DTOMakerV10.Models
 {
     [Entity][EntityKey(1)][Layout(LayoutMethod.Linear)] public interface IData_SByte { [Member(1)] sbyte Value { get; set; } }
     [Entity][EntityKey(2)][Layout(LayoutMethod.Linear)] public interface IData_Byte { [Member(1)] byte Value { get; set; } }

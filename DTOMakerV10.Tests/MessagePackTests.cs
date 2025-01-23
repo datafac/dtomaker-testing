@@ -48,7 +48,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Boolean, Models.Basics.MessagePack.Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Boolean, Models.MessagePack.Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -69,7 +69,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<SByte, Models.Basics.MessagePack.Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<SByte, Models.MessagePack.Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -86,7 +86,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Byte, Models.Basics.MessagePack.Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Byte, Models.MessagePack.Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -107,7 +107,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int16, Models.Basics.MessagePack.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int16, Models.MessagePack.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -124,7 +124,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<UInt16, Models.Basics.MessagePack.Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<UInt16, Models.MessagePack.Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -145,7 +145,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int32, Models.Basics.MessagePack.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int32, Models.MessagePack.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -162,7 +162,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<UInt32, Models.Basics.MessagePack.Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<UInt32, Models.MessagePack.Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -183,7 +183,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int64, Models.Basics.MessagePack.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int64, Models.MessagePack.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -200,7 +200,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<UInt64, Models.Basics.MessagePack.Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<UInt64, Models.MessagePack.Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -217,7 +217,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Char, Models.Basics.MessagePack.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Char, Models.MessagePack.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -246,7 +246,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Single, Models.Basics.MessagePack.Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Single, Models.MessagePack.Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -275,7 +275,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Double, Models.Basics.MessagePack.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Double, Models.MessagePack.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -296,7 +296,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Decimal, Models.Basics.MessagePack.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Decimal, Models.MessagePack.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         // todo Guid, half, int128, uint128

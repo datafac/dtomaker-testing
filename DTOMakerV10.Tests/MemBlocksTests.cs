@@ -1,7 +1,7 @@
 ﻿using DTOMaker.Runtime;
 using DTOMaker.Runtime.MemBlocks;
-using DTOMakerV10.Models.Basics;
-using DTOMakerV10.Models.Basics.MemBlocks;
+using DTOMakerV10.Models;
+using DTOMakerV10.Models.MemBlocks;
 using FluentAssertions;
 using System;
 using System.Linq;
