@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\DTOMakerV10.Models2\DTOMakerV10.Models2.csproj" />
+	  <ProjectReference Include="..\DTOMakerV10.Models3\DTOMakerV10.Models3.csproj" />
 	  <ProjectReference Include="..\DTOMakerV10.Models\DTOMakerV10.Models.csproj" />
 	</ItemGroup>
 

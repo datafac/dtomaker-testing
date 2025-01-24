@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMakerV10.Tests", "DTOMak
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMakerV10.Models2", "DTOMakerV10.Models2\DTOMakerV10.Models2.csproj", "{8FACCCED-0D13-42D0-989A-329328213839}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMakerV10.Models3", "DTOMakerV10.Models3\DTOMakerV10.Models3.csproj", "{752009FC-480D-4871-ADFB-24B30022A53A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{8FACCCED-0D13-42D0-989A-329328213839}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FACCCED-0D13-42D0-989A-329328213839}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FACCCED-0D13-42D0-989A-329328213839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{752009FC-480D-4871-ADFB-24B30022A53A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{752009FC-480D-4871-ADFB-24B30022A53A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{752009FC-480D-4871-ADFB-24B30022A53A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{752009FC-480D-4871-ADFB-24B30022A53A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
