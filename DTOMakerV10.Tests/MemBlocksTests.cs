@@ -20,9 +20,9 @@ namespace DTOMakerV10.Tests
 
             // act
             var entityId = sendMsg.GetEntityId();
-            var buffers = sendMsg.GetBuffers();
+            var buffer = sendMsg.GetBuffer();
             TMsg recdMsg = new TMsg();
-            recdMsg.LoadBuffers(buffers);
+            recdMsg.LoadBuffer(buffer);
             recdMsg.Freeze();
 
             // assert
@@ -31,9 +31,10 @@ namespace DTOMakerV10.Tests
             copyValue.Should().Be(value);
 
             // - wire data
+            var buffers = DataFac.MemBlocks.Protocol.SplitBuffers(buffer);
             buffers.Length.Should().Be(1);
-            var buffer = buffers.Span[0];
-            string.Join("-", buffer.ToArray().Select(b => b.ToString("X2"))).Should().Be(expectedBytes);
+            var buffer0 = buffers[0];
+            string.Join("-", buffer0.ToArray().Select(b => b.ToString("X2"))).Should().Be(expectedBytes);
 
             // - equality
             recdMsg.Should().NotBeNull();

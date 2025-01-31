@@ -7,13 +7,13 @@ namespace DTOMakerV10.Models3
     [Entity][EntityKey(1)][Layout(LayoutMethod.Linear)]
     public interface INode
     {
-        [Member(1)] String Key { get; set; }
+        [Member(1)][StrLen(16)] String Key { get; set; }
     }
 
     [Entity][EntityKey(2)][Layout(LayoutMethod.Linear)]
     public interface IStringNode : INode
     {
-        [Member(1)] String Value { get; set; }
+        [Member(1)][StrLen(64)] String Value { get; set; }
     }
 
     [Entity][EntityKey(3)][Layout(LayoutMethod.Linear)]

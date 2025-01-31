@@ -20,8 +20,8 @@ namespace DTOMakerV10.Tests
             sender.Freeze();
 
             var entityId = sender.GetEntityId();
-            var buffers = sender.GetBuffers();
-            DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(entityId, buffers);
+            var buffer = sender.GetBuffer();
+            DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(entityId, buffer);
             recver.IsFrozen.Should().BeTrue();
 
             var copy = DTOMakerV10.Models2.CSPoco.Polygon.CreateFrom(recver);
