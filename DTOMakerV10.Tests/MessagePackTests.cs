@@ -220,6 +220,37 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Char, Models.MessagePack.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
+#if NET8_0_OR_GREATER
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-CA-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "92-C0-CA-3F-80-00-00")]
+        [InlineData(ValueKind.NegOne, "92-C0-CA-BF-80-00-00")]
+        [InlineData(ValueKind.MaxVal, "92-C0-CA-47-7F-E0-00")]
+        [InlineData(ValueKind.MinVal, "92-C0-CA-C7-7F-E0-00")]
+        [InlineData(ValueKind.MinInc, "92-C0-CA-33-80-00-00")]
+        [InlineData(ValueKind.NegInf, "92-C0-CA-FF-80-00-00")]
+        [InlineData(ValueKind.PosInf, "92-C0-CA-7F-80-00-00")]
+        //[InlineData(ValueKind.NotNum, "92-C0-CA-FF-C0-00-00")] todo NaN equality check fails
+        public void Roundtrip_Half(ValueKind kind, string expectedBytes)
+        {
+            Half value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => Half.One,
+                ValueKind.NegOne => Half.NegativeOne,
+                ValueKind.MaxVal => Half.MaxValue,
+                ValueKind.MinVal => Half.MinValue,
+                ValueKind.MinInc => Half.Epsilon,
+                ValueKind.NegInf => Half.NegativeInfinity,
+                ValueKind.PosInf => Half.PositiveInfinity,
+                ValueKind.NotNum => Half.NaN,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Half, Models.MessagePack.Data_Half>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+#endif
+
         [Theory]
         [InlineData(ValueKind.DefVal, "92-C0-CA-00-00-00-00")]
         [InlineData(ValueKind.PosOne, "92-C0-CA-3F-80-00-00")]

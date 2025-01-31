@@ -227,6 +227,37 @@ namespace DTOMakerV10.Tests
             Roundtrip<Char, Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
+#if NET8_0_OR_GREATER
+        [Theory]
+        [InlineData(ValueKind.DefVal, "00-00")]
+        [InlineData(ValueKind.PosOne, "00-3C")]
+        [InlineData(ValueKind.NegOne, "00-BC")]
+        [InlineData(ValueKind.MaxVal, "FF-7B")]
+        [InlineData(ValueKind.MinVal, "FF-FB")]
+        [InlineData(ValueKind.MinInc, "01-00")]
+        [InlineData(ValueKind.NegInf, "00-FC")]
+        [InlineData(ValueKind.PosInf, "00-7C")]
+        [InlineData(ValueKind.NotNum, "00-FE")]
+        public void Roundtrip_Half(ValueKind kind, string expectedBytes)
+        {
+            Half value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => Half.One,
+                ValueKind.NegOne => Half.NegativeOne,
+                ValueKind.MaxVal => Half.MaxValue,
+                ValueKind.MinVal => Half.MinValue,
+                ValueKind.MinInc => Half.Epsilon,
+                ValueKind.NegInf => Half.NegativeInfinity,
+                ValueKind.PosInf => Half.PositiveInfinity,
+                ValueKind.NotNum => Half.NaN,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip<Half, Data_Half>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+#endif
+
         [Theory]
         [InlineData(ValueKind.DefVal, "00-00-00-00")]
         [InlineData(ValueKind.PosOne, "00-00-80-3F")]
