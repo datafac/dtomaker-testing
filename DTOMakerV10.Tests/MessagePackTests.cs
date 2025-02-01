@@ -1,5 +1,5 @@
 using DTOMaker.Runtime;
-using FluentAssertions;
+using Shouldly;
 using MessagePack;
 using System;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace DTOMakerV10.Tests
     public class MessagePackTests
     {
         private void Roundtrip2<TValue, TMsg>(TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : IFreezable, IEquatable<TMsg>, new()
+            where TMsg : class, IFreezable, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
@@ -24,16 +24,16 @@ namespace DTOMakerV10.Tests
             // assert
             // - value
             TValue copyValue = getValueFunc(recdMsg);
-            copyValue.Should().Be(value);
+            copyValue.ShouldBe(value);
 
             // - wire data
-            string.Join("-", buffer.Select(b => b.ToString("X2"))).Should().Be(expectedBytes);
+            string.Join("-", buffer.Select(b => b.ToString("X2"))).ShouldBe(expectedBytes);
 
             // - equality
-            recdMsg.Should().NotBeNull();
-            recdMsg!.Equals(sendMsg).Should().BeTrue();
-            recdMsg.Should().Be(sendMsg);
-            recdMsg.GetHashCode().Should().Be(sendMsg.GetHashCode());
+            recdMsg.ShouldNotBeNull();
+            recdMsg!.Equals(sendMsg).ShouldBeTrue();
+            recdMsg.ShouldBe(sendMsg);
+            recdMsg.GetHashCode().ShouldBe(sendMsg.GetHashCode());
         }
 
         [Theory]

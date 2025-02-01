@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using MessagePack;
 using System;
 using System.Threading.Tasks;
@@ -25,13 +25,13 @@ namespace DTOMakerV10.Tests
 
             var buffer = sender.GetBuffer();
             DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(buffer);
-            recver.IsFrozen.Should().BeTrue();
+            recver.IsFrozen.ShouldBeTrue();
 
             var copy = DTOMakerV10.Models2.CSPoco.Polygon.CreateFrom(recver);
             copy.Freeze();
-            copy.Should().NotBeNull();
-            copy.Should().Be(orig);
-            copy.Equals(orig).Should().BeTrue();
+            copy.ShouldNotBeNull();
+            copy.ShouldBe(orig);
+            copy.Equals(orig).ShouldBeTrue();
         }
 
         [Fact]
@@ -52,9 +52,9 @@ namespace DTOMakerV10.Tests
 
             var copy = DTOMakerV10.Models2.CSPoco.Polygon.CreateFrom(recver);
             copy.Freeze();
-            copy.Should().NotBeNull();
-            copy.Should().Be(orig);
-            copy.Equals(orig).Should().BeTrue();
+            copy.ShouldNotBeNull();
+            copy.ShouldBe(orig);
+            copy.Equals(orig).ShouldBeTrue();
         }
     }
 }

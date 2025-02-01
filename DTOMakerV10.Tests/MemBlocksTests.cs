@@ -3,7 +3,7 @@ using DTOMaker.Runtime;
 using DTOMaker.Runtime.MemBlocks;
 using DTOMakerV10.Models;
 using DTOMakerV10.Models.MemBlocks;
-using FluentAssertions;
+using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,19 +31,19 @@ namespace DTOMakerV10.Tests
             // assert
             // - value
             TValue copyValue = getValueFunc(recdMsg);
-            copyValue.Should().Be(value);
+            copyValue.ShouldBe(value);
 
             // - wire data
             var buffers = DataFac.MemBlocks.Protocol.SplitBuffers(buffer);
-            buffers.Length.Should().Be(1);
+            buffers.Length.ShouldBe(1);
             var buffer0 = buffers[0];
-            string.Join("-", buffer0.ToArray().Select(b => b.ToString("X2"))).Should().Be(expectedBytes);
+            string.Join("-", buffer0.ToArray().Select(b => b.ToString("X2"))).ShouldBe(expectedBytes);
 
             // - equality
-            recdMsg.Should().NotBeNull();
-            recdMsg.Should().Be(sendMsg);
-            recdMsg!.Equals(sendMsg).Should().BeTrue();
-            recdMsg.GetHashCode().Should().Be(sendMsg.GetHashCode());
+            recdMsg.ShouldNotBeNull();
+            recdMsg.ShouldBe(sendMsg);
+            recdMsg!.Equals(sendMsg).ShouldBeTrue();
+            recdMsg.GetHashCode().ShouldBe(sendMsg.GetHashCode());
         }
 
         [Theory]

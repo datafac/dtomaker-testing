@@ -1,5 +1,5 @@
 ﻿using DataFac.Memory;
-using FluentAssertions;
+using Shouldly;
 using MessagePack;
 using System;
 using System.Threading.Tasks;
@@ -38,9 +38,9 @@ namespace DTOMakerV10.Tests
 
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
             copy.Freeze();
-            copy.Should().NotBeNull();
-            copy.Should().Be(orig);
-            copy.Equals(orig).Should().BeTrue();
+            copy.ShouldNotBeNull();
+            copy.ShouldBe(orig);
+            copy.Equals(orig).ShouldBeTrue();
         }
         [Fact]
         public async Task RoundTripViaMemBlocks()
@@ -74,16 +74,16 @@ namespace DTOMakerV10.Tests
             //recver.Freeze();
             await recver.UnpackAll(dataStore);
 
-            recver.Equals(sender).Should().BeTrue();
-            recver.Should().Be(sender);
-            recver.GetHashCode().Should().Be(sender.GetHashCode());
+            recver.Equals(sender).ShouldBeTrue();
+            recver.ShouldBe(sender);
+            recver.GetHashCode().ShouldBe(sender.GetHashCode());
 
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
             copy.Freeze();
-            copy.Should().NotBeNull();
-            copy.Equals(orig).Should().BeTrue();
-            copy.Should().Be(orig);
-            copy.GetHashCode().Should().Be(orig.GetHashCode());
+            copy.ShouldNotBeNull();
+            copy.Equals(orig).ShouldBeTrue();
+            copy.ShouldBe(orig);
+            copy.GetHashCode().ShouldBe(orig.GetHashCode());
         }
     }
 }
