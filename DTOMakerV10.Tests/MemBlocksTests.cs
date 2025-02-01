@@ -1,29 +1,32 @@
-﻿using DTOMaker.Runtime;
+﻿using DataFac.Storage;
+using DTOMaker.Runtime;
 using DTOMaker.Runtime.MemBlocks;
 using DTOMakerV10.Models;
 using DTOMakerV10.Models.MemBlocks;
 using FluentAssertions;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DTOMakerV10.Tests
 {
     public class MemBlocksTests
     {
-        private void Roundtrip<TValue, TMsg>(TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
+
+        private async Task RoundtripAsync<TValue, TMsg>(IDataStore dataStore, TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
             where TMsg : EntityBase, IFreezable, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
-            sendMsg.Freeze();
+            await sendMsg.Pack(dataStore);
 
             // act
             var entityId = sendMsg.GetEntityId();
             var buffer = sendMsg.GetBuffer();
             TMsg recdMsg = new TMsg();
             recdMsg.LoadBuffer(buffer);
-            recdMsg.Freeze();
+            await recdMsg.Pack(dataStore);
 
             // assert
             // - value
@@ -46,7 +49,7 @@ namespace DTOMakerV10.Tests
         [Theory]
         [InlineData(ValueKind.DefVal, "00")]
         [InlineData(ValueKind.PosOne, "01")]
-        public void Roundtrip_Boolean(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Boolean(ValueKind kind, string expectedBytes)
         {
             Boolean value = kind switch
             {
@@ -55,7 +58,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Boolean, Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Boolean, Data_Boolean>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -64,7 +69,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegOne, "FF")]
         [InlineData(ValueKind.MaxVal, "7F")]
         [InlineData(ValueKind.MinVal, "80")]
-        public void Roundtrip_SByte(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_SByte(ValueKind kind, string expectedBytes)
         {
             SByte value = kind switch
             {
@@ -76,14 +81,16 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<SByte, Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<SByte, Data_SByte>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "00")]
         [InlineData(ValueKind.PosOne, "01")]
         [InlineData(ValueKind.MaxVal, "FF")]
-        public void Roundtrip_Byte(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Byte(ValueKind kind, string expectedBytes)
         {
             Byte value = kind switch
             {
@@ -93,7 +100,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Byte, Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Byte, Data_Byte>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -102,7 +111,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegOne, "FF-FF")]
         [InlineData(ValueKind.MaxVal, "FF-7F")]
         [InlineData(ValueKind.MinVal, "00-80")]
-        public void Roundtrip_Int16(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Int16(ValueKind kind, string expectedBytes)
         {
             Int16 value = kind switch
             {
@@ -114,14 +123,16 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Int16, Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Int16, Data_Int16>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "00-00")]
         [InlineData(ValueKind.PosOne, "01-00")]
         [InlineData(ValueKind.MaxVal, "FF-FF")]
-        public void Roundtrip_UInt16(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_UInt16(ValueKind kind, string expectedBytes)
         {
             UInt16 value = kind switch
             {
@@ -131,7 +142,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<UInt16, Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<UInt16, Data_UInt16>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -140,7 +153,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegOne, "FF-FF-FF-FF")]
         [InlineData(ValueKind.MaxVal, "FF-FF-FF-7F")]
         [InlineData(ValueKind.MinVal, "00-00-00-80")]
-        public void Roundtrip_Int32(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Int32(ValueKind kind, string expectedBytes)
         {
             Int32 value = kind switch
             {
@@ -152,14 +165,16 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Int32, Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Int32, Data_Int32>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "00-00-00-00")]
         [InlineData(ValueKind.PosOne, "01-00-00-00")]
         [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF")]
-        public void Roundtrip_UInt32(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_UInt32(ValueKind kind, string expectedBytes)
         {
             UInt32 value = kind switch
             {
@@ -169,7 +184,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<UInt32, Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<UInt32, Data_UInt32>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -178,7 +195,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegOne, "FF-FF-FF-FF-FF-FF-FF-FF")]
         [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-FF-7F")]
         [InlineData(ValueKind.MinVal, "00-00-00-00-00-00-00-80")]
-        public void Roundtrip_Int64(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Int64(ValueKind kind, string expectedBytes)
         {
             Int64 value = kind switch
             {
@@ -190,14 +207,16 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Int64, Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Int64, Data_Int64>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "00-00-00-00-00-00-00-00")]
         [InlineData(ValueKind.PosOne, "01-00-00-00-00-00-00-00")]
         [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-FF-FF")]
-        public void Roundtrip_UInt64(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_UInt64(ValueKind kind, string expectedBytes)
         {
             UInt64 value = kind switch
             {
@@ -207,14 +226,16 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<UInt64, Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<UInt64, Data_UInt64>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "00-00")]
         [InlineData(ValueKind.PosOne, "20-00")]
         [InlineData(ValueKind.MaxVal, "FF-FF")]
-        public void Roundtrip_Char(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Char(ValueKind kind, string expectedBytes)
         {
             Char value = kind switch
             {
@@ -224,7 +245,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Char, Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Char, Data_Char>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
 #if NET8_0_OR_GREATER
@@ -238,7 +261,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegInf, "00-FC")]
         [InlineData(ValueKind.PosInf, "00-7C")]
         [InlineData(ValueKind.NotNum, "00-FE")]
-        public void Roundtrip_Half(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Half(ValueKind kind, string expectedBytes)
         {
             Half value = kind switch
             {
@@ -254,7 +277,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Half, Data_Half>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Half, Data_Half>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 #endif
 
@@ -268,7 +293,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegInf, "00-00-80-FF")]
         [InlineData(ValueKind.PosInf, "00-00-80-7F")]
         [InlineData(ValueKind.NotNum, "00-00-C0-FF")]
-        public void Roundtrip_Single(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Single(ValueKind kind, string expectedBytes)
         {
             Single value = kind switch
             {
@@ -284,7 +309,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Single, Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Single, Data_Single>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -297,7 +324,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegInf, "00-00-00-00-00-00-F0-FF")]
         [InlineData(ValueKind.PosInf, "00-00-00-00-00-00-F0-7F")]
         [InlineData(ValueKind.NotNum, "00-00-00-00-00-00-F8-FF")]
-        public void Roundtrip_Double(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Double(ValueKind kind, string expectedBytes)
         {
             Double value = kind switch
             {
@@ -313,7 +340,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Double, Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Double, Data_Double>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -322,7 +351,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegOne, "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80")]
         [InlineData(ValueKind.MaxVal, "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-00")]
         [InlineData(ValueKind.MinVal, "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-80")]
-        public void Roundtrip_Decimal(ValueKind kind, string expectedBytes)
+        public async Task Roundtrip_Decimal(ValueKind kind, string expectedBytes)
         {
             Decimal value = kind switch
             {
@@ -334,7 +363,9 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip<Decimal, Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Decimal, Data_Decimal>(dataStore, value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         // todo Guid, half, int128, uint128

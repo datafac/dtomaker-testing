@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MessagePack;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DTOMakerV10.Tests
@@ -42,7 +43,7 @@ namespace DTOMakerV10.Tests
             copy.Equals(orig).Should().BeTrue();
         }
         [Fact]
-        public void RoundTripViaMemBlocks()
+        public async Task RoundTripViaMemBlocks()
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
@@ -64,15 +65,14 @@ namespace DTOMakerV10.Tests
             orig.Freeze();
 
             DTOMakerV10.Models3.MemBlocks.Tree sender = DTOMakerV10.Models3.MemBlocks.Tree.CreateFrom(orig);
-            sender.Pack(dataStore);
-            sender.Freeze();
+            await sender.Pack(dataStore);
+            //sender.Freeze();
 
             ReadOnlyMemory<byte> buffer = sender.GetBuffer();
-            string entityId = DataFac.MemBlocks.Protocol.ParseEntityId(buffer);
 
-            DTOMakerV10.Models3.MemBlocks.Tree recver = DTOMakerV10.Models3.MemBlocks.Tree.CreateFrom(entityId, buffer);
-            recver.Freeze();
-            recver.UnpackAll(dataStore);
+            DTOMakerV10.Models3.MemBlocks.Tree recver = DTOMakerV10.Models3.MemBlocks.Tree.CreateFrom(buffer);
+            //recver.Freeze();
+            await recver.UnpackAll(dataStore);
 
             recver.Equals(sender).Should().BeTrue();
             recver.Should().Be(sender);

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MessagePack;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DTOMakerV10.Tests
@@ -8,7 +9,8 @@ namespace DTOMakerV10.Tests
     public class PolymorphicTests
     {
         [Fact]
-        public void RoundTripViaMemBlocks()
+
+        public async Task RoundTripViaMemBlocksAsync()
         {
             var orig = new DTOMakerV10.Models2.CSPoco.Rectangle()
             {
@@ -16,12 +18,13 @@ namespace DTOMakerV10.Tests
                 Height = 2.0D,
             };
 
-            DTOMakerV10.Models2.MemBlocks.Polygon sender = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(orig);
-            sender.Freeze();
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
-            var entityId = sender.GetEntityId();
+            DTOMakerV10.Models2.MemBlocks.Polygon sender = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(orig);
+            await sender.Pack(dataStore);
+
             var buffer = sender.GetBuffer();
-            DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(entityId, buffer);
+            DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(buffer);
             recver.IsFrozen.Should().BeTrue();
 
             var copy = DTOMakerV10.Models2.CSPoco.Polygon.CreateFrom(recver);

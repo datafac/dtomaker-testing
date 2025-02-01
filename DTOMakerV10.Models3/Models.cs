@@ -44,7 +44,7 @@ namespace DTOMakerV10.Models3
     {
         [Member(1)] ITree? Left { get; set; }
         [Member(2)] ITree? Right { get; set; }
-        [Member(3)] INode? Node { get; set; }
+        [Member(3)] INode? Node { get; set; } // todo allow required entity members
         [Member(4)] int Size { get; set; }
     }
 }
