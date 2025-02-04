@@ -9,16 +9,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DataFac.Memory" Version="0.7.12" />
-		<PackageReference Include="DTOMaker.CSPoco" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.Models" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.57.6" />
-		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.57.6" />
+		<PackageReference Include="DataFac.Memory" Version="0.8.2" />
+		<PackageReference Include="DTOMaker.CSPoco" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.MemBlocks" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.MessagePack" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.Models" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.58.9" />
+		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.58.9" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
