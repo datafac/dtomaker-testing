@@ -20,6 +20,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMakerV10.Models2", "DTOM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMakerV10.Models3", "DTOMakerV10.Models3\DTOMakerV10.Models3.csproj", "{752009FC-480D-4871-ADFB-24B30022A53A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{C6A8B527-F47B-4258-A828-2212C2853391}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Basic", "SampleDTO.Basic\SampleDTO.Basic.csproj", "{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Shapes", "SampleDTO.Shapes\SampleDTO.Shapes.csproj", "{F0661630-597D-4B56-97F7-4611DD8BC76E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Strings", "SampleDTO.Strings\SampleDTO.Strings.csproj", "{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Tests", "Benchmarks.Tests\Benchmarks.Tests.csproj", "{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +52,26 @@ Global
 		{752009FC-480D-4871-ADFB-24B30022A53A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{752009FC-480D-4871-ADFB-24B30022A53A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{752009FC-480D-4871-ADFB-24B30022A53A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A8B527-F47B-4258-A828-2212C2853391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A8B527-F47B-4258-A828-2212C2853391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A8B527-F47B-4258-A828-2212C2853391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A8B527-F47B-4258-A828-2212C2853391}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
