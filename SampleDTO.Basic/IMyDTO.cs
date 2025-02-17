@@ -7,7 +7,7 @@ namespace SampleDTO.Basic
 {
     [Entity]
     [EntityKey(1)]
-    [Id("MyDTP")]
+    [Id("cad6e7cf-1381-4612-9c79-e55ed87292fd")]
     [Layout(LayoutMethod.Linear)]
     public interface IMyDTO
     {

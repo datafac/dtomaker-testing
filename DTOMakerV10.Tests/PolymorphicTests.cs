@@ -10,7 +10,7 @@ namespace DTOMakerV10.Tests
     {
         [Fact]
 
-        public async Task RoundTripViaMemBlocksAsync()
+        public async Task RoundTripViaMemBlocks()
         {
             var orig = new DTOMakerV10.Models2.CSPoco.Rectangle()
             {
