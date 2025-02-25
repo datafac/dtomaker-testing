@@ -8,5 +8,9 @@
         StringNull,
         StringZero,
         StringFull,
+        BinaryNull,
+        BinaryZero,
+        BinarySmall,
+        BinaryLarge,
     }
 }

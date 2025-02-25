@@ -2,6 +2,7 @@
 
 namespace Benchmarks.Tests
 {
+
     public class RoundtripStringsTests
     {
         [Theory]

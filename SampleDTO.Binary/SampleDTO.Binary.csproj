@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
@@ -9,23 +8,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
 		<PackageReference Include="DataFac.Memory" Version="0.9.5" />
-		<PackageReference Include="DataFac.Storage.Testing" Version="0.60.3-dev" />
 		<PackageReference Include="DTOMaker.MemBlocks" Version="0.60.3-dev" />
 		<PackageReference Include="DTOMaker.MessagePack" Version="0.60.3-dev" />
 		<PackageReference Include="DTOMaker.Models" Version="0.60.3-dev" />
 		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.60.3-dev" />
 		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.60.3-dev" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\SampleDTO.Basic\SampleDTO.Basic.csproj" />
-		<ProjectReference Include="..\SampleDTO.Binary\SampleDTO.Binary.csproj" />
-		<ProjectReference Include="..\SampleDTO.Shapes\SampleDTO.Shapes.csproj" />
-		<ProjectReference Include="..\SampleDTO.Strings\SampleDTO.Strings.csproj" />
 	</ItemGroup>
 
 </Project>
