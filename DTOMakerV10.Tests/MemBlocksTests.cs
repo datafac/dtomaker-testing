@@ -370,6 +370,27 @@ namespace DTOMakerV10.Tests
             await RoundtripAsync<Decimal, Data_Decimal>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_Decimal(b), (m) => m.Value);
         }
 
+        [Theory]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
+        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-01-")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-A1-38-CB-70-04-06-4E-9D-88-34-61-EB-52-57-EB-")]
+        public async Task Roundtrip_Guid(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            Guid value = kind switch
+            {
+                ValueKind.DefVal => Guid.Empty,
+                ValueKind.MinInc => new Guid("00000000-0000-0000-0000-000000000001"),
+                ValueKind.MaxVal => new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                ValueKind.PosOne => new Guid("cb38a1ff-0470-4e06-9d88-3461eb5257eb"),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Guid, Data_Guid>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_Guid(b), (m) => m.Value);
+        }
+
 #if NET8_0_OR_GREATER
         [Theory]
         [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
@@ -414,8 +435,6 @@ namespace DTOMakerV10.Tests
         }
 
 #endif
-
-        // todo Guid, half, int128, uint128
 
     }
 }

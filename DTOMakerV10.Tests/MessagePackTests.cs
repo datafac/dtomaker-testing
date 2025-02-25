@@ -330,7 +330,26 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Decimal, Models.MessagePack.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo Guid, half, int128, uint128, string, binary
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-D9-24-30-30-30-30-30-30-30-30-2D-30-30-30-30-2D-30-30-30-30-2D-30-30-30-30-2D-30-30-30-30-30-30-30-30-30-30-30-30")]
+        [InlineData(ValueKind.MinInc, "92-C0-D9-24-30-30-30-30-30-30-30-30-2D-30-30-30-30-2D-30-30-30-30-2D-30-30-30-30-2D-30-30-30-30-30-30-30-30-30-30-30-31")]
+        [InlineData(ValueKind.MaxVal, "92-C0-D9-24-66-66-66-66-66-66-66-66-2D-66-66-66-66-2D-66-66-66-66-2D-66-66-66-66-2D-66-66-66-66-66-66-66-66-66-66-66-66")]
+        [InlineData(ValueKind.PosOne, "92-C0-D9-24-63-62-33-38-61-31-66-66-2D-30-34-37-30-2D-34-65-30-36-2D-39-64-38-38-2D-33-34-36-31-65-62-35-32-35-37-65-62")]
+        public void Roundtrip_Guid(ValueKind kind, string expectedBytes)
+        {
+            Guid value = kind switch
+            {
+                ValueKind.DefVal => Guid.Empty,
+                ValueKind.MinInc => new Guid("00000000-0000-0000-0000-000000000001"),
+                ValueKind.MaxVal => new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                ValueKind.PosOne => new Guid("cb38a1ff-0470-4e06-9d88-3461eb5257eb"),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Guid, Models.MessagePack.Data_Guid>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        // todo int128, uint128, string, binary
 
     }
 }
