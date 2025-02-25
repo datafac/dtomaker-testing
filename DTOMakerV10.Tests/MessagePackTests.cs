@@ -330,7 +330,7 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Decimal, Models.MessagePack.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo Guid, half, int128, uint128
+        // todo Guid, half, int128, uint128, string, binary
 
     }
 }

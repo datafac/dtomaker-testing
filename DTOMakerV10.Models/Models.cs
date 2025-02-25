@@ -48,6 +48,16 @@ namespace DTOMakerV10.Models
     [Entity][EntityKey(21)][Layout(LayoutMethod.Linear)][Id("7bcae077-bbeb-4b6a-bb8e-646c73eb42f9")]
     public interface IData_Half { [Member(1)] Half Value { get; set; } }
 #endif
+
+#if NET7_0_OR_GREATER
+    [Entity][EntityKey(14)][Layout(LayoutMethod.Linear)][Id("6d46fd99-cd10-4152-967d-c7a4e39d38b6")]
+    public interface IData_Int128 { [Member(1)] Int128 Value { get; set; } }
+
+    [Entity][EntityKey(15)][Layout(LayoutMethod.Linear)][Id("1e05bb4c-fe85-4359-9673-c2e0ec4d6000")]
+    public interface IData_UInt128 { [Member(1)] UInt128 Value { get; set; } }
+#endif
+
+
     // todo Guid, Int128, UInt128
     // todo String
 }

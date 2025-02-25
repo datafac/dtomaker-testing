@@ -9,13 +9,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.9.5" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.59.10" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.59.10" />
-		<PackageReference Include="DTOMaker.Models" Version="0.59.10" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.59.10" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.59.10" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.59.10" />
-		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.59.10" />
+		<PackageReference Include="DTOMaker.MemBlocks" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.MessagePack" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Models" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.60.3-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.60.3-dev" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
 	</ItemGroup>

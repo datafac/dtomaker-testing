@@ -370,6 +370,51 @@ namespace DTOMakerV10.Tests
             await RoundtripAsync<Decimal, Data_Decimal>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_Decimal(b), (m) => m.Value);
         }
 
+#if NET8_0_OR_GREATER
+        [Theory]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-7F-")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80-")]
+        public async Task Roundtrip_Int128(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            Int128 value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.NegOne => -1,
+                ValueKind.MaxVal => Int128.MaxValue,
+                ValueKind.MinVal => Int128.MinValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Int128, Data_Int128>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_Int128(b), (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-")]
+        public async Task Roundtrip_UInt128(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            UInt128 value = kind switch
+            {
+                ValueKind.DefVal => default,
+                ValueKind.PosOne => 1,
+                ValueKind.MaxVal => UInt128.MaxValue,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<UInt128, Data_UInt128>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_UInt128(b), (m) => m.Value);
+        }
+
+#endif
+
         // todo Guid, half, int128, uint128
 
     }
