@@ -8,14 +8,14 @@ namespace DTOMakerV10.Models3
     [Id("b931ff5b-26b5-4118-9a99-49f036f2f386")]
     public interface INode
     {
-        [Member(1)][StrLen(16)] String Key { get; set; }
+        [Member(1)][FixedLength(16)] String Key { get; set; }
     }
 
     [Entity][EntityKey(2)][Layout(LayoutMethod.Linear)]
     [Id("91596c25-51a1-40b1-aff8-f2f07e252669")]
     public interface IStringNode : INode
     {
-        [Member(1)][StrLen(64)] String Value { get; set; }
+        [Member(1)][FixedLength(64)] String Value { get; set; }
     }
 
     [Entity][EntityKey(3)][Layout(LayoutMethod.Linear)]
