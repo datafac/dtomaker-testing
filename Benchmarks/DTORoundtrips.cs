@@ -173,13 +173,13 @@ namespace Benchmarks
         }
 
         [Benchmark]
-        public async ValueTask<int> Roundtrip_MemBlocks()
+        public async ValueTask<long> Roundtrip_MemBlocks()
         {
             var dto = MakeMyDTO_MemBlocks(Kind);
             await dto.Pack(DataStore);
-            var buffer = dto.GetBuffer();
-            var copy = SampleDTO.Basic.MemBlocks.MyDTO.CreateFrom(buffer);
-            return buffer.Length;
+            var buffers = dto.GetBuffers();
+            var copy = SampleDTO.Basic.MemBlocks.MyDTO.CreateFrom(buffers);
+            return buffers.Length;
         }
 
         [Benchmark]

@@ -95,8 +95,8 @@ namespace Benchmarks
         {
             var dto = MakeMyDTO_MemBlocks(Kind);
             await dto.Pack(DataStore);
-            var buffer = dto.GetBuffer();
-            var copy = SampleDTO.Strings.MemBlocks.StringsDTO.CreateFrom(buffer);
+            var buffers = dto.GetBuffers();
+            var copy = SampleDTO.Strings.MemBlocks.StringsDTO.CreateFrom(buffers);
             return 0;
         }
 

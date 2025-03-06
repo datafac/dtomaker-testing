@@ -1,10 +1,12 @@
-﻿using DataFac.Storage;
+﻿using DataFac.Memory;
+using DataFac.Storage;
 using DTOMaker.Runtime;
 using DTOMaker.Runtime.MemBlocks;
 using DTOMakerV10.Models;
 using DTOMakerV10.Models.MemBlocks;
 using Shouldly;
 using System;
+using System.Buffers;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,7 +18,7 @@ namespace DTOMakerV10.Tests
 
         private async Task RoundtripAsync<TValue, TMsg>(
             IDataStore dataStore, TValue value, string expectedHeadBytes, string expectedDataBytes,
-            Action<TMsg, TValue> setValueFunc, Func<ReadOnlyMemory<byte>, TMsg> createFunc, Func<TMsg, TValue> getValueFunc)
+            Action<TMsg, TValue> setValueFunc, Func<ReadOnlySequence<byte>, TMsg> createFunc, Func<TMsg, TValue> getValueFunc)
             where TMsg : EntityBase, IFreezable, new()
         {
             var sendMsg = new TMsg();
@@ -25,9 +27,9 @@ namespace DTOMakerV10.Tests
 
             // act
             var entityId = sendMsg.GetEntityId();
-            var buffer = sendMsg.GetBuffer();
+            var buffers = sendMsg.GetBuffers();
 
-            TMsg recdMsg = createFunc(buffer);
+            TMsg recdMsg = createFunc(buffers);
             await recdMsg.UnpackAll(dataStore);
 
             // assert
@@ -36,9 +38,9 @@ namespace DTOMakerV10.Tests
             copyValue.ShouldBe(value);
 
             // - wire data
-            var headBuffer = buffer.Slice(0, 64);
+            var headBuffer = buffers.Slice(0, 64).Compact();
             string.Join("-", headBuffer.ToArray().Select(b => b.ToString("X2"))).ShouldStartWith(expectedHeadBytes);
-            var dataBuffer = buffer.Slice(64);
+            var dataBuffer = buffers.Slice(64).Compact();
             string.Join("-", dataBuffer.ToArray().Select(b => b.ToString("X2"))).ShouldStartWith(expectedDataBytes);
 
             // - equality
@@ -49,8 +51,8 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "01")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "01")]
         public async Task Roundtrip_Boolean(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Boolean value = kind switch
@@ -66,11 +68,11 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "01")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "FF")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "7F")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "80")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "01")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "80")]
         public async Task Roundtrip_SByte(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             SByte value = kind switch
@@ -89,9 +91,9 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "01")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-01-00-00-00-00-00-00-00-", "FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "01")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF")]
         public async Task Roundtrip_Byte(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Byte value = kind switch
@@ -108,11 +110,11 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "01-00")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF-FF")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF-7F")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-80")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "01-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-80")]
         public async Task Roundtrip_Int16(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Int16 value = kind switch
@@ -131,9 +133,9 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "01-00")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF-FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "01-00")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF")]
         public async Task Roundtrip_UInt16(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             UInt16 value = kind switch
@@ -150,11 +152,11 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "01-00-00-00")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF-FF-FF")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF-FF-7F")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-00-80")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "01-00-00-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-80")]
         public async Task Roundtrip_Int32(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Int32 value = kind switch
@@ -173,9 +175,9 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "01-00-00-00")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF-FF-FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "01-00-00-00")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF")]
         public async Task Roundtrip_UInt32(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             UInt32 value = kind switch
@@ -192,11 +194,11 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-7F")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-80")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-80")]
         public async Task Roundtrip_Int64(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Int64 value = kind switch
@@ -215,9 +217,9 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF")]
         public async Task Roundtrip_UInt64(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             UInt64 value = kind switch
@@ -234,9 +236,9 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "20-00")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF-FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "20-00")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF")]
         public async Task Roundtrip_Char(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Char value = kind switch
@@ -254,15 +256,15 @@ namespace DTOMakerV10.Tests
 
 #if NET8_0_OR_GREATER
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-3C")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-BC")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF-7B")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "FF-FB")]
-        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "01-00")]
-        [InlineData(ValueKind.NegInf, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-FC")]
-        [InlineData(ValueKind.PosInf, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-7C")]
-        [InlineData(ValueKind.NotNum, "7C-5F-01-00-00-00-00-00-11-00-00-00-00-00-00-00-", "00-FE")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-3C")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-BC")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-7B")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FB")]
+        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "01-00")]
+        [InlineData(ValueKind.NegInf, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-FC")]
+        [InlineData(ValueKind.PosInf, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-7C")]
+        [InlineData(ValueKind.NotNum, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-FE")]
         public async Task Roundtrip_Half(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Half value = kind switch
@@ -286,15 +288,15 @@ namespace DTOMakerV10.Tests
 #endif
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-80-3F")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-80-BF")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF-7F-7F")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "FF-FF-7F-FF")]
-        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "01-00-00-00")]
-        [InlineData(ValueKind.NegInf, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-80-FF")]
-        [InlineData(ValueKind.PosInf, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-80-7F")]
-        [InlineData(ValueKind.NotNum, "7C-5F-01-00-00-00-00-00-21-00-00-00-00-00-00-00-", "00-00-C0-FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-80-3F")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-80-BF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-7F-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-7F-FF")]
+        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "01-00-00-00")]
+        [InlineData(ValueKind.NegInf, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-80-FF")]
+        [InlineData(ValueKind.PosInf, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-80-7F")]
+        [InlineData(ValueKind.NotNum, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-C0-FF")]
         public async Task Roundtrip_Single(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Single value = kind switch
@@ -317,15 +319,15 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-3F")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-BF")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-EF-7F")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-EF-FF")]
-        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.NegInf, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-FF")]
-        [InlineData(ValueKind.PosInf, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-7F")]
-        [InlineData(ValueKind.NotNum, "7C-5F-01-00-00-00-00-00-31-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F8-FF")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-3F")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-BF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-EF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-EF-FF")]
+        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegInf, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-FF")]
+        [InlineData(ValueKind.PosInf, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F0-7F")]
+        [InlineData(ValueKind.NotNum, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-F8-FF")]
         public async Task Roundtrip_Double(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Double value = kind switch
@@ -348,11 +350,11 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-00")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-80")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-00")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-00-00-00-80")]
         public async Task Roundtrip_Decimal(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Decimal value = kind switch
@@ -371,10 +373,10 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
-        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-01-")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-A1-38-CB-70-04-06-4E-9D-88-34-61-EB-52-57-EB-")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.MinInc, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-01")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-A1-38-CB-70-04-06-4E-9D-88-34-61-EB-52-57-EB")]
         public async Task Roundtrip_Guid(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Guid value = kind switch
@@ -393,11 +395,11 @@ namespace DTOMakerV10.Tests
 
 #if NET8_0_OR_GREATER
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
-        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-7F-")]
-        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80-")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-80")]
         public async Task Roundtrip_Int128(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             Int128 value = kind switch
@@ -416,9 +418,9 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
-        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-")]
-        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-41-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-")]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-00-00-00-00-00-51-00-00-00-00-00-00-00-", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF")]
         public async Task Roundtrip_UInt128(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             UInt128 value = kind switch

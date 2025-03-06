@@ -23,8 +23,8 @@ namespace DTOMakerV10.Tests
             DTOMakerV10.Models2.MemBlocks.Polygon sender = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(orig);
             await sender.Pack(dataStore);
 
-            var buffer = sender.GetBuffer();
-            DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(buffer);
+            var buffers = sender.GetBuffers();
+            DTOMakerV10.Models2.MemBlocks.Polygon recver = DTOMakerV10.Models2.MemBlocks.Polygon.CreateFrom(buffers);
             recver.IsFrozen.ShouldBeTrue();
 
             var copy = DTOMakerV10.Models2.CSPoco.Polygon.CreateFrom(recver);
