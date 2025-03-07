@@ -6,8 +6,7 @@ using System;
 namespace SampleDTO.Basic
 {
     [Entity]
-    [EntityKey(1)]
-    [Id("cad6e7cf-1381-4612-9c79-e55ed87292fd")]
+    [Id(1)]
     [Layout(LayoutMethod.Linear)]
     public interface IMyDTO
     {

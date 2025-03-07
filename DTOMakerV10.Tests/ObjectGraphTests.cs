@@ -187,8 +187,6 @@ namespace DTOMakerV10.Tests
         [Fact]
         public async Task CheckSourceBlocks()
         {
-            Guid id = new Guid("e4edc645-9b28-4970-8d1e-06d8a7ed94a5");
-
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
             var orig = new Models3.CSPoco.Int64Node() { Key = "Int64", Value = 257L };
@@ -217,12 +215,12 @@ namespace DTOMakerV10.Tests
             blocks.Header.Memory.Span[0].ShouldBe<byte>(0x7C);
             blocks.Header.Memory.Span[1].ShouldBe<byte>(0x5F);
             blocks.Header.Memory.Span[2].ShouldBe<byte>(0x01);
-            blocks.Header.Memory.Span[3].ShouldBe<byte>(0x00);
-            blocks.Header.SignatureBits.ShouldBe(0x00015F7C);
+            blocks.Header.Memory.Span[3].ShouldBe<byte>(0x01);
+            blocks.Header.SignatureBits.ShouldBe(0x01015F7C);
             blocks.Header.StructureBits.ShouldBe(0x00004053);
-            blocks.Header.EntityGuid.ShouldBe(id);
+            blocks.Header.EntityId.ShouldBe(4);
             blocks.ClassHeight.ShouldBe(3);
-            blocks.Blocks.Span[0].Length.ShouldBe(64);
+            blocks.Blocks.Span[0].Length.ShouldBe(16);
             blocks.Blocks.Span[1].Length.ShouldBe(16);
             blocks.Blocks.Span[2].Length.ShouldBe(0);
             blocks.Blocks.Span[3].Length.ShouldBe(8);

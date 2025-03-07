@@ -161,16 +161,16 @@ namespace Benchmarks
             return buffer.Length;
         }
 
-        [Benchmark]
-        public int Roundtrip_MemoryPack()
-        {
-            var dto = MakeMyDTO_MemoryPack(Kind);
-            dto.Freeze();
-            ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<MemoryPackMyDTO>(dto);
-            var copy = MemoryPackSerializer.Deserialize<MemoryPackMyDTO>(buffer.Span);
-            dto.Freeze();
-            return buffer.Length;
-        }
+        //[Benchmark]
+        //public int Roundtrip_MemoryPack()
+        //{
+        //    var dto = MakeMyDTO_MemoryPack(Kind);
+        //    dto.Freeze();
+        //    ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<MemoryPackMyDTO>(dto);
+        //    var copy = MemoryPackSerializer.Deserialize<MemoryPackMyDTO>(buffer.Span);
+        //    dto.Freeze();
+        //    return buffer.Length;
+        //}
 
         [Benchmark]
         public async ValueTask<long> Roundtrip_MemBlocks()
@@ -182,16 +182,16 @@ namespace Benchmarks
             return buffers.Length;
         }
 
-        [Benchmark]
-        public int Roundtrip_NetStrux()
-        {
-            var dto = MakeMyDTO_NetStrux(Kind);
-            dto.Freeze();
-            Span<byte> buffer = stackalloc byte[256];
-            dto.TryWrite(buffer);
-            var copy = new NetStruxMyDTO();
-            copy.TryRead(buffer);
-            return buffer.Length;
-        }
+        //[Benchmark]
+        //public int Roundtrip_NetStrux()
+        //{
+        //    var dto = MakeMyDTO_NetStrux(Kind);
+        //    dto.Freeze();
+        //    Span<byte> buffer = stackalloc byte[256];
+        //    dto.TryWrite(buffer);
+        //    var copy = new NetStruxMyDTO();
+        //    copy.TryRead(buffer);
+        //    return buffer.Length;
+        //}
     }
 }

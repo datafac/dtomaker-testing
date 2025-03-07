@@ -5,9 +5,8 @@ using DTOMaker.Models.MessagePack;
 namespace SampleDTO.Strings
 {
     [Entity]
-    [EntityKey(2)]
+    [Id(2)]
     [Layout(LayoutMethod.Linear)]
-    [Id("1f4ec791-e425-4388-bc0f-3434c15c6043")]
     public interface IStringsDTO
     {
         [Member(1)][FixedLength(256)] string Field05_Value { get; set; }
