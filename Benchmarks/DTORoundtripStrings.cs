@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Benchmarks
 {
     // todo DTORoundtripOctets
-    [SimpleJob(RuntimeMoniker.Net80)]
+    //[SimpleJob(RuntimeMoniker.Net80)]
     [SimpleJob(RuntimeMoniker.Net90)]
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
