@@ -11,12 +11,12 @@
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
 		<PackageReference Include="DataFac.Memory" Version="0.9.6" />
-		<PackageReference Include="DataFac.Storage.Testing" Version="0.63.8-dev" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.63.8-dev" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.63.8-dev" />
-		<PackageReference Include="DTOMaker.Models" Version="0.63.8-dev" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.63.8-dev" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.63.8-dev" />
+		<PackageReference Include="DataFac.Storage.Testing" Version="0.63.11-dev" />
+		<PackageReference Include="DTOMaker.MemBlocks" Version="0.63.11-dev" />
+		<PackageReference Include="DTOMaker.MessagePack" Version="0.63.11-dev" />
+		<PackageReference Include="DTOMaker.Models" Version="0.63.11-dev" />
+		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.63.11-dev" />
+		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.63.11-dev" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
 	</ItemGroup>
