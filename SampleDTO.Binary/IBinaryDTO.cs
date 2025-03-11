@@ -9,7 +9,7 @@ namespace SampleDTO.Binary
     [Layout(LayoutMethod.Linear)]
     public interface IBinaryDTO
     {
-        [Member(1)] Octets? Value { get; set; }
+        [Member(1)] Octets? Value { get; }
     }
 
 }

@@ -20,7 +20,7 @@ namespace SampleDTO.Shapes
     [Layout(LayoutMethod.Linear)]
     public interface IEquilateral : ITriangle
     {
-        [Member(1)] double Length { get; set; }
+        [Member(1)] double Length { get; }
     }
 
     [Entity]
@@ -28,8 +28,8 @@ namespace SampleDTO.Shapes
     [Layout(LayoutMethod.Linear)]
     public interface IRightTriangle : ITriangle
     {
-        [Member(1)] double Length { get; set; }
-        [Member(2)] double Height { get; set; }
+        [Member(1)] double Length { get; }
+        [Member(2)] double Height { get; }
     }
 
     [Entity]
@@ -42,7 +42,7 @@ namespace SampleDTO.Shapes
     [Layout(LayoutMethod.Linear)]
     public interface ISquare : IQuadrilateral
     {
-        [Member(1)] double Length { get; set; }
+        [Member(1)] double Length { get; }
     }
 
     [Entity]
@@ -50,8 +50,8 @@ namespace SampleDTO.Shapes
     [Layout(LayoutMethod.Linear)]
     public interface IRectangle : IQuadrilateral
     {
-        [Member(1)] double Length { get; set; }
-        [Member(2)] double Height { get; set; }
+        [Member(1)] double Length {get; }
+        [Member(2)] double Height {get; }
     }
 
 }

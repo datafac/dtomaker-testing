@@ -29,20 +29,20 @@ namespace Benchmarks
         private SampleDTO.Binary.MessagePack.BinaryDTO MakeMyDTO_MessagePack(ValueKind kind)
         {
             var dto = new SampleDTO.Binary.MessagePack.BinaryDTO();
-            IBinaryDTO intf = dto;
+            //IBinaryDTO intf = dto;
             switch (Kind)
             {
                 case ValueKind.BinaryNull:
-                    intf.Value = null;
+                    dto.Value = null;
                     break;
                 case ValueKind.BinaryZero:
-                    intf.Value = Octets.Empty;
+                    dto.Value = Octets.Empty.Memory;
                     break;
                 case ValueKind.BinarySmall:
-                    intf.Value = SmallBinaryValue;
+                    dto.Value = SmallBinaryValue.Memory;
                     break;
                 case ValueKind.BinaryLarge:
-                    intf.Value = LargeBinaryValue;
+                    dto.Value = LargeBinaryValue.Memory;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
@@ -64,20 +64,20 @@ namespace Benchmarks
         private SampleDTO.Binary.MemBlocks.BinaryDTO MakeMyDTO_MemBlocks(ValueKind kind)
         {
             var dto = new SampleDTO.Binary.MemBlocks.BinaryDTO();
-            IBinaryDTO intf = dto;
+            //IBinaryDTO intf = dto;
             switch (Kind)
             {
                 case ValueKind.BinaryNull:
-                    intf.Value = null;
+                    dto.Value = null;
                     break;
                 case ValueKind.BinaryZero:
-                    intf.Value = Octets.Empty;
+                    dto.Value = Octets.Empty;
                     break;
                 case ValueKind.BinarySmall:
-                    intf.Value = SmallBinaryValue;
+                    dto.Value = SmallBinaryValue;
                     break;
                 case ValueKind.BinaryLarge:
-                    intf.Value = LargeBinaryValue;
+                    dto.Value = LargeBinaryValue;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
