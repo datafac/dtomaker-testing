@@ -13,6 +13,23 @@ namespace DTOMakerV10.Tests
         [Fact]
         public void RoundTripViaMessagePack()
         {
+#if NET8_0_OR_GREATER
+            var orig = new DTOMakerV10.Models3.CSRecord.Tree()
+            {
+                Left = new Models3.CSRecord.Tree()
+                {
+                    Node = new Models3.CSRecord.DoubleNode() { Key = "Double", Value = 123.456D },
+                    Size = 1,
+                },
+                Right = new Models3.CSRecord.Tree()
+                {
+                    Node = new Models3.CSRecord.BooleanNode() { Key = "Boolean", Value = true },
+                    Size = 1,
+                },
+                Node = new Models3.CSRecord.StringNode() { Key = "String", Value = "abcdef" },
+                Size = 3,
+            };
+#else
             var orig = new DTOMakerV10.Models3.CSPoco.Tree()
             {
                 Left = new Models3.CSPoco.Tree()
@@ -29,6 +46,7 @@ namespace DTOMakerV10.Tests
                 Size = 3,
             };
             orig.Freeze();
+#endif
 
             DTOMakerV10.Models3.MessagePack.Tree sender = DTOMakerV10.Models3.MessagePack.Tree.CreateFrom(orig);
             sender.Freeze();
@@ -37,18 +55,42 @@ namespace DTOMakerV10.Tests
             DTOMakerV10.Models3.MessagePack.Tree recver = MessagePackSerializer.Deserialize<DTOMakerV10.Models3.MessagePack.Tree>(buffer);
             recver.Freeze();
 
+#if NET8_0_OR_GREATER
+            var copy = DTOMakerV10.Models3.CSRecord.Tree.CreateFrom(recver);
+            copy.ShouldNotBeNull();
+            copy.ShouldBe(orig);
+            copy.Equals(orig).ShouldBeTrue();
+#else
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
             copy.Freeze();
             copy.ShouldNotBeNull();
             copy.ShouldBe(orig);
             copy.Equals(orig).ShouldBeTrue();
+#endif
         }
 
         [Fact]
-        public async Task RoundTripViaMemBlocks1_FullTree()
+        public async Task RoundTripViaMemBlocks()
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
+#if NET8_0_OR_GREATER
+            var orig = new DTOMakerV10.Models3.CSRecord.Tree()
+            {
+                Left = new Models3.CSRecord.Tree()
+                {
+                    Node = new Models3.CSRecord.DoubleNode() { Key = "Double", Value = Double.Epsilon },
+                    Size = 1,
+                },
+                Right = new Models3.CSRecord.Tree()
+                {
+                    Node = new Models3.CSRecord.BooleanNode() { Key = "Boolean", Value = true },
+                    Size = 1,
+                },
+                Node = new Models3.CSRecord.StringNode() { Key = "String", Value = "abcdef" },
+                Size = 3,
+            };
+#else
             var orig = new DTOMakerV10.Models3.CSPoco.Tree()
             {
                 Left = new Models3.CSPoco.Tree()
@@ -65,23 +107,10 @@ namespace DTOMakerV10.Tests
                 Size = 3,
             };
             orig.Freeze();
-
-            var copy1 = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(orig);
-            copy1.Freeze();
-            copy1.ShouldNotBeNull();
-            copy1.Equals(orig).ShouldBeTrue();
-            copy1.ShouldBe(orig);
-            copy1.GetHashCode().ShouldBe(orig.GetHashCode());
+#endif
 
             DTOMakerV10.Models3.MemBlocks.Tree sender = DTOMakerV10.Models3.MemBlocks.Tree.CreateFrom(orig);
             await sender.Pack(dataStore);
-
-            var copy2 = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(sender);
-            copy2.Freeze();
-            copy2.ShouldNotBeNull();
-            copy2.Equals(orig).ShouldBeTrue();
-            copy2.ShouldBe(orig);
-            copy2.GetHashCode().ShouldBe(orig.GetHashCode());
 
             var buffers = sender.GetBuffers();
 
@@ -92,12 +121,20 @@ namespace DTOMakerV10.Tests
             recver.ShouldBe(sender);
             recver.GetHashCode().ShouldBe(sender.GetHashCode());
 
-            var copy3 = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
-            copy3.Freeze();
-            copy3.ShouldNotBeNull();
-            copy3.Equals(orig).ShouldBeTrue();
-            copy3.ShouldBe(orig);
-            copy3.GetHashCode().ShouldBe(orig.GetHashCode());
+#if NET8_0_OR_GREATER
+            var copy = DTOMakerV10.Models3.CSRecord.Tree.CreateFrom(recver);
+            copy.ShouldNotBeNull();
+            copy.Equals(orig).ShouldBeTrue();
+            copy.ShouldBe(orig);
+            copy.GetHashCode().ShouldBe(orig.GetHashCode());
+#else
+            var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
+            copy.Freeze();
+            copy.ShouldNotBeNull();
+            copy.Equals(orig).ShouldBeTrue();
+            copy.ShouldBe(orig);
+            copy.GetHashCode().ShouldBe(orig.GetHashCode());
+#endif
         }
 
         [Fact]
@@ -108,22 +145,8 @@ namespace DTOMakerV10.Tests
             var orig = new Models3.CSPoco.StringNode() { Key = "String", Value = "abcdef" };
             orig.Freeze();
 
-            var copy1 = DTOMakerV10.Models3.CSPoco.StringNode.CreateFrom(orig);
-            copy1.Freeze();
-            copy1.ShouldNotBeNull();
-            copy1.Equals(orig).ShouldBeTrue();
-            copy1.ShouldBe(orig);
-            copy1.GetHashCode().ShouldBe(orig.GetHashCode());
-
             var sender = DTOMakerV10.Models3.MemBlocks.StringNode.CreateFrom(orig);
             await sender.Pack(dataStore);
-
-            var copy2 = DTOMakerV10.Models3.CSPoco.StringNode.CreateFrom(sender);
-            copy2.Freeze();
-            copy2.ShouldNotBeNull();
-            copy2.Equals(orig).ShouldBeTrue();
-            copy2.ShouldBe(orig);
-            copy2.GetHashCode().ShouldBe(orig.GetHashCode());
 
             var buffers = sender.GetBuffers();
 
@@ -150,22 +173,8 @@ namespace DTOMakerV10.Tests
             var orig = new Models3.CSPoco.Int64Node() { Key = "Int64", Value = 257L };
             orig.Freeze();
 
-            var copy1 = DTOMakerV10.Models3.CSPoco.Int64Node.CreateFrom(orig);
-            copy1.Freeze();
-            copy1.ShouldNotBeNull();
-            copy1.Equals(orig).ShouldBeTrue();
-            copy1.ShouldBe(orig);
-            copy1.GetHashCode().ShouldBe(orig.GetHashCode());
-
             var sender = DTOMakerV10.Models3.MemBlocks.Int64Node.CreateFrom(orig);
             await sender.Pack(dataStore);
-
-            var copy2 = DTOMakerV10.Models3.CSPoco.Int64Node.CreateFrom(sender);
-            copy2.Freeze();
-            copy2.ShouldNotBeNull();
-            copy2.Equals(orig).ShouldBeTrue();
-            copy2.ShouldBe(orig);
-            copy2.GetHashCode().ShouldBe(orig.GetHashCode());
 
             var buffers = sender.GetBuffers();
 

@@ -8,14 +8,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DataFac.Memory" Version="0.9.6" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.63.12" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.63.12" />
-		<PackageReference Include="DTOMaker.Models" Version="0.63.12" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.63.12" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.63.12" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.63.12" />
-		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.63.12" />
+		<PackageReference Include="DataFac.Memory" Version="0.9.7" />
+		<PackageReference Include="DTOMaker.MemBlocks" Version="0.63.17" />
+		<PackageReference Include="DTOMaker.MessagePack" Version="0.63.17" />
+		<PackageReference Include="DTOMaker.Models" Version="0.63.17" />
+		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.63.17" />
+		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.63.17" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.63.17" />
+		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.63.17" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
 	</ItemGroup>

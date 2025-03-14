@@ -55,6 +55,9 @@ namespace DTOMakerV10.Models
     [Entity][Id(16)][Layout(LayoutMethod.Linear)]
     public interface IData_Guid { [Member(1)] Guid Value { get; } }
 
+    [Entity][Id(17)][Layout(LayoutMethod.Linear)]
+    public interface IData_String { [Member(1)] string Value { get; } }
+
 #if NET5_0_OR_GREATER
     [Entity][Id(21)][Layout(LayoutMethod.Linear)]
     public interface IData_Half { [Member(1)] Half Value { get; } }
