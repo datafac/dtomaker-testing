@@ -56,5 +56,12 @@ namespace DTOMakerV10.Tests
             copy.ShouldBe(orig);
             copy.Equals(orig).ShouldBeTrue();
         }
+
+        [Fact]
+        public void RoundTripViaJsonNewtonSoft()
+        {
+            // todo
+        }
+
     }
 }

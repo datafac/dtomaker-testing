@@ -235,5 +235,11 @@ namespace DTOMakerV10.Tests
             blocks.Blocks.Span[3].Length.ShouldBe(8);
         }
 
+        [Fact]
+        public void RoundTripViaJsonNewtonSoft()
+        {
+            //todo
+        }
+
     }
 }

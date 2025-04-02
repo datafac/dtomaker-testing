@@ -14,7 +14,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="DataFac.Storage.Testing" Version="0.63.19" />
+		<PackageReference Include="DataFac.Storage.Testing" Version="0.64.8-dev" />
 		<PackageReference Include="MessagePack" Version="2.5.192" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
@@ -23,7 +23,7 @@
 		</PackageReference>
 		<PackageReference Include="PublicApiGenerator" Version="11.4.5" />
 		<PackageReference Include="Shouldly" Version="4.3.0" />
-		<PackageReference Include="Verify.Xunit" Version="29.0.0" />
+		<PackageReference Include="Verify.Xunit" Version="29.1.0" />
 		<PackageReference Include="xunit" Version="2.9.3" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
 		  <PrivateAssets>all</PrivateAssets>
