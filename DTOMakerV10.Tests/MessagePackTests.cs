@@ -349,7 +349,23 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Guid, Models.MessagePack.Data_Guid>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo int128, uint128, string, binary
+        [Theory]
+        [InlineData(ValueKind.MinVal, "92-C0-A0")]
+        [InlineData(ValueKind.PosOne, "92-C0-A6-61-62-63-64-65-66")]
+        public void Roundtrip_String(ValueKind kind, string expectedBytes)
+        {
+            string value = kind switch
+            {
+                //ValueKind.DefVal => null,
+                ValueKind.MinVal => string.Empty,
+                ValueKind.PosOne => "abcdef",
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<string, Models.MessagePack.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        // todo int128, uint128, binary
 
     }
 }

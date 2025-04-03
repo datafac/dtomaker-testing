@@ -366,7 +366,23 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Guid, Models.JsonNewtonSoft.Data_Guid>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
-        // todo int128, uint128, string, binary
+        [Theory]
+        [InlineData(ValueKind.MinVal, "{\"Value\":\"\"}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":\"abcdef\"}")]
+        public void Roundtrip_String(ValueKind kind, string expectedBytes)
+        {
+            string value = kind switch
+            {
+                //ValueKind.DefVal => null,
+                ValueKind.MinVal => string.Empty,
+                ValueKind.PosOne => "abcdef",
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<string, Models.JsonNewtonSoft.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        // todo int128, uint128, binary
 
     }
 }
