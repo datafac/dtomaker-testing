@@ -285,7 +285,7 @@ namespace DTOMakerV10.Tests
             DTOMakerV10.Models3.JsonNewtonSoft.Tree sender = DTOMakerV10.Models3.JsonNewtonSoft.Tree.CreateFrom(orig);
             sender.Freeze();
 
-            string buffer = JsonConvert.SerializeObject(sender, jsonSettings);
+            string buffer = JsonConvert.SerializeObject(sender, typeof(DTOMakerV10.Models3.JsonNewtonSoft.Tree), jsonSettings);
 
             await VerifyXunit.Verifier.Verify(buffer);
 
