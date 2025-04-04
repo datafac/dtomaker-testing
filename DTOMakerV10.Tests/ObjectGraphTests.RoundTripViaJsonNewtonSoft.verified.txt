@@ -1,0 +1,24 @@
+﻿{
+  "Left": {
+    "Node": {
+      "$type": "DTOMakerV10.Models3.JsonNewtonSoft.DoubleNode, DTOMakerV10.Models3",
+      "Value": 123.456,
+      "Key": "Double"
+    },
+    "Size": 1
+  },
+  "Right": {
+    "Node": {
+      "$type": "DTOMakerV10.Models3.JsonNewtonSoft.BooleanNode, DTOMakerV10.Models3",
+      "Value": true,
+      "Key": "Boolean"
+    },
+    "Size": 1
+  },
+  "Node": {
+    "$type": "DTOMakerV10.Models3.JsonNewtonSoft.StringNode, DTOMakerV10.Models3",
+    "Value": "abcdef",
+    "Key": "String"
+  },
+  "Size": 3
+}

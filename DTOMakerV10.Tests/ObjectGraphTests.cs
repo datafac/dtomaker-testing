@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 using DTOMaker.Runtime.MemBlocks;
+using Newtonsoft.Json;
 
 namespace DTOMakerV10.Tests
 {
@@ -235,10 +236,73 @@ namespace DTOMakerV10.Tests
             blocks.Blocks.Span[3].Length.ShouldBe(8);
         }
 
-        [Fact]
-        public void RoundTripViaJsonNewtonSoft()
+        private static readonly JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
         {
-            //todo
+            Formatting = Formatting.Indented,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            TypeNameHandling = TypeNameHandling.Auto,
+        };
+
+        [Fact]
+
+        public async Task RoundTripViaJsonNewtonSoft()
+        {
+#if NET8_0_OR_GREATER
+            var orig = new DTOMakerV10.Models3.CSRecord.Tree()
+            {
+                Left = new Models3.CSRecord.Tree()
+                {
+                    Node = new Models3.CSRecord.DoubleNode() { Key = "Double", Value = 123.456D },
+                    Size = 1,
+                },
+                Right = new Models3.CSRecord.Tree()
+                {
+                    Node = new Models3.CSRecord.BooleanNode() { Key = "Boolean", Value = true },
+                    Size = 1,
+                },
+                Node = new Models3.CSRecord.StringNode() { Key = "String", Value = "abcdef" },
+                Size = 3,
+            };
+#else
+            var orig = new DTOMakerV10.Models3.CSPoco.Tree()
+            {
+                Left = new Models3.CSPoco.Tree()
+                {
+                    Node = new Models3.CSPoco.DoubleNode() { Key = "Double", Value = 123.456D },
+                    Size = 1,
+                },
+                Right = new Models3.CSPoco.Tree()
+                {
+                    Node = new Models3.CSPoco.BooleanNode() { Key = "Boolean", Value = true },
+                    Size = 1,
+                },
+                Node = new Models3.CSPoco.StringNode() { Key = "String", Value = "abcdef" },
+                Size = 3,
+            };
+            orig.Freeze();
+#endif
+
+            DTOMakerV10.Models3.JsonNewtonSoft.Tree sender = DTOMakerV10.Models3.JsonNewtonSoft.Tree.CreateFrom(orig);
+            sender.Freeze();
+
+            string buffer = JsonConvert.SerializeObject(sender, jsonSettings);
+
+            await VerifyXunit.Verifier.Verify(buffer);
+
+            DTOMakerV10.Models3.JsonNewtonSoft.Tree? recver = JsonConvert.DeserializeObject<DTOMakerV10.Models3.JsonNewtonSoft.Tree>(buffer, jsonSettings);
+
+            recver.ShouldNotBeNull();
+            recver.Freeze();
+
+#if NET8_0_OR_GREATER
+            var copy = DTOMakerV10.Models3.CSRecord.Tree.CreateFrom(recver);
+#else
+            var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
+            copy.Freeze();
+#endif
+            copy.ShouldNotBeNull();
+            copy.ShouldBe(orig);
+            copy.Equals(orig).ShouldBeTrue();
         }
 
     }
