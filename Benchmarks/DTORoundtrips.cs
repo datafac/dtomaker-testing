@@ -4,6 +4,7 @@ using BenchmarkDotNet.Order;
 using DataFac.Storage;
 using MemoryPack;
 using MessagePack;
+using Newtonsoft.Json;
 using SampleDTO.Basic;
 using SampleDTO.Basic.MemoryPack;
 using SampleDTO.Basic.NetStrux;
@@ -37,6 +38,35 @@ namespace Benchmarks
         private SampleDTO.Basic.MessagePack.MyDTO MakeMyDTO_MessagePack(ValueKind id)
         {
             var dto = new SampleDTO.Basic.MessagePack.MyDTO();
+            switch (Kind)
+            {
+                case ValueKind.Bool:
+                    dto.Field01 = true;
+                    break;
+                case ValueKind.DoubleLE:
+                    dto.Field02LE = Double.MaxValue;
+                    break;
+                case ValueKind.Guid:
+                    dto.Field03 = guidValue;
+                    break;
+                case ValueKind.StringNull:
+                    dto.Field05 = null;
+                    break;
+                case ValueKind.StringZero:
+                    dto.Field05 = string.Empty;
+                    break;
+                case ValueKind.StringFull:
+                    dto.Field05 = StringWith128Chars;
+                    break;
+                default:
+                    break;
+            }
+            return dto;
+        }
+
+        private SampleDTO.Basic.JsonNewtonSoft.MyDTO MakeMyDTO_JsonNewtonSoft(ValueKind id)
+        {
+            var dto = new SampleDTO.Basic.JsonNewtonSoft.MyDTO();
             switch (Kind)
             {
                 case ValueKind.Bool:
@@ -157,7 +187,25 @@ namespace Benchmarks
             dto.Freeze();
             ReadOnlyMemory<byte> buffer = MessagePackSerializer.Serialize<SampleDTO.Basic.MessagePack.MyDTO>(dto);
             var copy = MessagePackSerializer.Deserialize<SampleDTO.Basic.MessagePack.MyDTO>(buffer, out int bytesRead);
+            copy.Freeze();
+            return buffer.Length;
+        }
+
+        private static readonly JsonSerializerSettings jsonNSSettings = new JsonSerializerSettings()
+        {
+            //Formatting = Formatting.Indented,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            TypeNameHandling = TypeNameHandling.Auto,
+        };
+
+        [Benchmark]
+        public int Roundtrip_JsonNewtonSoft()
+        {
+            var dto = MakeMyDTO_JsonNewtonSoft(Kind);
             dto.Freeze();
+            string buffer = JsonConvert.SerializeObject(dto, jsonNSSettings);
+            SampleDTO.Basic.JsonNewtonSoft.MyDTO? recdMsg = JsonConvert.DeserializeObject<SampleDTO.Basic.JsonNewtonSoft.MyDTO>(buffer, jsonNSSettings);
+            recdMsg!.Freeze();
             return buffer.Length;
         }
 

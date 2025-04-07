@@ -16,6 +16,6 @@ namespace SampleDTO.Basic
         [Member(4)] Guid Field03 { get; }
         [Member(5)] short Field05_Length { get; }
         [Member(6)][Capacity(128)] ReadOnlyMemory<byte> Field05_Data { get; }
-        string? Field05 { get; }
+        string? Field05 { get; set; }
     }
 }

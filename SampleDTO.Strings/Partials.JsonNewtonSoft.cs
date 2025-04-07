@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SampleDTO.Strings.JsonNewtonSoft
+{
+    public partial class StringsDTO
+    {
+        public string? Field05
+        {
+            get
+            {
+                return Field05_HasValue ? Field05_Value : null;
+            }
+            set
+            {
+                if (value is null)
+                {
+                    Field05_HasValue = false;
+                    Field05_Value = "";
+                }
+                else
+                {
+                    Field05_HasValue = true;
+                    Field05_Value = value;
+                }
+            }
+        }
+    }
+}

@@ -19,6 +19,17 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.StringNull)]
         [InlineData(ValueKind.StringZero)]
         [InlineData(ValueKind.StringFull)]
+        public void Roundtrip_JsonNewtonSoft(ValueKind valueKind)
+        {
+            var sut = new DTORoundtripBasics();
+            sut.Kind = valueKind;
+            sut.Roundtrip_JsonNewtonSoft();
+        }
+
+        [Theory]
+        [InlineData(ValueKind.StringNull)]
+        [InlineData(ValueKind.StringZero)]
+        [InlineData(ValueKind.StringFull)]
         public async Task Roundtrip_MemBlocks(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
