@@ -1,8 +1,9 @@
+using DataFac.Memory;
 using DTOMaker.Runtime;
 using Newtonsoft.Json;
 using Shouldly;
 using System;
-using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace DTOMakerV10.Tests
@@ -39,7 +40,7 @@ namespace DTOMakerV10.Tests
 
             // - equality
             recdMsg.ShouldNotBeNull();
-            recdMsg!.Equals(sendMsg).ShouldBeTrue();
+            recdMsg.Equals(sendMsg).ShouldBeTrue();
             recdMsg.ShouldBe(sendMsg);
             recdMsg.GetHashCode().ShouldBe(sendMsg.GetHashCode());
         }
@@ -380,6 +381,22 @@ namespace DTOMakerV10.Tests
             };
 
             Roundtrip2<string, Models.JsonNewtonSoft.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.MinVal, "{\"Value\":\"\"}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":\"YWJjZGVm\"}")]
+        public void Roundtrip_Octets(ValueKind kind, string expectedBytes)
+        {
+            Octets value = kind switch
+            {
+                //ValueKind.DefVal => null,
+                ValueKind.MinVal => Octets.Empty,
+                ValueKind.PosOne => new Octets(Encoding.UTF8.GetBytes("abcdef")),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Octets, Models.JsonNewtonSoft.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.Memory.ToArray(); }, (m) => new Octets(m.Value));
         }
 
         // todo int128, uint128, binary

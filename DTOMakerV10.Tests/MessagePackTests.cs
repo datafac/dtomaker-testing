@@ -4,6 +4,8 @@ using MessagePack;
 using System;
 using System.Linq;
 using Xunit;
+using DataFac.Memory;
+using System.Text;
 
 namespace DTOMakerV10.Tests
 {
@@ -363,6 +365,22 @@ namespace DTOMakerV10.Tests
             };
 
             Roundtrip2<string, Models.MessagePack.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.MinVal, "92-C0-C4-00")]
+        [InlineData(ValueKind.PosOne, "92-C0-C4-06-61-62-63-64-65-66")]
+        public void Roundtrip_Octets(ValueKind kind, string expectedBytes)
+        {
+            Octets value = kind switch
+            {
+                //ValueKind.DefVal => null,
+                ValueKind.MinVal => Octets.Empty,
+                ValueKind.PosOne => new Octets(Encoding.UTF8.GetBytes("abcdef")),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<Octets, Models.MessagePack.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.Memory; }, (m) => Octets.UnsafeWrap(m.Value));
         }
 
         // todo int128, uint128, binary

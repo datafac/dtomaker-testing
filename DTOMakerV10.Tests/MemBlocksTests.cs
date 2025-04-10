@@ -9,6 +9,7 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -410,6 +411,24 @@ namespace DTOMakerV10.Tests
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
             await RoundtripAsync<string, Data_String>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_String(b), (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-01-12-00-00-00-71-00-00-00-00-00-00-00", "55-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-01-12-00-00-00-71-00-00-00-00-00-00-00", "55-06-61-62-63-64-65-66-00-00-00-00-00-00-00-00")]
+        public async Task Roundtrip_Octets(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            Octets value = kind switch
+            {
+                //ValueKind.DefVal => null,
+                ValueKind.MinVal => Octets.Empty,
+                ValueKind.PosOne => new Octets(Encoding.UTF8.GetBytes("abcdef")),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<Octets, Data_Octets>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_Octets(b), (m) => m.Value);
         }
 
 #if NET8_0_OR_GREATER

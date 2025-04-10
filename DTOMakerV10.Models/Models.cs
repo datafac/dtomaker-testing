@@ -1,4 +1,5 @@
 ﻿using System;
+using DataFac.Memory;
 using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
 using DTOMaker.Models.MessagePack;
@@ -58,12 +59,11 @@ namespace DTOMakerV10.Models
     [Entity][Id(17)][Layout(LayoutMethod.Linear)]
     public interface IData_String { [Member(1)] string Value { get; } }
 
+    [Entity][Id(18)][Layout(LayoutMethod.Linear)]
+    public interface IData_Octets { [Member(1)] Octets Value { get; } }
+
 #if NET5_0_OR_GREATER
     [Entity][Id(21)][Layout(LayoutMethod.Linear)]
     public interface IData_Half { [Member(1)] Half Value { get; } }
 #endif
-
-
-    // todo Guid, Int128, UInt128
-    // todo String
 }
