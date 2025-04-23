@@ -32,6 +32,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Tests", "Benchma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Binary", "SampleDTO.Binary\SampleDTO.Binary.csproj", "{0905A6B4-E4B2-48D4-9208-5065406A9D0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox.Generics.Models", "Sandbox.Generics.Models\Sandbox.Generics.Models.csproj", "{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox.Generics.Tests", "Sandbox.Generics.Tests\Sandbox.Generics.Tests.csproj", "{D10D0A81-AFCD-4397-9D47-3D26A27845D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,8 +82,19 @@ Global
 		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EFAAD759-4FD1-4AED-9297-89A73BC9890A}
 	EndGlobalSection
 EndGlobal
