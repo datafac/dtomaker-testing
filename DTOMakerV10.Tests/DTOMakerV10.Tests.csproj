@@ -14,20 +14,20 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="DataFac.Storage.Testing" Version="0.65.13-generics-ge74b19332f" />
-		<PackageReference Include="MessagePack" Version="2.5.192" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+		<PackageReference Include="DataFac.Storage.Testing" Version="0.66.2-dev" />
+		<PackageReference Include="MessagePack" Version="2.5.198" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="PublicApiGenerator" Version="11.4.5" />
+		<PackageReference Include="PublicApiGenerator" Version="11.4.6" />
 		<PackageReference Include="Shouldly" Version="4.3.0" />
-		<PackageReference Include="Verify" Version="29.3.0" />
-		<PackageReference Include="Verify.Xunit" Version="29.3.0" />
+		<PackageReference Include="Verify" Version="30.3.0" />
+		<PackageReference Include="Verify.Xunit" Version="30.3.0" />
 		<PackageReference Include="xunit" Version="2.9.3" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

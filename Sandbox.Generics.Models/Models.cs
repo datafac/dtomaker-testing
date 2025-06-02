@@ -1,9 +1,11 @@
 ﻿using DTOMaker.Models;
+using DTOMaker.Models.MemBlocks;
 
 namespace Sandbox.Generics.Models
 {
     [Entity]
     [Id(100)]
+    [Layout(LayoutMethod.Linear)]
     public interface ITree<TKey, TValue>
     {
         [Member(1)] int Count { get; }
@@ -15,6 +17,7 @@ namespace Sandbox.Generics.Models
 
     [Entity]
     [Id(1)]
+    [Layout(LayoutMethod.Linear)]
     public interface IMyTree : ITree<string, long>
     {
 

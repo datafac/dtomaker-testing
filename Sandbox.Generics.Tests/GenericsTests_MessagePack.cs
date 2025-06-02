@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Sandbox.Generics.Tests
 {
-    public class GenericsTests
+    public class GenericsTests_MessagePack
     {
         [Fact]
-        public void Roundtrip_MessagePack()
+        public void Roundtrip1_Simple()
         {
             var sendMsg = new MyTree()
             {
-                Count=1,
+                Count = 1,
                 Key = "abc",
                 Value = 456L,
                 Left = null,
