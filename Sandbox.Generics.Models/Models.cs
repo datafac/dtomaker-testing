@@ -1,7 +1,5 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
-using DTOMaker.Runtime;
-using System;
 
 namespace Sandbox.Generics.Models
 {
@@ -11,10 +9,11 @@ namespace Sandbox.Generics.Models
     public interface ITree<TKey, TValue>
     {
         [Member(1)] int Count { get; set; }
-        [Member(2)] TKey Key { get; set; }
-        [Member(3)] TValue Value { get; set; }
-        [Member(4)] ITree<TKey, TValue>? Left { get; set; }
-        [Member(5)] ITree<TKey, TValue>? Right { get; set; }
+        [Member(2)] int Depth { get; set; }
+        [Member(3)] TKey Key { get; set; }
+        [Member(4)] TValue Value { get; set; }
+        [Member(5)] ITree<TKey, TValue>? Left { get; set; }
+        [Member(6)] ITree<TKey, TValue>? Right { get; set; }
     }
 
     [Entity]

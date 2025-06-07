@@ -68,6 +68,7 @@ namespace Sandbox.Generics.Models
                 }
             }
             unfrozen.Count = 1 + (unfrozen.Left?.Count ?? 0) + (unfrozen.Right?.Count ?? 0);
+            unfrozen.Depth = 1 + Math.Max(unfrozen.Left?.Depth ?? 0, unfrozen.Right?.Depth ?? 0);
             return unfrozen;
         }
     }

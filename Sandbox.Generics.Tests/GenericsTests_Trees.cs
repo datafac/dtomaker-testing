@@ -1,6 +1,5 @@
 using DataFac.Storage;
 using DTOMaker.Runtime;
-using Newtonsoft.Json.Linq;
 using Sandbox.Generics.Models;
 using Shouldly;
 using System;
@@ -11,14 +10,14 @@ namespace Sandbox.Generics.Tests
     public class GenericsTests_Trees
     {
         [Theory]
-        [InlineData(ImplKind.MessagePack, "abc")]
-        [InlineData(ImplKind.MemBlocks, "abc")]
-        [InlineData(ImplKind.MemBlocks, "acb")]
-        [InlineData(ImplKind.MemBlocks, "bac")]
-        [InlineData(ImplKind.MemBlocks, "bca")]
-        [InlineData(ImplKind.MemBlocks, "cab")]
-        [InlineData(ImplKind.MemBlocks, "cba")]
-        public void AddValue(ImplKind impl, string order)
+        [InlineData(ImplKind.MessagePack, "abc", 3)]
+        [InlineData(ImplKind.MemBlocks, "abc", 3)]
+        [InlineData(ImplKind.MemBlocks, "acb", 3)]
+        [InlineData(ImplKind.MemBlocks, "bac", 2)]
+        [InlineData(ImplKind.MemBlocks, "bca", 2)]
+        [InlineData(ImplKind.MemBlocks, "cab", 3)]
+        [InlineData(ImplKind.MemBlocks, "cba", 3)]
+        public void AddValue(ImplKind impl, string order, int expectedDepth)
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
@@ -51,7 +50,7 @@ namespace Sandbox.Generics.Tests
             if (tree is IFreezable freezable) freezable.Freeze();
 
             tree.Count.ShouldBe(3);
-            //todo node.Depth.ShouldBe(expectedDepth);
+            tree.Depth.ShouldBe(expectedDepth);
 
             var node = tree.Get("a");
             node.ShouldNotBeNull();
