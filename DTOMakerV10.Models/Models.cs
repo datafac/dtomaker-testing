@@ -60,7 +60,7 @@ namespace DTOMakerV10.Models
     public interface IData_String { [Member(1)] string Value { get; } }
 
     [Entity][Id(18)][Layout(LayoutMethod.Linear)]
-    public interface IData_Octets { [Member(1)] Octets Value { get; } }
+    public interface IData_Octets { [Member(1)] Octets Value { get; set; } }
 
 #if NET5_0_OR_GREATER
     [Entity][Id(21)][Layout(LayoutMethod.Linear)]

@@ -14,23 +14,6 @@ namespace DTOMakerV10.Tests
         [Fact]
         public void RoundTripViaMessagePack()
         {
-#if NET8_0_OR_GREATER
-            var orig = new DTOMakerV10.Models3.CSRecord.Tree()
-            {
-                Left = new Models3.CSRecord.Tree()
-                {
-                    Node = new Models3.CSRecord.DoubleNode() { Key = "Double", Value = 123.456D },
-                    Size = 1,
-                },
-                Right = new Models3.CSRecord.Tree()
-                {
-                    Node = new Models3.CSRecord.BooleanNode() { Key = "Boolean", Value = true },
-                    Size = 1,
-                },
-                Node = new Models3.CSRecord.StringNode() { Key = "String", Value = "abcdef" },
-                Size = 3,
-            };
-#else
             var orig = new DTOMakerV10.Models3.CSPoco.Tree()
             {
                 Left = new Models3.CSPoco.Tree()
@@ -47,7 +30,6 @@ namespace DTOMakerV10.Tests
                 Size = 3,
             };
             orig.Freeze();
-#endif
 
             DTOMakerV10.Models3.MessagePack.Tree sender = DTOMakerV10.Models3.MessagePack.Tree.CreateFrom(orig);
             sender.Freeze();
@@ -56,18 +38,11 @@ namespace DTOMakerV10.Tests
             DTOMakerV10.Models3.MessagePack.Tree recver = MessagePackSerializer.Deserialize<DTOMakerV10.Models3.MessagePack.Tree>(buffer);
             recver.Freeze();
 
-#if NET8_0_OR_GREATER
-            var copy = DTOMakerV10.Models3.CSRecord.Tree.CreateFrom(recver);
-            copy.ShouldNotBeNull();
-            copy.ShouldBe(orig);
-            copy.Equals(orig).ShouldBeTrue();
-#else
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
             copy.Freeze();
             copy.ShouldNotBeNull();
             copy.ShouldBe(orig);
             copy.Equals(orig).ShouldBeTrue();
-#endif
         }
 
         [Fact]
@@ -75,23 +50,6 @@ namespace DTOMakerV10.Tests
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
-#if NET8_0_OR_GREATER
-            var orig = new DTOMakerV10.Models3.CSRecord.Tree()
-            {
-                Left = new Models3.CSRecord.Tree()
-                {
-                    Node = new Models3.CSRecord.DoubleNode() { Key = "Double", Value = Double.Epsilon },
-                    Size = 1,
-                },
-                Right = new Models3.CSRecord.Tree()
-                {
-                    Node = new Models3.CSRecord.BooleanNode() { Key = "Boolean", Value = true },
-                    Size = 1,
-                },
-                Node = new Models3.CSRecord.StringNode() { Key = "String", Value = "abcdef" },
-                Size = 3,
-            };
-#else
             var orig = new DTOMakerV10.Models3.CSPoco.Tree()
             {
                 Left = new Models3.CSPoco.Tree()
@@ -108,7 +66,6 @@ namespace DTOMakerV10.Tests
                 Size = 3,
             };
             orig.Freeze();
-#endif
 
             DTOMakerV10.Models3.MemBlocks.Tree sender = DTOMakerV10.Models3.MemBlocks.Tree.CreateFrom(orig);
             await sender.Pack(dataStore);
@@ -122,20 +79,12 @@ namespace DTOMakerV10.Tests
             recver.ShouldBe(sender);
             recver.GetHashCode().ShouldBe(sender.GetHashCode());
 
-#if NET8_0_OR_GREATER
-            var copy = DTOMakerV10.Models3.CSRecord.Tree.CreateFrom(recver);
-            copy.ShouldNotBeNull();
-            copy.Equals(orig).ShouldBeTrue();
-            copy.ShouldBe(orig);
-            copy.GetHashCode().ShouldBe(orig.GetHashCode());
-#else
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
             copy.Freeze();
             copy.ShouldNotBeNull();
             copy.Equals(orig).ShouldBeTrue();
             copy.ShouldBe(orig);
             copy.GetHashCode().ShouldBe(orig.GetHashCode());
-#endif
         }
 
         [Fact]
@@ -247,23 +196,6 @@ namespace DTOMakerV10.Tests
 
         public async Task RoundTripViaJsonNewtonSoft()
         {
-#if NET8_0_OR_GREATER
-            var orig = new DTOMakerV10.Models3.CSRecord.Tree()
-            {
-                Left = new Models3.CSRecord.Tree()
-                {
-                    Node = new Models3.CSRecord.DoubleNode() { Key = "Double", Value = 123.456D },
-                    Size = 1,
-                },
-                Right = new Models3.CSRecord.Tree()
-                {
-                    Node = new Models3.CSRecord.BooleanNode() { Key = "Boolean", Value = true },
-                    Size = 1,
-                },
-                Node = new Models3.CSRecord.StringNode() { Key = "String", Value = "abcdef" },
-                Size = 3,
-            };
-#else
             var orig = new DTOMakerV10.Models3.CSPoco.Tree()
             {
                 Left = new Models3.CSPoco.Tree()
@@ -280,7 +212,6 @@ namespace DTOMakerV10.Tests
                 Size = 3,
             };
             orig.Freeze();
-#endif
 
             DTOMakerV10.Models3.JsonNewtonSoft.Tree sender = DTOMakerV10.Models3.JsonNewtonSoft.Tree.CreateFrom(orig);
             sender.Freeze();
@@ -294,12 +225,8 @@ namespace DTOMakerV10.Tests
             recver.ShouldNotBeNull();
             recver.Freeze();
 
-#if NET8_0_OR_GREATER
-            var copy = DTOMakerV10.Models3.CSRecord.Tree.CreateFrom(recver);
-#else
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);
             copy.Freeze();
-#endif
             copy.ShouldNotBeNull();
             copy.ShouldBe(orig);
             copy.Equals(orig).ShouldBeTrue();

@@ -42,9 +42,9 @@ namespace DTOMakerV10.Models3
     [Entity][Id(10)][Layout(LayoutMethod.Linear)]
     public interface ITree
     {
-        [Member(1)] ITree? Left { get; }
-        [Member(2)] ITree? Right { get; }
-        [Member(3)] INode? Node { get; } // todo allow required entity members
-        [Member(4)] int Size { get; }
+        [Member(1)] ITree? Left { get; set; }
+        [Member(2)] ITree? Right { get; set; }
+        [Member(3)] INode? Node { get; set; } // todo allow required entity members
+        [Member(4)] int Size { get; set; }
     }
 }
