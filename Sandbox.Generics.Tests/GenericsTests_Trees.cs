@@ -1,5 +1,6 @@
 using DataFac.Storage;
 using DTOMaker.Runtime;
+using Newtonsoft.Json.Linq;
 using Sandbox.Generics.Models;
 using Shouldly;
 using System;
@@ -10,9 +11,14 @@ namespace Sandbox.Generics.Tests
     public class GenericsTests_Trees
     {
         [Theory]
-        [InlineData(ImplKind.MessagePack)]
-        [InlineData(ImplKind.MemBlocks)]
-        public void AddValue(ImplKind impl)
+        [InlineData(ImplKind.MessagePack, "abc")]
+        [InlineData(ImplKind.MemBlocks, "abc")]
+        [InlineData(ImplKind.MemBlocks, "acb")]
+        [InlineData(ImplKind.MemBlocks, "bac")]
+        [InlineData(ImplKind.MemBlocks, "bca")]
+        [InlineData(ImplKind.MemBlocks, "cab")]
+        [InlineData(ImplKind.MemBlocks, "cba")]
+        public void AddValue(ImplKind impl, string order)
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
@@ -23,36 +29,48 @@ namespace Sandbox.Generics.Tests
                 _ => throw new NotSupportedException($"Unsupported implementation kind: {impl}"),
             };
 
-            var node = nodeFactory();
-            node = node.AddValue("a", 1, nodeFactory);
-            node = node.AddValue("b", 2, nodeFactory);
-            node = node.AddValue("c", 3, nodeFactory);
+            var tree = nodeFactory();
 
-            if (node is IPackable packable)
+            // add nodes in order
+            foreach (char ch in order)
             {
-                packable.Pack(dataStore);
+                long value = ch switch
+                {
+                    'a' => 1L,
+                    'b' => -2L,
+                    'c' => 3L,
+                    _ => throw new ArgumentException($"Unexpected character: {ch}"),
+                };
+                tree = tree.AddOrUpdate(new string(ch, 1), value, nodeFactory);
             }
 
-            if (node is IFreezable freezable)
-            {
-                freezable.Freeze();
-            }
+            // update
+            tree = tree.AddOrUpdate("b", 2L, nodeFactory);
 
-            node.Count.ShouldBe(3);
+            if (tree is IPackable packable) packable.Pack(dataStore);
+            if (tree is IFreezable freezable) freezable.Freeze();
+
+            tree.Count.ShouldBe(3);
+            //todo node.Depth.ShouldBe(expectedDepth);
+
+            var node = tree.Get("a");
+            node.ShouldNotBeNull();
             node.Key.ShouldBe("a");
             node.Value.ShouldBe(1L);
-            node.Left.ShouldBeNull();
-            node.Right.ShouldNotBeNull();
-            node.Right.Count.ShouldBe(2);
-            node.Right.Key.ShouldBe("b");
-            node.Right.Value.ShouldBe(2L);
-            node.Right.Left.ShouldBeNull();
-            node.Right.Right.ShouldNotBeNull();
-            node.Right.Right.Count.ShouldBe(1);
-            node.Right.Right.Key.ShouldBe("c");
-            node.Right.Right.Value.ShouldBe(3L);
-            node.Right.Right.Left.ShouldBeNull();
-            node.Right.Right.Right.ShouldBeNull();
+
+            node = tree.Get("b");
+            node.ShouldNotBeNull();
+            node.Key.ShouldBe("b");
+            node.Value.ShouldBe(2L);
+
+            node = tree.Get("c");
+            node.ShouldNotBeNull();
+            node.Key.ShouldBe("c");
+            node.Value.ShouldBe(3L);
+
+            node = tree.Get("d");
+            node.ShouldBeNull();
+
         }
     }
 }
