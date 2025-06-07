@@ -10,11 +10,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.11.1" />
+		<PackageReference Include="DTOMaker.JsonNewtonSoft" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.MemBlocks" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.MessagePack" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.Models" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.66.14-dev" />
+		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.66.14-dev" />
 		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.66.14-dev" />
 		<PackageReference Include="MessagePack" Version="2.5.198" />
