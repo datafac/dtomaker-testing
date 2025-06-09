@@ -36,13 +36,13 @@ namespace Benchmarks
                     dto.Value = null;
                     break;
                 case ValueKind.BinaryZero:
-                    dto.Value = Octets.Empty.Memory;
+                    dto.Value = Octets.Empty.AsMemory();
                     break;
                 case ValueKind.BinarySmall:
-                    dto.Value = SmallBinaryValue.Memory;
+                    dto.Value = SmallBinaryValue.AsMemory();
                     break;
                 case ValueKind.BinaryLarge:
-                    dto.Value = LargeBinaryValue.Memory;
+                    dto.Value = LargeBinaryValue.AsMemory();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, null);

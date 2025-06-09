@@ -5,5 +5,6 @@ namespace Sandbox.Generics.Tests
         MessagePack,
         MemBlocks,
         JsonNewtonSoft,
+        CSPoco,
     }
 }

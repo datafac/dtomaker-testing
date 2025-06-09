@@ -396,7 +396,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Octets, Models.JsonNewtonSoft.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.Memory.ToArray(); }, (m) => new Octets(m.Value));
+            Roundtrip2<Octets, Models.JsonNewtonSoft.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.ToByteArray(); }, (m) => new Octets(m.Value));
         }
 
         // todo int128, uint128, binary

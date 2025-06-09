@@ -380,7 +380,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Octets, Models.MessagePack.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.Memory; }, (m) => Octets.UnsafeWrap(m.Value));
+            Roundtrip2<Octets, Models.MessagePack.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.AsMemory(); }, (m) => Octets.UnsafeWrap(m.Value));
         }
 
         // todo int128, uint128, binary

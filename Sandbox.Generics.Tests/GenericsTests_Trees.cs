@@ -10,6 +10,7 @@ namespace Sandbox.Generics.Tests
     public class GenericsTests_Trees
     {
         [Theory]
+        [InlineData(ImplKind.CSPoco, "abc", 3)]
         [InlineData(ImplKind.JsonNewtonSoft, "abc", 3)]
         [InlineData(ImplKind.MessagePack, "abc", 3)]
         [InlineData(ImplKind.MemBlocks, "abc", 3)]
@@ -27,6 +28,7 @@ namespace Sandbox.Generics.Tests
                 ImplKind.MessagePack => () => new Sandbox.Generics.Models.MessagePack.MyTree(),
                 ImplKind.MemBlocks => () => new Sandbox.Generics.Models.MemBlocks.MyTree(),
                 ImplKind.JsonNewtonSoft => () => new Sandbox.Generics.Models.JsonNewtonSoft.MyTree(),
+                ImplKind.CSPoco => () => new Sandbox.Generics.Models.CSPoco.MyTree(),
                 _ => throw new NotSupportedException($"Unsupported implementation kind: {impl}"),
             };
 
