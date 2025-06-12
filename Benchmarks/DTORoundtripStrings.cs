@@ -4,11 +4,43 @@ using BenchmarkDotNet.Order;
 using DataFac.Storage;
 using MemoryPack;
 using MessagePack;
+using SampleDTO.Strings;
 using System;
 using System.Threading.Tasks;
 
 namespace Benchmarks
 {
+    [MemoryPackable]
+    public sealed partial class MemoryPackStringsDTO : IStringsDTO
+    {
+        public void Freeze() { }
+
+        [MemoryPackInclude] public string Field05_Value { get; set; } = "";
+        [MemoryPackInclude] public bool Field05_HasValue { get; set; }
+
+        [MemoryPackIgnore]
+        public string? Field05
+        {
+            get
+            {
+                return Field05_HasValue ? Field05_Value : null;
+            }
+            set
+            {
+                if (value is null)
+                {
+                    Field05_HasValue = false;
+                    Field05_Value = "";
+                }
+                else
+                {
+                    Field05_HasValue = true;
+                    Field05_Value = value;
+                }
+            }
+        }
+    }
+
     // todo DTORoundtripOctets
     //[SimpleJob(RuntimeMoniker.Net80)]
     [SimpleJob(RuntimeMoniker.Net90)]
@@ -100,41 +132,9 @@ namespace Benchmarks
             return 0;
         }
 
-        private SampleDTO.Strings.NetStrux.NetStruxStringsDTO MakeMyDTO_NetStrux(ValueKind kind)
+        private MemoryPackStringsDTO MakeStringsDTO_MemoryPack(ValueKind id)
         {
-            var dto = new SampleDTO.Strings.NetStrux.NetStruxStringsDTO();
-            switch (Kind)
-            {
-                case ValueKind.StringNull:
-                    dto.Field05 = null;
-                    break;
-                case ValueKind.StringZero:
-                    dto.Field05 = string.Empty;
-                    break;
-                case ValueKind.StringFull:
-                    dto.Field05 = StringWith255Chars;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
-            }
-            return dto;
-        }
-
-        [Benchmark]
-        public int Roundtrip_NetStrux()
-        {
-            var dto = MakeMyDTO_NetStrux(Kind);
-            dto.Freeze();
-            Span<byte> buffer = stackalloc byte[512];
-            dto.TryWrite(buffer);
-            var copy = new SampleDTO.Basic.NetStrux.NetStruxMyDTO();
-            copy.TryRead(buffer);
-            return 0;
-        }
-
-        private SampleDTO.Strings.MemoryPack.MemoryPackStringsDTO MakeStringsDTO_MemoryPack(ValueKind id)
-        {
-            var dto = new SampleDTO.Strings.MemoryPack.MemoryPackStringsDTO();
+            var dto = new MemoryPackStringsDTO();
             switch (Kind)
             {
                 case ValueKind.StringNull:
@@ -157,8 +157,8 @@ namespace Benchmarks
         {
             var dto = MakeStringsDTO_MemoryPack(Kind);
             dto.Freeze();
-            ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<SampleDTO.Strings.MemoryPack.MemoryPackStringsDTO>(dto);
-            var copy = MemoryPackSerializer.Deserialize<SampleDTO.Strings.MemoryPack.MemoryPackStringsDTO>(buffer.Span);
+            ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<MemoryPackStringsDTO>(dto);
+            var copy = MemoryPackSerializer.Deserialize<MemoryPackStringsDTO>(buffer.Span);
             dto.Freeze();
             return 0;
         }

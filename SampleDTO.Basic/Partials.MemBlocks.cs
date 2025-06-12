@@ -13,7 +13,11 @@ namespace SampleDTO.Basic.MemBlocks
                 else if (length == 0) return string.Empty;
                 else
                 {
+#if NET8_0_OR_GREATER
                     return Encoding.UTF8.GetString(this.Field05_Data.Span.Slice(0, length));
+#else
+                    return Encoding.UTF8.GetString(this.Field05_Data.Span.Slice(0, length).ToArray());
+#endif
                 }
             }
             set

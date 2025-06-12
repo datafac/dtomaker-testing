@@ -2,7 +2,6 @@
 
 namespace Benchmarks.Tests
 {
-
     public class RoundtripStringsTests
     {
         [Theory]
@@ -36,17 +35,6 @@ namespace Benchmarks.Tests
             var sut = new DTORoundtripStrings();
             sut.Kind = valueKind;
             int _ = await sut.Roundtrip_MemBlocks();
-        }
-
-        [Theory]
-        [InlineData(ValueKind.StringNull)]
-        [InlineData(ValueKind.StringZero)]
-        [InlineData(ValueKind.StringFull)]
-        public void Roundtrip_NetStrux(ValueKind valueKind)
-        {
-            var sut = new DTORoundtripStrings();
-            sut.Kind = valueKind;
-            sut.Roundtrip_NetStrux();
         }
 
     }

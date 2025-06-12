@@ -6,13 +6,25 @@ using MemoryPack;
 using MessagePack;
 using Newtonsoft.Json;
 using SampleDTO.Basic;
-using SampleDTO.Basic.MemoryPack;
-using SampleDTO.Basic.NetStrux;
 using System;
 using System.Threading.Tasks;
 
 namespace Benchmarks
 {
+    [MemoryPackable]
+    public sealed partial class MemoryPackMyDTO : IMyDTO
+    {
+        public void Freeze() { }
+
+        [MemoryPackInclude] public bool Field01 { get; set; }
+        [MemoryPackInclude] public double Field02LE { get; set; }
+        [MemoryPackInclude] public double Field02BE { get; set; }
+        [MemoryPackInclude] public Guid Field03 { get; set; }
+        [MemoryPackIgnore] public short Field05_Length { get; set; }
+        [MemoryPackIgnore] public ReadOnlyMemory<byte> Field05_Data { get; set; }
+        [MemoryPackInclude] public string? Field05 { get; set; }
+    }
+
     [SimpleJob(RuntimeMoniker.Net90)]
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
@@ -151,35 +163,6 @@ namespace Benchmarks
             return dto;
         }
 
-        private NetStruxMyDTO MakeMyDTO_NetStrux(ValueKind id)
-        {
-            var dto = new NetStruxMyDTO();
-            switch (Kind)
-            {
-                case ValueKind.Bool:
-                    dto.Field01 = true;
-                    break;
-                case ValueKind.DoubleLE:
-                    dto.Field02LE = Double.MaxValue;
-                    break;
-                case ValueKind.Guid:
-                    dto.Field03 = guidValue;
-                    break;
-                case ValueKind.StringNull:
-                    dto.Field05 = null;
-                    break;
-                case ValueKind.StringZero:
-                    dto.Field05 = string.Empty;
-                    break;
-                case ValueKind.StringFull:
-                    dto.Field05 = StringWith128Chars;
-                    break;
-                default:
-                    break;
-            }
-            return dto;
-        }
-
         [Benchmark(Baseline = true)]
         public int Roundtrip_MessagePack()
         {
@@ -209,16 +192,16 @@ namespace Benchmarks
             return buffer.Length;
         }
 
-        //[Benchmark]
-        //public int Roundtrip_MemoryPack()
-        //{
-        //    var dto = MakeMyDTO_MemoryPack(Kind);
-        //    dto.Freeze();
-        //    ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<MemoryPackMyDTO>(dto);
-        //    var copy = MemoryPackSerializer.Deserialize<MemoryPackMyDTO>(buffer.Span);
-        //    dto.Freeze();
-        //    return buffer.Length;
-        //}
+        [Benchmark]
+        public int Roundtrip_MemoryPack()
+        {
+            var dto = MakeMyDTO_MemoryPack(Kind);
+            dto.Freeze();
+            ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<MemoryPackMyDTO>(dto);
+            var copy = MemoryPackSerializer.Deserialize<MemoryPackMyDTO>(buffer.Span);
+            dto.Freeze();
+            return buffer.Length;
+        }
 
         [Benchmark]
         public async ValueTask<long> Roundtrip_MemBlocks()
@@ -230,16 +213,5 @@ namespace Benchmarks
             return buffers.Length;
         }
 
-        //[Benchmark]
-        //public int Roundtrip_NetStrux()
-        //{
-        //    var dto = MakeMyDTO_NetStrux(Kind);
-        //    dto.Freeze();
-        //    Span<byte> buffer = stackalloc byte[256];
-        //    dto.TryWrite(buffer);
-        //    var copy = new NetStruxMyDTO();
-        //    copy.TryRead(buffer);
-        //    return buffer.Length;
-        //}
     }
 }

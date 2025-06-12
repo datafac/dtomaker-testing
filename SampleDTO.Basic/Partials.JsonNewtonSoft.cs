@@ -17,8 +17,12 @@ namespace SampleDTO.Basic.JsonNewtonSoft
 				{
 					< 0 => null,
 					0 => string.Empty,
+#if NET8_0_OR_GREATER
 					_ => Encoding.UTF8.GetString(Field05_Data.AsSpan().Slice(0, length))
-				};
+#else
+                    _ => Encoding.UTF8.GetString(Field05_Data.AsSpan().Slice(0, length).ToArray())
+#endif
+                };
 			}
 			set
 			{
