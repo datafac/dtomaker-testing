@@ -1,5 +1,4 @@
-﻿using DTOMaker.Models.MessagePack;
-using DTOMaker.Models;
+﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
 
 namespace DTOMakerV10.Models2
