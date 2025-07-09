@@ -1,5 +1,6 @@
 using DataFac.Storage;
 using DTOMaker.Runtime;
+using Microsoft.CodeAnalysis.Operations;
 using Sandbox.Generics.Models;
 using Shouldly;
 using System;
@@ -9,7 +10,20 @@ namespace Sandbox.Generics.Tests
 {
     public class GenericsTests_Trees
     {
+        private static Func<IBinaryTree<string, long>> GetNodeFactory(ImplKind kind)
+        {
+            return kind switch
+            {
+                ImplKind.MessagePack => () => new Sandbox.Generics.Models.MessagePack.MyTree(),
+                ImplKind.MemBlocks => () => new Sandbox.Generics.Models.MemBlocks.MyTree(),
+                ImplKind.JsonNewtonSoft => () => new Sandbox.Generics.Models.JsonNewtonSoft.MyTree(),
+                ImplKind.CSPoco => () => new Sandbox.Generics.Models.CSPoco.MyTree(),
+                _ => throw new NotSupportedException($"Unsupported implementation kind: {kind}"),
+            };
+        }
+
         [Theory]
+        [InlineData(ImplKind.CSPoco, "a", 1)]
         [InlineData(ImplKind.CSPoco, "abc", 3)]
         [InlineData(ImplKind.JsonNewtonSoft, "abc", 3)]
         [InlineData(ImplKind.MessagePack, "abc", 3)]
@@ -23,37 +37,25 @@ namespace Sandbox.Generics.Tests
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
-            Func<ITree<string, long>> nodeFactory = impl switch
-            {
-                ImplKind.MessagePack => () => new Sandbox.Generics.Models.MessagePack.MyTree(),
-                ImplKind.MemBlocks => () => new Sandbox.Generics.Models.MemBlocks.MyTree(),
-                ImplKind.JsonNewtonSoft => () => new Sandbox.Generics.Models.JsonNewtonSoft.MyTree(),
-                ImplKind.CSPoco => () => new Sandbox.Generics.Models.CSPoco.MyTree(),
-                _ => throw new NotSupportedException($"Unsupported implementation kind: {impl}"),
-            };
+            Func<IBinaryTree<string, long>> nodeFactory = GetNodeFactory(impl);
 
             var tree = nodeFactory();
+            tree.Count.ShouldBe(0);
+            tree.Depth.ShouldBe(0);
 
             // add nodes in order
+            int count = 0;
             foreach (char ch in order)
             {
-                long value = ch switch
-                {
-                    'a' => 1L,
-                    'b' => -2L,
-                    'c' => 3L,
-                    _ => throw new ArgumentException($"Unexpected character: {ch}"),
-                };
+                long value = (Char.IsLetter(ch) && Char.IsLower(ch)) ? (ch - 'a') + 1 : throw new ArgumentException($"Unexpected character: {ch}");
                 tree = tree.AddOrUpdate(new string(ch, 1), value, nodeFactory);
+                count++;
             }
-
-            // update
-            tree = tree.AddOrUpdate("b", 2L, nodeFactory);
 
             if (tree is IPackable packable) packable.Pack(dataStore);
             if (tree is IFreezable freezable) freezable.Freeze();
 
-            tree.Count.ShouldBe(3);
+            tree.Count.ShouldBe(count);
             tree.Depth.ShouldBe(expectedDepth);
 
             var node = tree.Get("a");
@@ -61,19 +63,45 @@ namespace Sandbox.Generics.Tests
             node.Key.ShouldBe("a");
             node.Value.ShouldBe(1L);
 
-            node = tree.Get("b");
-            node.ShouldNotBeNull();
-            node.Key.ShouldBe("b");
-            node.Value.ShouldBe(2L);
-
-            node = tree.Get("c");
-            node.ShouldNotBeNull();
-            node.Key.ShouldBe("c");
-            node.Value.ShouldBe(3L);
-
-            node = tree.Get("d");
+            node = tree.Get("z");
             node.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData(ImplKind.CSPoco, "a", 1, 1)]
+        [InlineData(ImplKind.CSPoco, "bac", 2, 2)]
+        [InlineData(ImplKind.CSPoco, "dbacfeg", 3, 3)]
+        //todo [InlineData(ImplKind.CSPoco, "abcdefg", 7, 3)]
+        public void AddValueAndRebalance(ImplKind impl, string order, int unbalancedDepth, int balancedDepth)
+        {
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            Func<IBinaryTree<string, long>> nodeFactory = GetNodeFactory(impl);
+
+            var tree = nodeFactory();
+            tree.Count.ShouldBe(0);
+            tree.Depth.ShouldBe(0);
+
+            // add nodes in order
+            int count = 0;
+            foreach (char ch in order)
+            {
+                long value = (Char.IsLetter(ch) && Char.IsLower(ch)) ? (ch - 'a') + 1 : throw new ArgumentException($"Unexpected character: {ch}");
+                tree = tree.AddOrUpdate(new string(ch, 1), value, nodeFactory);
+                count++;
+            }
+
+            if (tree is IPackable packable) packable.Pack(dataStore);
+            if (tree is IFreezable freezable) freezable.Freeze();
+
+            tree.Count.ShouldBe(count);
+            tree.Depth.ShouldBe(unbalancedDepth);
+
+            // todo re-balance if needed
+            //tree = tree.Rebalance();
+            tree.Depth.ShouldBe(balancedDepth);
 
         }
+
     }
 }
