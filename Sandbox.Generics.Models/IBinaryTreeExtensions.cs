@@ -1,11 +1,15 @@
 ﻿using DTOMaker.Runtime;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Sandbox.Generics.Models
 {
+    public interface  IBinaryTreeFactory<TKey, TValue>
+    {
+        IBinaryTree<TKey, TValue> CreateEmpty();
+        IBinaryTree<TKey, TValue> CreateNode(TKey key, TValue value);
+    }
     public static class IBinaryTreeExtensions
     {
         public static IBinaryTree<TKey, TValue>? Get<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key)
@@ -29,24 +33,6 @@ namespace Sandbox.Generics.Models
             }
         }
 
-        public static string DebugString<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
-        {
-            if (tree is null || tree.Count == 0) return "";
-            StringBuilder sb = new StringBuilder();
-            sb.Append(tree.Key);
-            sb.Append('=');
-            sb.Append(tree.Value);
-            if (tree.Left is not null || tree.Right is not null)
-            {
-                sb.Append('[');
-                if (tree.Left is not null) sb.Append(tree.Left.DebugString());
-                sb.Append('|');
-                if (tree.Right is not null) sb.Append(tree.Right.DebugString());
-                sb.Append(']');
-            }
-            return sb.ToString();
-        }
-
         public static IEnumerable<KeyValuePair<TKey, TValue>> GetKeyValuePairs<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
             where TKey : notnull, IComparable<TKey>
         {
@@ -57,8 +43,26 @@ namespace Sandbox.Generics.Models
             foreach (var kvp in tree.Right.GetKeyValuePairs()) yield return kvp;
         }
 
+        private static void TrySetCount<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        {
+            if (tree is null) return;
+            int newCount = 0;
+            if (tree.HasValue) newCount = 1 + (tree.Left?.Count ?? 0) + (tree.Right?.Count ?? 0);
+            if (tree.Count == newCount) return;
+            tree.Count = newCount;
+        }
+
+        private static void TrySetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        {
+            if (tree is null) return;
+            int newDepth = 0;
+            if (tree.HasValue) newDepth = 1 + Math.Max(tree.Left?.Depth ?? 0, tree.Right?.Depth ?? 0);
+            if (tree.Depth == newDepth) return;
+            tree.Depth = newDepth;
+        }
+
         public static IBinaryTree<TKey, TValue> AddOrUpdate<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key, TValue value,
-            Func<IBinaryTree<TKey, TValue>> nodeFactory, bool allowDuplicates = false)
+            IBinaryTreeFactory<TKey, TValue> nodeFactory, bool allowDuplicates = false)
             where TKey : notnull, IComparable<TKey>
         {
             if (allowDuplicates) // todo: Implement duplicates handling
@@ -89,14 +93,18 @@ namespace Sandbox.Generics.Models
             else if (comparison > 0)
             {
                 // go left
-                if (result.Left is null) result.Left = nodeFactory();
-                result.Left = result.Left.AddOrUpdate(key, value, nodeFactory, allowDuplicates);
+                if (result.Left is null)
+                    result.Left = nodeFactory.CreateNode(key, value);
+                else
+                    result.Left = result.Left.AddOrUpdate(key, value, nodeFactory, allowDuplicates);
             }
             else
             {
                 // go right
-                if (result.Right is null) result.Right = nodeFactory();
-                result.Right = result.Right.AddOrUpdate(key, value, nodeFactory, allowDuplicates);
+                if (result.Right is null)
+                    result.Right = nodeFactory.CreateNode(key, value);
+                else
+                    result.Right = result.Right.AddOrUpdate(key, value, nodeFactory, allowDuplicates);
             }
 
             // rebalance if needed
@@ -127,18 +135,24 @@ namespace Sandbox.Generics.Models
                 // recalc count/depth for children
                 if (result.Left is not null)
                 {
-                    result.Left.Count = 1 + (result.Left.Left?.Count ?? 0) + (result.Left.Right?.Count ?? 0);
-                    result.Left.Depth = 1 + Math.Max(result.Left.Left?.Depth ?? 0, result.Left.Right?.Depth ?? 0);
+                    result.Left.TrySetCount();
+                    result.Left.TrySetDepth();
+                    //result.Left.Count = 1 + (result.Left.Left?.Count ?? 0) + (result.Left.Right?.Count ?? 0);
+                    //result.Left.Depth = 1 + Math.Max(result.Left.Left?.Depth ?? 0, result.Left.Right?.Depth ?? 0);
                 }
                 if (result.Right is not null)
                 {
-                    result.Right.Count = 1 + (result.Right.Left?.Count ?? 0) + (result.Right.Right?.Count ?? 0);
-                    result.Right.Depth = 1 + Math.Max(result.Right.Left?.Depth ?? 0, result.Right.Right?.Depth ?? 0);
+                    result.Right.TrySetCount();
+                    result.Right.TrySetDepth();
+                    //result.Right.Count = 1 + (result.Right.Left?.Count ?? 0) + (result.Right.Right?.Count ?? 0);
+                    //result.Right.Depth = 1 + Math.Max(result.Right.Left?.Depth ?? 0, result.Right.Right?.Depth ?? 0);
                 }
             }
 
-            result.Count = 1 + (result.Left?.Count ?? 0) + (result.Right?.Count ?? 0);
-            result.Depth = 1 + Math.Max(result.Left?.Depth ?? 0, result.Right?.Depth ?? 0);
+            result.TrySetCount();
+            result.TrySetDepth();
+            //result.Count = 1 + (result.Left?.Count ?? 0) + (result.Right?.Count ?? 0);
+            //result.Depth = 1 + Math.Max(result.Left?.Depth ?? 0, result.Right?.Depth ?? 0);
             return result;
         }
     }

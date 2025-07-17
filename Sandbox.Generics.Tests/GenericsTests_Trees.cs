@@ -1,5 +1,6 @@
 using DataFac.Storage;
 using DTOMaker.Runtime;
+using Newtonsoft.Json.Linq;
 using Sandbox.Generics.Models;
 using Shouldly;
 using System;
@@ -8,16 +9,96 @@ using Xunit;
 
 namespace Sandbox.Generics.Tests
 {
+    internal sealed class nodeFactory_CSPoco : IBinaryTreeFactory<string, long>
+    {
+        public IBinaryTree<string, long> CreateEmpty()
+        {
+            var result = new Sandbox.Generics.Models.CSPoco.MyTree();
+            return result;
+        }
+
+        public IBinaryTree<string, long> CreateNode(string key, long value)
+        {
+            var result = new Sandbox.Generics.Models.CSPoco.MyTree();
+            result.HasValue = true;
+            result.Key = key;
+            result.Value = value;
+            result.Count = 1;
+            result.Depth = 1;
+            return result;
+        }
+    }
+
+    internal sealed class nodeFactory_JsonNewtonSoft : IBinaryTreeFactory<string, long>
+    {
+        public IBinaryTree<string, long> CreateEmpty()
+        {
+            var result = new Sandbox.Generics.Models.JsonNewtonSoft.MyTree();
+            return result;
+        }
+
+        public IBinaryTree<string, long> CreateNode(string key, long value)
+        {
+            var result = new Sandbox.Generics.Models.JsonNewtonSoft.MyTree();
+            result.HasValue = true;
+            result.Key = key;
+            result.Value = value;
+            result.Count = 1;
+            result.Depth = 1;
+            return result;
+        }
+    }
+
+    internal sealed class nodeFactory_MemBlocks : IBinaryTreeFactory<string, long>
+    {
+        public IBinaryTree<string, long> CreateEmpty()
+        {
+            var result = new Sandbox.Generics.Models.MemBlocks.MyTree();
+            return result;
+        }
+
+        public IBinaryTree<string, long> CreateNode(string key, long value)
+        {
+            var result = new Sandbox.Generics.Models.MemBlocks.MyTree();
+            result.HasValue = true;
+            result.Key = key;
+            result.Value = value;
+            result.Count = 1;
+            result.Depth = 1;
+            return result;
+        }
+    }
+
+    internal sealed class nodeFactory_MessagePack : IBinaryTreeFactory<string, long>
+    {
+        public IBinaryTree<string, long> CreateEmpty()
+        {
+            var result = new Sandbox.Generics.Models.MessagePack.MyTree();
+            return result;
+        }
+
+        public IBinaryTree<string, long> CreateNode(string key, long value)
+        {
+            var result = new Sandbox.Generics.Models.MessagePack.MyTree();
+            result.HasValue = true;
+            result.Key = key;
+            result.Value = value;
+            result.Count = 1;
+            result.Depth = 1;
+            return result;
+        }
+    }
+
     public class GenericsTests_Trees
     {
-        private static Func<IBinaryTree<string, long>> GetNodeFactory(ImplKind kind)
+        private static IBinaryTreeFactory<string, long> GetNodeFactory(ImplKind kind)
         {
             return kind switch
             {
-                ImplKind.MessagePack => () => new Sandbox.Generics.Models.MessagePack.MyTree(),
-                ImplKind.MemBlocks => () => new Sandbox.Generics.Models.MemBlocks.MyTree(),
-                ImplKind.JsonNewtonSoft => () => new Sandbox.Generics.Models.JsonNewtonSoft.MyTree(),
-                ImplKind.CSPoco => () => new Sandbox.Generics.Models.CSPoco.MyTree(),
+                ImplKind.CSPoco => new nodeFactory_CSPoco(),
+                ImplKind.JsonNewtonSoft => new nodeFactory_JsonNewtonSoft(),
+                ImplKind.MemBlocks => new nodeFactory_MemBlocks(),
+                ImplKind.MessagePack => new nodeFactory_MessagePack(),
                 _ => throw new NotSupportedException($"Unsupported implementation kind: {kind}"),
             };
         }
@@ -41,12 +122,15 @@ namespace Sandbox.Generics.Tests
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
-            Func<IBinaryTree<string, long>> nodeFactory = GetNodeFactory(impl);
+            var nodeFactory = GetNodeFactory(impl);
 
-            var tree = nodeFactory();
+            var tree = nodeFactory.CreateEmpty();
+            {
+                if (tree is IPackable packable) packable.Pack(dataStore);
+                if (tree is IFreezable freezable) freezable.Freeze();
+            }
             tree.Count.ShouldBe(0);
             tree.Depth.ShouldBe(0);
-            tree.DebugString().ShouldBe("");
 
             // add nodes in order
             int count = 0;
@@ -55,10 +139,12 @@ namespace Sandbox.Generics.Tests
                 long value = (Char.IsLetter(ch) && Char.IsLower(ch)) ? (ch - 'a') + 1 : throw new ArgumentException($"Unexpected character: {ch}");
                 tree = tree.AddOrUpdate(new string(ch, 1), value, nodeFactory);
                 count++;
+
+                // pack and freeze the tree after each addition
+                if (tree is IPackable packable) packable.Pack(dataStore);
+                if (tree is IFreezable freezable) freezable.Freeze();
             }
 
-            if (tree is IPackable packable) packable.Pack(dataStore);
-            if (tree is IFreezable freezable) freezable.Freeze();
 
             var pairs = tree.GetKeyValuePairs().ToArray();
             for (int i = 0; i < pairs.Length; i++)
