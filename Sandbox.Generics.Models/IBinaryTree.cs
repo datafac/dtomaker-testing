@@ -8,11 +8,11 @@ namespace Sandbox.Generics.Models
     [Layout(LayoutMethod.Linear)]
     public interface IBinaryTree<TKey, TValue>
     {
-        [Member(1)] int Count { get; set; }
-        [Member(2)] int Depth { get; set; }
-        [Member(3)] bool HasValue { get; set; }
-        [Member(4)] TKey Key { get; set; }
-        [Member(5)] TValue Value { get; set; }
+        [Member(1)] bool HasValue { get; set; }
+        [Member(2)] short Depth { get; set; }
+        [Member(3)] int Count { get; set; }
+        [Member(4)] TValue Value { get; set; }
+        [Member(5)] TKey Key { get; set; }
         [Member(6)] IBinaryTree<TKey, TValue>? Left { get; set; }
         [Member(7)] IBinaryTree<TKey, TValue>? Right { get; set; }
     }

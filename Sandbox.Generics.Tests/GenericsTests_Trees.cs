@@ -118,7 +118,7 @@ namespace Sandbox.Generics.Tests
         [InlineData(ImplKind.JsonNewtonSoft, "abcdefg", 3)]
         [InlineData(ImplKind.MessagePack, "abcdefg", 3)]
         [InlineData(ImplKind.MemBlocks, "abcdefg", 3)]
-        public void AddValue(ImplKind impl, string order, int maxDepth)
+        public void AddValue(ImplKind impl, string order, short maxDepth)
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
@@ -130,7 +130,7 @@ namespace Sandbox.Generics.Tests
                 if (tree is IFreezable freezable) freezable.Freeze();
             }
             tree.Count.ShouldBe(0);
-            tree.Depth.ShouldBe(0);
+            tree.Depth.ShouldBe((short)0);
 
             // add nodes in order
             int count = 0;
@@ -204,7 +204,7 @@ namespace Sandbox.Generics.Tests
         [InlineData("abcde", 4)]
         [InlineData("abcdef", 4)]
         [InlineData("abcdefg", 4)]
-        public void AllCombinations(string chars, int maxDepth)
+        public void AllCombinations(string chars, short maxDepth)
         {
             var nodeFactory = GetNodeFactory(ImplKind.CSPoco);
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
@@ -217,7 +217,7 @@ namespace Sandbox.Generics.Tests
                     if (tree is IFreezable freezable) freezable.Freeze();
                 }
                 tree.Count.ShouldBe(0);
-                tree.Depth.ShouldBe(0);
+                tree.Depth.ShouldBe((short)0);
 
                 // add nodes in order
                 int count = 0;

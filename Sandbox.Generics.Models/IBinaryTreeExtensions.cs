@@ -54,8 +54,8 @@ namespace Sandbox.Generics.Models
         private static void TrySetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
         {
             if (tree is null) return;
-            int newDepth = 0;
-            if (tree.HasValue) newDepth = 1 + Math.Max(tree.Left?.Depth ?? 0, tree.Right?.Depth ?? 0);
+            short newDepth = 0;
+            if (tree.HasValue) newDepth = (short)(1 + Math.Max(tree.Left?.Depth ?? 0, tree.Right?.Depth ?? 0));
             if (tree.Depth == newDepth) return;
             tree.Depth = newDepth;
         }
