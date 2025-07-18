@@ -19,7 +19,7 @@ namespace DTOMakerV10.Tests
         private async Task RoundtripAsync<TValue, TMsg>(
             IDataStore dataStore, TValue value, string expectedHeadBytes, string expectedDataBytes,
             Action<TMsg, TValue> setValueFunc, Func<ReadOnlySequence<byte>, TMsg> createFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : EntityBase, IFreezable, new()
+            where TMsg : EntityBase, IEntityBase, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);

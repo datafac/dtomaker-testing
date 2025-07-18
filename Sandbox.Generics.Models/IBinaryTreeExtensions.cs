@@ -60,22 +60,12 @@ namespace Sandbox.Generics.Models
             tree.Depth = newDepth;
         }
 
-        private static TEntity Unfrozen<TEntity>(TEntity entity) where TEntity : class
-        {
-            return entity is IFreezable freezable && freezable.IsFrozen
-                ? freezable.PartCopy() as TEntity ?? throw new InvalidOperationException("Failed to create unfrozen copy.")
-                : entity;
-        }
-
         public static IBinaryTree<TKey, TValue> AddOrUpdate<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key, TValue value,
-            IBinaryTreeFactory<TKey, TValue> nodeFactory, bool allowDuplicates = false)
+            IBinaryTreeFactory<TKey, TValue> nodeFactory)
             where TKey : notnull, IComparable<TKey>
         {
-            if (allowDuplicates) // todo: Implement duplicates handling
-                throw new NotSupportedException("Allowing duplicates is not supported in this implementation.");
-
-            IBinaryTree<TKey, TValue> result = tree is IFreezable freezable && freezable.IsFrozen
-                ? freezable.PartCopy() as IBinaryTree<TKey, TValue> ?? throw new InvalidOperationException("Failed to create unfrozen copy.")
+            IBinaryTree<TKey, TValue> result = tree.IsFrozen
+                ? tree.PartCopy() as IBinaryTree<TKey, TValue> ?? throw new InvalidOperationException("Failed to create unfrozen copy.")
                 : tree;
 
             if (!result.HasValue)
@@ -99,18 +89,20 @@ namespace Sandbox.Generics.Models
             else if (comparison > 0)
             {
                 // go left
-                if (result.Left is null)
+                var left = result.Left;
+                if (left is null)
                     result.Left = nodeFactory.CreateNode(key, value);
                 else
-                    result.Left = result.Left.AddOrUpdate(key, value, nodeFactory, allowDuplicates);
+                    result.Left = left.AddOrUpdate(key, value, nodeFactory);
             }
             else
             {
                 // go right
-                if (result.Right is null)
+                var right = result.Right;
+                if (right is null)
                     result.Right = nodeFactory.CreateNode(key, value);
                 else
-                    result.Right = result.Right.AddOrUpdate(key, value, nodeFactory, allowDuplicates);
+                    result.Right = right.AddOrUpdate(key, value, nodeFactory);
             }
 
             // rebalance if needed
@@ -123,7 +115,7 @@ namespace Sandbox.Generics.Models
                 var newRoot = result.Left;
                 result.Left = newRoot.Right;
                 // unfreeze newRoot if needed
-                newRoot = Unfrozen(newRoot);
+                newRoot = newRoot.Unfrozen();
                 newRoot.Right = result;
                 result = newRoot;
                 rotated = true;
@@ -134,7 +126,7 @@ namespace Sandbox.Generics.Models
                 var newRoot = result.Right;
                 result.Right = newRoot.Left;
                 // unfreeze newRoot if needed
-                newRoot = Unfrozen(newRoot);
+                newRoot = newRoot.Unfrozen();
                 newRoot.Left = result;
                 result = newRoot;
                 rotated = true;

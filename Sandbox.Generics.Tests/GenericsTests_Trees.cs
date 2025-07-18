@@ -127,7 +127,7 @@ namespace Sandbox.Generics.Tests
             var tree = nodeFactory.CreateEmpty();
             {
                 if (tree is IPackable packable) packable.Pack(dataStore);
-                if (tree is IFreezable freezable) freezable.Freeze();
+                tree.Freeze();
             }
             tree.Count.ShouldBe(0);
             tree.Depth.ShouldBe((short)0);
@@ -142,7 +142,7 @@ namespace Sandbox.Generics.Tests
 
                 // pack and freeze the tree after each addition
                 if (tree is IPackable packable) packable.Pack(dataStore);
-                if (tree is IFreezable freezable) freezable.Freeze();
+                tree.Freeze();
             }
 
 
@@ -214,7 +214,7 @@ namespace Sandbox.Generics.Tests
                 var tree = nodeFactory.CreateEmpty();
                 {
                     if (tree is IPackable packable) packable.Pack(dataStore);
-                    if (tree is IFreezable freezable) freezable.Freeze();
+                    tree.Freeze();
                 }
                 tree.Count.ShouldBe(0);
                 tree.Depth.ShouldBe((short)0);
@@ -229,7 +229,7 @@ namespace Sandbox.Generics.Tests
 
                     // pack and freeze the tree after each addition
                     if (tree is IPackable packable) packable.Pack(dataStore);
-                    if (tree is IFreezable freezable) freezable.Freeze();
+                    tree.Freeze();
                 }
 
 

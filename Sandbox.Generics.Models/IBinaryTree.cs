@@ -1,12 +1,13 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
+using DTOMaker.Runtime;
 
 namespace Sandbox.Generics.Models
 {
     [Entity]
     [Id(100)]
     [Layout(LayoutMethod.Linear)]
-    public interface IBinaryTree<TKey, TValue>
+    public interface IBinaryTree<TKey, TValue> : IEntityBase
     {
         [Member(1)] bool HasValue { get; set; }
         [Member(2)] short Depth { get; set; }
