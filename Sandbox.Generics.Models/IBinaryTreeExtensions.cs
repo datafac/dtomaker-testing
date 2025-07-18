@@ -90,19 +90,17 @@ namespace Sandbox.Generics.Models
             {
                 // go left
                 var left = result.Left;
-                if (left is null)
-                    result.Left = nodeFactory.CreateNode(key, value);
-                else
-                    result.Left = left.AddOrUpdate(key, value, nodeFactory);
+                result.Left = left is null 
+                    ? nodeFactory.CreateNode(key, value) 
+                    : left.AddOrUpdate(key, value, nodeFactory);
             }
             else
             {
                 // go right
                 var right = result.Right;
-                if (right is null)
-                    result.Right = nodeFactory.CreateNode(key, value);
-                else
-                    result.Right = right.AddOrUpdate(key, value, nodeFactory);
+                result.Right = right is null 
+                    ? nodeFactory.CreateNode(key, value) 
+                    : right.AddOrUpdate(key, value, nodeFactory);
             }
 
             // rebalance if needed
