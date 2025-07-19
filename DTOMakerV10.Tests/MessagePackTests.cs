@@ -12,7 +12,7 @@ namespace DTOMakerV10.Tests
     public class MessagePackTests
     {
         private void Roundtrip2<TValue, TMsg>(TValue value, string expectedBytes, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : class, IFreezable, IEquatable<TMsg>, new()
+            where TMsg : class, IEntityBase, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);

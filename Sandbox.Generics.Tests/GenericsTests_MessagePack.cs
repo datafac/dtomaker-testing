@@ -14,6 +14,7 @@ namespace Sandbox.Generics.Tests
             var sendMsg = new MyTree()
             {
                 Count = 1,
+                Depth = 1,
                 Key = "abc",
                 Value = 456L,
                 Left = null,

@@ -1,7 +1,6 @@
 ﻿using System;
 using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
-using DTOMaker.Models.MessagePack;
 namespace DTOMakerV10.Models3
 {
     [Entity][Id(1)][Layout(LayoutMethod.Linear)]

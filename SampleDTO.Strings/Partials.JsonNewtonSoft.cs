@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SampleDTO.Strings.JsonNewtonSoft
+﻿namespace SampleDTO.Strings.JsonNewtonSoft
 {
     public partial class StringsDTO
     {

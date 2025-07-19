@@ -1,7 +1,5 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
-using DTOMaker.Models.MessagePack;
-using System;
 
 namespace SampleDTO.Shapes
 {

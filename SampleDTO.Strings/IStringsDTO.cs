@@ -1,6 +1,5 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
-using DTOMaker.Models.MessagePack;
 
 namespace SampleDTO.Strings
 {
