@@ -10,7 +10,7 @@ namespace SampleDTO.Basic
     [Entity]
     [Id(1)]
     [Layout(LayoutMethod.Linear)]
-    public interface IMyDTO
+    public interface IMyDTO : IEntityBase
     {
         [Member(1)] bool Field01 { get; set; }
         [Member(2)][Endian(false)] double Field02LE { get; set; }

@@ -1,12 +1,13 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
+using DTOMaker.Runtime;
 
 namespace Sandbox.Generics.Models
 {
     [Entity]
     [Id(101)]
     [Layout(LayoutMethod.Linear)]
-    public interface ISkipList<T>
+    public interface ISkipList<T> : IEntityBase
     {
         [Member(1)] long Total { get; set; }
     }

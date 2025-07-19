@@ -1,10 +1,11 @@
-﻿using System;
-using DTOMaker.Models;
+﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
+using DTOMaker.Runtime;
+using System;
 namespace DTOMakerV10.Models3
 {
     [Entity][Id(1)][Layout(LayoutMethod.Linear)]
-    public interface INode
+    public interface INode : IEntityBase
     {
         [Member(1)][FixedLength(16)] String Key { get; }
     }
@@ -39,7 +40,7 @@ namespace DTOMakerV10.Models3
     }
 
     [Entity][Id(10)][Layout(LayoutMethod.Linear)]
-    public interface ITree
+    public interface ITree : IEntityBase
     {
         [Member(1)] ITree? Left { get; set; }
         [Member(2)] ITree? Right { get; set; }

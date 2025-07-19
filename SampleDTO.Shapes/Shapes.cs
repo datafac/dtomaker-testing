@@ -1,12 +1,13 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
+using DTOMaker.Runtime;
 
 namespace SampleDTO.Shapes
 {
     [Entity]
     [Id(3)]
     [Layout(LayoutMethod.Linear)]
-    public interface IShape { }
+    public interface IShape : IEntityBase { }
 
     [Entity]
     [Id(4)]

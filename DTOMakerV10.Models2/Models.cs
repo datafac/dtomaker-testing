@@ -1,12 +1,13 @@
 ﻿using DTOMaker.Models;
 using DTOMaker.Models.MemBlocks;
+using DTOMaker.Runtime;
 
 namespace DTOMakerV10.Models2
 {
     [Entity]
     [Id(1)]
     [Layout(LayoutMethod.Linear)]
-    public interface IPolygon { }
+    public interface IPolygon : IEntityBase { }
 
     [Entity]
     [Id(2)]

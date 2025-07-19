@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using DataFac.Storage;
+using DTOMaker.Runtime;
 using MemoryPack;
 using MessagePack;
 using Newtonsoft.Json;
@@ -15,6 +16,22 @@ namespace Benchmarks
     public sealed partial class MemoryPackMyDTO : IMyDTO
     {
         public void Freeze() { }
+
+        public bool IsFrozen => false;
+
+        public IEntityBase PartCopy()
+        {
+            return new MemoryPackMyDTO
+            {
+                Field01 = this.Field01,
+                Field02LE = this.Field02LE,
+                Field02BE = this.Field02BE,
+                Field03 = this.Field03,
+                Field05_Length = this.Field05_Length,
+                Field05_Data = this.Field05_Data,
+                Field05 = this.Field05
+            };
+        }
 
         [MemoryPackInclude] public bool Field01 { get; set; }
         [MemoryPackInclude] public double Field02LE { get; set; }
