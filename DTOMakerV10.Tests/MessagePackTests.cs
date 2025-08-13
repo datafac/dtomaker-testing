@@ -405,6 +405,27 @@ namespace DTOMakerV10.Tests
             Roundtrip2<PairOfInt16, Models.MessagePack.Data_PairOfInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-C0")]
+        [InlineData(ValueKind.PosOne, "92-C0-92-01-01")]
+        [InlineData(ValueKind.NegOne, "92-C0-92-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "92-C0-92-CE-7F-FF-FF-FF-CE-7F-FF-FF-FF")]
+        [InlineData(ValueKind.MinVal, "92-C0-92-D2-80-00-00-00-D2-80-00-00-00")]
+        public void Roundtrip_PairOfInt32(ValueKind kind, string expectedBytes)
+        {
+            PairOfInt32 value = kind switch
+            {
+                ValueKind.DefVal => new PairOfInt32(default, default),
+                ValueKind.PosOne => new PairOfInt32(1, 1),
+                ValueKind.NegOne => new PairOfInt32(-1, -1),
+                ValueKind.MaxVal => new PairOfInt32(Int32.MaxValue, Int32.MaxValue),
+                ValueKind.MinVal => new PairOfInt32(Int32.MinValue, Int32.MinValue),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<PairOfInt32, Models.MessagePack.Data_PairOfInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
         // todo int128, uint128, binary
 
     }

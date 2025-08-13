@@ -20,7 +20,9 @@ namespace SampleDTO.Basic
         [Member(6)][Capacity(128)] ReadOnlyMemory<byte> Field05_Data { get; set; }
         string? Field05 { get; set; }
         [Member(7)] PairOfInt16 Field07 { get; set; }
-        //todo [Member(8)] DayOfWeek Field07 { get; set; }
+        [Member(8)] PairOfInt32 Field08 { get; set; }
+
+        //todo [Member(n)] DayOfWeek Field0n { get; set; }
     }
 
     public sealed class DayOfWeekConverter : ITypeConverter<DayOfWeek, int>

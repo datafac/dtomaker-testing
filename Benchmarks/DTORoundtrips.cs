@@ -43,6 +43,7 @@ namespace Benchmarks
         [MemoryPackIgnore] public ReadOnlyMemory<byte> Field05_Data { get; set; }
         [MemoryPackInclude] public string? Field05 { get; set; }
         [MemoryPackInclude] public PairOfInt16 Field07 { get; set; }
+        [MemoryPackInclude] public PairOfInt32 Field08 { get; set; }
     }
 
     [SimpleJob(RuntimeMoniker.Net90)]
@@ -50,7 +51,7 @@ namespace Benchmarks
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     public class DTORoundtripBasics
     {
-        [Params(ValueKind.Bool, ValueKind.Guidqqq, ValueKind.DoubleLE, ValueKind.PairOfInt16)]
+        [Params(ValueKind.DoubleLE, ValueKind.PairOfInt16qqq, ValueKind.PairOfInt32)]
         public ValueKind Kind;
 
         private readonly IDataStore DataStore = new DataFac.Storage.Testing.TestDataStore();
@@ -58,6 +59,7 @@ namespace Benchmarks
         private static readonly Guid guidValue = new("cc8af561-5172-43e6-8090-5dc1b2d02e07");
 
         private static readonly PairOfInt16 pairOfInt16Value = new PairOfInt16((Int16)1, (Int16)(-1));
+        private static readonly PairOfInt32 pairOfInt32Value = new PairOfInt32((Int32)1, (Int32)(-1));
 
         private static readonly string StringWith128Chars =
             "0123456789abcdef" +
@@ -80,11 +82,14 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guidqqq:
+                case ValueKind.Guid:
                     dto.Field03 = guidValue;
                     break;
-                case ValueKind.PairOfInt16:
+                case ValueKind.PairOfInt16qqq:
                     dto.Field07 = pairOfInt16Value;
+                    break;
+                case ValueKind.PairOfInt32:
+                    dto.Field08 = pairOfInt32Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -112,11 +117,14 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guidqqq:
+                case ValueKind.Guid:
                     dto.Field03 = guidValue;
                     break;
-                case ValueKind.PairOfInt16:
+                case ValueKind.PairOfInt16qqq:
                     dto.Field07 = pairOfInt16Value;
+                    break;
+                case ValueKind.PairOfInt32:
+                    dto.Field08 = pairOfInt32Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -144,11 +152,14 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guidqqq:
+                case ValueKind.Guid:
                     dto.Field03 = guidValue;
                     break;
-                case ValueKind.PairOfInt16:
+                case ValueKind.PairOfInt16qqq:
                     dto.Field07 = pairOfInt16Value;
+                    break;
+                case ValueKind.PairOfInt32:
+                    dto.Field08 = pairOfInt32Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -176,11 +187,14 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guidqqq:
+                case ValueKind.Guid:
                     dto.Field03 = guidValue;
                     break;
-                case ValueKind.PairOfInt16:
+                case ValueKind.PairOfInt16qqq:
                     dto.Field07 = pairOfInt16Value;
+                    break;
+                case ValueKind.PairOfInt32:
+                    dto.Field08 = pairOfInt32Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
