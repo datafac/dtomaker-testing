@@ -21,6 +21,7 @@ namespace SampleDTO.Basic
         string? Field05 { get; set; }
         [Member(7)] PairOfInt16 Field07 { get; set; }
         [Member(8)] PairOfInt32 Field08 { get; set; }
+        [Member(9)] PairOfInt64 Field09 { get; set; }
 
         //todo [Member(n)] DayOfWeek Field0n { get; set; }
     }

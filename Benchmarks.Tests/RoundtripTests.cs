@@ -8,8 +8,9 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.Bool)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16qqq)]
+        [InlineData(ValueKind.PairOfInt16)]
         [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
         public void Roundtrip_MessagePack(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
@@ -21,8 +22,9 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.Bool)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16qqq)]
+        [InlineData(ValueKind.PairOfInt16)]
         [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
         public void Roundtrip_JsonNewtonSoft(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
@@ -34,8 +36,9 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.Bool)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16qqq)]
+        [InlineData(ValueKind.PairOfInt16)]
         [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
         public async Task Roundtrip_MemBlocks(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
@@ -47,8 +50,9 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.Bool)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16qqq)]
+        [InlineData(ValueKind.PairOfInt16)]
         [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
         public void Roundtrip_MemoryPack(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
