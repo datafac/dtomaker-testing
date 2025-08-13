@@ -474,5 +474,29 @@ namespace DTOMakerV10.Tests
 
 #endif
 
+        [Theory]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "01-00-01-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "FF-7F-FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "00-80-00-80")]
+
+        public async Task Roundtrip_PairOfInt16Async(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            PairOfInt16 value = kind switch
+            {
+                ValueKind.DefVal => new PairOfInt16(default, default),
+                ValueKind.PosOne => new PairOfInt16(1, 1),
+                ValueKind.NegOne => new PairOfInt16(-1, -1),
+                ValueKind.MaxVal => new PairOfInt16(Int16.MaxValue, Int16.MaxValue),
+                ValueKind.MinVal => new PairOfInt16(Int16.MinValue, Int16.MinValue),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<PairOfInt16, Data_PairOfInt16>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_PairOfInt16(b), (m) => m.Value);
+        }
+
     }
 }

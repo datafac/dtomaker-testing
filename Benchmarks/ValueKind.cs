@@ -4,7 +4,8 @@
     {
         Bool,
         DoubleLE,
-        Guid,
+        Guidqqq,
+        PairOfInt16,
         StringNull,
         StringZero,
         StringFull,

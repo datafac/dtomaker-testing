@@ -1,3 +1,4 @@
+using DTOMaker.Runtime.MessagePack;
 using MessagePack;
 using Sandbox.Generics.Models.MessagePack;
 using Shouldly;
@@ -23,8 +24,8 @@ namespace Sandbox.Generics.Tests
             sendMsg.Freeze();
 
             // act
-            ReadOnlyMemory<byte> buffer = MessagePackSerializer.Serialize<MyTree>(sendMsg);
-            MyTree recdMsg = MessagePackSerializer.Deserialize<MyTree>(buffer);
+            ReadOnlyMemory<byte> buffer = sendMsg.SerializeToMessagePack<MyTree>();
+            MyTree recdMsg = buffer.DeserializeFromMessagePack<MyTree>();
             recdMsg.Freeze();
 
             // assert

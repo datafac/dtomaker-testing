@@ -6,6 +6,7 @@ using System.Linq;
 using Xunit;
 using DataFac.Memory;
 using System.Text;
+using DTOMaker.Runtime.MessagePack;
 
 namespace DTOMakerV10.Tests
 {
@@ -19,8 +20,8 @@ namespace DTOMakerV10.Tests
             sendMsg.Freeze();
 
             // act
-            var buffer = MessagePackSerializer.Serialize<TMsg>(sendMsg);
-            TMsg recdMsg = MessagePackSerializer.Deserialize<TMsg>(buffer);
+            var buffer = sendMsg.SerializeToMessagePack<TMsg>();
+            var recdMsg = buffer.DeserializeFromMessagePack<TMsg>();
             recdMsg.Freeze();
 
             // assert
@@ -29,7 +30,7 @@ namespace DTOMakerV10.Tests
             copyValue.ShouldBe(value);
 
             // - wire data
-            string.Join("-", buffer.Select(b => b.ToString("X2"))).ShouldBe(expectedBytes);
+            string.Join("-", buffer.ToArray().Select(b => b.ToString("X2"))).ShouldBe(expectedBytes);
 
             // - equality
             recdMsg.ShouldNotBeNull();
@@ -381,6 +382,27 @@ namespace DTOMakerV10.Tests
             };
 
             Roundtrip2<Octets, Models.MessagePack.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.AsMemory(); }, (m) => Octets.UnsafeWrap(m.Value));
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "92-C0-C0")]
+        [InlineData(ValueKind.PosOne, "92-C0-92-01-01")]
+        [InlineData(ValueKind.NegOne, "92-C0-92-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "92-C0-92-CD-7F-FF-CD-7F-FF")]
+        [InlineData(ValueKind.MinVal, "92-C0-92-D1-80-00-D1-80-00")]
+        public void Roundtrip_PairOfInt16(ValueKind kind, string expectedBytes)
+        {
+            PairOfInt16 value = kind switch
+            {
+                ValueKind.DefVal => new PairOfInt16(default, default),
+                ValueKind.PosOne => new PairOfInt16(1, 1),
+                ValueKind.NegOne => new PairOfInt16(-1, -1),
+                ValueKind.MaxVal => new PairOfInt16(Int16.MaxValue, Int16.MaxValue),
+                ValueKind.MinVal => new PairOfInt16(Int16.MinValue, Int16.MinValue),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<PairOfInt16, Models.MessagePack.Data_PairOfInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         // todo int128, uint128, binary

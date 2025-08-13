@@ -399,6 +399,27 @@ namespace DTOMakerV10.Tests
             Roundtrip2<Octets, Models.JsonNewtonSoft.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.ToByteArray(); }, (m) => new Octets(m.Value));
         }
 
+        [Theory]
+        [InlineData(ValueKind.DefVal, "{}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":{\"A\":1,\"B\":1}}")]
+        [InlineData(ValueKind.NegOne, "{\"Value\":{\"A\":-1,\"B\":-1}}")]
+        [InlineData(ValueKind.MaxVal, "{\"Value\":{\"A\":32767,\"B\":32767}}")]
+        [InlineData(ValueKind.MinVal, "{\"Value\":{\"A\":-32768,\"B\":-32768}}")]
+        public void Roundtrip_PairOfInt16(ValueKind kind, string expectedBytes)
+        {
+            PairOfInt16 value = kind switch
+            {
+                ValueKind.DefVal => new PairOfInt16(default, default),
+                ValueKind.PosOne => new PairOfInt16(1, 1),
+                ValueKind.NegOne => new PairOfInt16(-1, -1),
+                ValueKind.MaxVal => new PairOfInt16(Int16.MaxValue, Int16.MaxValue),
+                ValueKind.MinVal => new PairOfInt16(Int16.MinValue, Int16.MinValue),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            Roundtrip2<PairOfInt16, Models.JsonNewtonSoft.Data_PairOfInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+        }
+
         // todo int128, uint128, binary
 
     }

@@ -1,8 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
+using DataFac.Memory;
 using DataFac.Storage;
 using DTOMaker.Runtime;
+using DTOMaker.Runtime.MessagePack;
 using MemoryPack;
 using MessagePack;
 using Newtonsoft.Json;
@@ -40,6 +42,7 @@ namespace Benchmarks
         [MemoryPackIgnore] public short Field05_Length { get; set; }
         [MemoryPackIgnore] public ReadOnlyMemory<byte> Field05_Data { get; set; }
         [MemoryPackInclude] public string? Field05 { get; set; }
+        [MemoryPackInclude] public PairOfInt16 Field07 { get; set; }
     }
 
     [SimpleJob(RuntimeMoniker.Net90)]
@@ -47,12 +50,14 @@ namespace Benchmarks
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     public class DTORoundtripBasics
     {
-        [Params(ValueKind.Bool, ValueKind.Guid, ValueKind.DoubleLE)]
+        [Params(ValueKind.Bool, ValueKind.Guidqqq, ValueKind.DoubleLE, ValueKind.PairOfInt16)]
         public ValueKind Kind;
 
         private readonly IDataStore DataStore = new DataFac.Storage.Testing.TestDataStore();
 
         private static readonly Guid guidValue = new("cc8af561-5172-43e6-8090-5dc1b2d02e07");
+
+        private static readonly PairOfInt16 pairOfInt16Value = new PairOfInt16((Int16)1, (Int16)(-1));
 
         private static readonly string StringWith128Chars =
             "0123456789abcdef" +
@@ -75,8 +80,11 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guid:
+                case ValueKind.Guidqqq:
                     dto.Field03 = guidValue;
+                    break;
+                case ValueKind.PairOfInt16:
+                    dto.Field07 = pairOfInt16Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -104,8 +112,11 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guid:
+                case ValueKind.Guidqqq:
                     dto.Field03 = guidValue;
+                    break;
+                case ValueKind.PairOfInt16:
+                    dto.Field07 = pairOfInt16Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -133,8 +144,11 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guid:
+                case ValueKind.Guidqqq:
                     dto.Field03 = guidValue;
+                    break;
+                case ValueKind.PairOfInt16:
+                    dto.Field07 = pairOfInt16Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -162,8 +176,11 @@ namespace Benchmarks
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
                     break;
-                case ValueKind.Guid:
+                case ValueKind.Guidqqq:
                     dto.Field03 = guidValue;
+                    break;
+                case ValueKind.PairOfInt16:
+                    dto.Field07 = pairOfInt16Value;
                     break;
                 case ValueKind.StringNull:
                     dto.Field05 = null;
@@ -185,8 +202,8 @@ namespace Benchmarks
         {
             var dto = MakeMyDTO_MessagePack(Kind);
             dto.Freeze();
-            ReadOnlyMemory<byte> buffer = MessagePackSerializer.Serialize<SampleDTO.Basic.MessagePack.MyDTO>(dto);
-            var copy = MessagePackSerializer.Deserialize<SampleDTO.Basic.MessagePack.MyDTO>(buffer, out int bytesRead);
+            var buffer = dto.SerializeToMessagePack<SampleDTO.Basic.MessagePack.MyDTO>();
+            var copy = buffer.DeserializeFromMessagePack<SampleDTO.Basic.MessagePack.MyDTO>();
             copy.Freeze();
             return buffer.Length;
         }

@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using DataFac.Storage;
+using DTOMaker.Runtime.MessagePack;
 using MessagePack;
 using System.Threading.Tasks;
 
@@ -24,9 +25,9 @@ namespace Benchmarks
                 Height = 2.0D,
             };
             dto.Freeze();
-            var buffer = MessagePackSerializer.Serialize<SampleDTO.Shapes.MessagePack.Shape>(dto);
-            var copy = MessagePackSerializer.Deserialize<SampleDTO.Shapes.MessagePack.Shape>(buffer, out int bytesRead);
-            dto.Freeze();
+            var buffer = dto.SerializeToMessagePack<SampleDTO.Shapes.MessagePack.Shape>();
+            var copy = buffer.DeserializeFromMessagePack<SampleDTO.Shapes.MessagePack.Shape>();
+            copy.Freeze();
             return 0;
         }
 

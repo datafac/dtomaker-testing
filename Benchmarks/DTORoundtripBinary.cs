@@ -3,6 +3,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using DataFac.Memory;
 using DataFac.Storage;
+using DTOMaker.Runtime.MessagePack;
 using MessagePack;
 using System;
 using System.Linq;
@@ -53,8 +54,8 @@ namespace Benchmarks
         {
             var dto = MakeMyDTO_MessagePack(Kind);
             dto.Freeze();
-            var buffer = MessagePackSerializer.Serialize<SampleDTO.Binary.MessagePack.BinaryDTO>(dto);
-            var copy = MessagePackSerializer.Deserialize<SampleDTO.Binary.MessagePack.BinaryDTO>(buffer, out int bytesRead);
+            var buffer = dto.SerializeToMessagePack<SampleDTO.Binary.MessagePack.BinaryDTO>();
+            var copy = buffer.DeserializeFromMessagePack<SampleDTO.Binary.MessagePack.BinaryDTO>();
             dto.Freeze();
             return 0;
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using DTOMaker.Runtime.MemBlocks;
 using Newtonsoft.Json;
+using DTOMaker.Runtime.MessagePack;
 
 namespace DTOMakerV10.Tests
 {
@@ -33,8 +34,8 @@ namespace DTOMakerV10.Tests
             DTOMakerV10.Models3.MessagePack.Tree sender = DTOMakerV10.Models3.MessagePack.Tree.CreateFrom(orig);
             sender.Freeze();
 
-            ReadOnlyMemory<byte> buffer = MessagePackSerializer.Serialize<DTOMakerV10.Models3.MessagePack.Tree>(sender);
-            DTOMakerV10.Models3.MessagePack.Tree recver = MessagePackSerializer.Deserialize<DTOMakerV10.Models3.MessagePack.Tree>(buffer);
+            var buffer = sender.SerializeToMessagePack<DTOMakerV10.Models3.MessagePack.Tree>();
+            var recver = buffer.DeserializeFromMessagePack<DTOMakerV10.Models3.MessagePack.Tree>();
             recver.Freeze();
 
             var copy = DTOMakerV10.Models3.CSPoco.Tree.CreateFrom(recver);

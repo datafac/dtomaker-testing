@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 using Newtonsoft.Json;
+using DTOMaker.Runtime.MessagePack;
 
 namespace DTOMakerV10.Tests
 {
@@ -47,8 +48,8 @@ namespace DTOMakerV10.Tests
             DTOMakerV10.Models2.MessagePack.Polygon sender = DTOMakerV10.Models2.MessagePack.Polygon.CreateFrom(orig);
             sender.Freeze();
 
-            ReadOnlyMemory<byte> buffer = MessagePackSerializer.Serialize<DTOMakerV10.Models2.MessagePack.Polygon>(sender);
-            DTOMakerV10.Models2.MessagePack.Polygon recver = MessagePackSerializer.Deserialize<DTOMakerV10.Models2.MessagePack.Polygon>(buffer);
+            var buffer = sender.SerializeToMessagePack<DTOMakerV10.Models2.MessagePack.Polygon>();
+            var recver = buffer.DeserializeFromMessagePack<DTOMakerV10.Models2.MessagePack.Polygon>();
             recver.Freeze();
 
             var copy = DTOMakerV10.Models2.CSPoco.Polygon.CreateFrom(recver);

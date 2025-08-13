@@ -66,4 +66,14 @@ namespace DTOMakerV10.Models
     [Entity][Id(21)][Layout(LayoutMethod.Linear)]
     public interface IData_Half : IEntityBase { [Member(1)] Half Value { get; } }
 #endif
+
+    [Entity][Id(22)][Layout(LayoutMethod.Linear)]
+    public interface IData_PairOfInt16 : IEntityBase { [Member(1)] PairOfInt16 Value { get; } }
+
+    [Entity][Id(23)][Layout(LayoutMethod.Linear)]
+    public interface IData_PairOfInt32 : IEntityBase { [Member(1)] PairOfInt32 Value { get; } }
+
+    [Entity][Id(24)][Layout(LayoutMethod.Linear)]
+    public interface IData_PairOfInt64 : IEntityBase { [Member(1)] PairOfInt64 Value { get; } }
+
 }
