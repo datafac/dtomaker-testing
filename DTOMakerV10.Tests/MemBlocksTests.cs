@@ -480,8 +480,7 @@ namespace DTOMakerV10.Tests
         [InlineData(ValueKind.NegOne, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "FF-FF-FF-FF")]
         [InlineData(ValueKind.MaxVal, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "FF-7F-FF-7F")]
         [InlineData(ValueKind.MinVal, "7C-5F-01-01-16-00-00-00-31-00-00-00-00-00-00-00", "00-80-00-80")]
-
-        public async Task Roundtrip_PairOfInt16Async(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        public async Task Roundtrip_PairOfInt16(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
         {
             PairOfInt16 value = kind switch
             {
@@ -496,6 +495,52 @@ namespace DTOMakerV10.Tests
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
             await RoundtripAsync<PairOfInt16, Data_PairOfInt16>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_PairOfInt16(b), (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-01-17-00-00-00-41-00-00-00-00-00-00-00", "00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-01-17-00-00-00-41-00-00-00-00-00-00-00", "01-00-00-00-01-00-00-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-01-17-00-00-00-41-00-00-00-00-00-00-00", "FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-01-17-00-00-00-41-00-00-00-00-00-00-00", "FF-FF-FF-7F-FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-01-17-00-00-00-41-00-00-00-00-00-00-00", "00-00-00-80-00-00-00-80")]
+        public async Task Roundtrip_PairOfInt32(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            PairOfInt32 value = kind switch
+            {
+                ValueKind.DefVal => new PairOfInt32(default, default),
+                ValueKind.PosOne => new PairOfInt32(1, 1),
+                ValueKind.NegOne => new PairOfInt32(-1, -1),
+                ValueKind.MaxVal => new PairOfInt32(Int32.MaxValue, Int32.MaxValue),
+                ValueKind.MinVal => new PairOfInt32(Int32.MinValue, Int32.MinValue),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<PairOfInt32, Data_PairOfInt32>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_PairOfInt32(b), (m) => m.Value);
+        }
+
+        [Theory]
+        [InlineData(ValueKind.DefVal, "7C-5F-01-01-18-00-00-00-51-00-00-00-00-00-00-00", "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.PosOne, "7C-5F-01-01-18-00-00-00-51-00-00-00-00-00-00-00", "01-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00")]
+        [InlineData(ValueKind.NegOne, "7C-5F-01-01-18-00-00-00-51-00-00-00-00-00-00-00", "FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF-FF")]
+        [InlineData(ValueKind.MaxVal, "7C-5F-01-01-18-00-00-00-51-00-00-00-00-00-00-00", "FF-FF-FF-FF-FF-FF-FF-7F-FF-FF-FF-FF-FF-FF-FF-7F")]
+        [InlineData(ValueKind.MinVal, "7C-5F-01-01-18-00-00-00-51-00-00-00-00-00-00-00", "00-00-00-00-00-00-00-80-00-00-00-00-00-00-00-80")]
+        public async Task Roundtrip_PairOfInt64(ValueKind kind, string expectedHeadBytes, string expectedDataBytes)
+        {
+            PairOfInt64 value = kind switch
+            {
+                ValueKind.DefVal => new PairOfInt64(default, default),
+                ValueKind.PosOne => new PairOfInt64(1, 1),
+                ValueKind.NegOne => new PairOfInt64(-1, -1),
+                ValueKind.MaxVal => new PairOfInt64(Int64.MaxValue, Int64.MaxValue),
+                ValueKind.MinVal => new PairOfInt64(Int64.MinValue, Int64.MinValue),
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+            };
+
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            await RoundtripAsync<PairOfInt64, Data_PairOfInt64>(dataStore, value, expectedHeadBytes, expectedDataBytes, (m, v) => { m.Value = v; }, (b) => new Data_PairOfInt64(b), (m) => m.Value);
         }
 
     }

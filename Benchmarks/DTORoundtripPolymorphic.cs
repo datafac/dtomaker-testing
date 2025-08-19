@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Benchmarks
 {
-    //[SimpleJob(RuntimeMoniker.Net80)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     [SimpleJob(RuntimeMoniker.Net90)]
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
