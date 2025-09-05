@@ -1,14 +1,15 @@
 using DataFac.Memory;
 using DTOMaker.Runtime;
-using DTOMaker.Runtime.JsonNewtonSoft;
+using DTOMaker.Runtime.JsonSystemText;
 using Shouldly;
 using System;
 using System.Text;
+using System.Text.Json;
 using Xunit;
 
 namespace DTOMakerV10.Tests
 {
-    public class JsonNewtonSoftTests
+    public class JsonSystemTextTests
     {
         private void Roundtrip2<TValue, TMsg>(TValue value, string expectedBuffer, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
             where TMsg : class, IEntityBase, IEquatable<TMsg>, new()
@@ -50,7 +51,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Boolean, Models.JsonNewtonSoft.Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Boolean, Models.JsonSystemText.Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -71,7 +72,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<SByte, Models.JsonNewtonSoft.Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<SByte, Models.JsonSystemText.Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -88,7 +89,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Byte, Models.JsonNewtonSoft.Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Byte, Models.JsonSystemText.Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -109,7 +110,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int16, Models.JsonNewtonSoft.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int16, Models.JsonSystemText.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -126,7 +127,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<UInt16, Models.JsonNewtonSoft.Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<UInt16, Models.JsonSystemText.Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -147,7 +148,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int32, Models.JsonNewtonSoft.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int32, Models.JsonSystemText.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -164,7 +165,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<UInt32, Models.JsonNewtonSoft.Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<UInt32, Models.JsonSystemText.Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -185,7 +186,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Int64, Models.JsonNewtonSoft.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Int64, Models.JsonSystemText.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -202,13 +203,13 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<UInt64, Models.JsonNewtonSoft.Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<UInt64, Models.JsonSystemText.Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
-        [InlineData(ValueKind.DefVal, "{\"Value\":\"\\u0000\"}")]
+        [InlineData(ValueKind.DefVal, "{}")]
         [InlineData(ValueKind.PosOne, "{\"Value\":\" \"}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":\"\uffff\"}")]
+        [InlineData(ValueKind.MaxVal, "{\"Value\":\"\\uFFFF\"}")]
         public void Roundtrip_Char(ValueKind kind, string expectedBytes)
         {
             Char value = kind switch
@@ -219,17 +220,17 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Char, Models.JsonNewtonSoft.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Char, Models.JsonSystemText.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
 #if NET8_0_OR_GREATER
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":\"1\"}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":\"-1\"}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":\"65500\"}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":\"-65500\"}")]
-        [InlineData(ValueKind.MinInc, "{\"Value\":\"6E-08\"}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
+        [InlineData(ValueKind.MaxVal, "{\"Value\":65500}")]
+        [InlineData(ValueKind.MinVal, "{\"Value\":-65500}")]
+        [InlineData(ValueKind.MinInc, "{\"Value\":6E-08}")]
         [InlineData(ValueKind.NegInf, "{\"Value\":\"-Infinity\"}")]
         [InlineData(ValueKind.PosInf, "{\"Value\":\"Infinity\"}")]
         //[InlineData(ValueKind.NotNum, "{\"Value\":\"NaN\"}")] // todo NaN equality check fails
@@ -249,14 +250,14 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Half, Models.JsonNewtonSoft.Data_Half>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Half, Models.JsonSystemText.Data_Half>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 #endif
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1.0}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1.0}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
 #if NET8_0_OR_GREATER
         [InlineData(ValueKind.MaxVal, "{\"Value\":3.4028235E+38}")]
         [InlineData(ValueKind.MinVal, "{\"Value\":-3.4028235E+38}")]
@@ -284,19 +285,19 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Single, Models.JsonNewtonSoft.Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Single, Models.JsonSystemText.Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1.0}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1.0}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
         [InlineData(ValueKind.MaxVal, "{\"Value\":1.7976931348623157E+308}")]
         [InlineData(ValueKind.MinVal, "{\"Value\":-1.7976931348623157E+308}")]
 #if NET8_0_OR_GREATER
         [InlineData(ValueKind.MinInc, "{\"Value\":5E-324}")]
 #else
-        [InlineData(ValueKind.MinInc, "{\"Value\":4.94065645841247E-324}")]
+        [InlineData(ValueKind.MinInc, "{\"Value\":4.9406564584124654E-324}")]
 #endif
         [InlineData(ValueKind.NegInf, "{\"Value\":\"-Infinity\"}")]
         [InlineData(ValueKind.PosInf, "{\"Value\":\"Infinity\"}")]
@@ -317,15 +318,15 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Double, Models.JsonNewtonSoft.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Double, Models.JsonSystemText.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1.0}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1.0}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":79228162514264337593543950335.0}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-79228162514264337593543950335.0}")]
+        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
+        [InlineData(ValueKind.MaxVal, "{\"Value\":79228162514264337593543950335}")]
+        [InlineData(ValueKind.MinVal, "{\"Value\":-79228162514264337593543950335}")]
         public void Roundtrip_Decimal(ValueKind kind, string expectedBytes)
         {
             Decimal value = kind switch
@@ -338,7 +339,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Decimal, Models.JsonNewtonSoft.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Decimal, Models.JsonSystemText.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -357,7 +358,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Guid, Models.JsonNewtonSoft.Data_Guid>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<Guid, Models.JsonSystemText.Data_Guid>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -373,7 +374,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<string, Models.JsonNewtonSoft.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<string, Models.JsonSystemText.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -389,7 +390,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<Octets, Models.JsonNewtonSoft.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.ToByteArray(); }, (m) => new Octets(m.Value));
+            Roundtrip2<Octets, Models.JsonSystemText.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.ToByteArray(); }, (m) => new Octets(m.Value));
         }
 
         [Theory]
@@ -410,7 +411,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<PairOfInt16, Models.JsonNewtonSoft.Data_PairOfInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<PairOfInt16, Models.JsonSystemText.Data_PairOfInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -431,7 +432,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<PairOfInt32, Models.JsonNewtonSoft.Data_PairOfInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<PairOfInt32, Models.JsonSystemText.Data_PairOfInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         [Theory]
@@ -452,7 +453,7 @@ namespace DTOMakerV10.Tests
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
 
-            Roundtrip2<PairOfInt64, Models.JsonNewtonSoft.Data_PairOfInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            Roundtrip2<PairOfInt64, Models.JsonSystemText.Data_PairOfInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
         }
 
         // todo int128, uint128, binary
