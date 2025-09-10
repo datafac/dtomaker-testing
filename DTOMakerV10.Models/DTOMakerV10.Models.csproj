@@ -10,19 +10,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.15.2" />
-		<PackageReference Include="DTOMaker.CSPoco" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.JsonNewtonSoft" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Models" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.0.15-dev" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.70.2" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.0.15-dev" />
+		<PackageReference Include="DTOMaker.CSPoco" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.JsonNewtonSoft" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.MemBlocks" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.MessagePack" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Models" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.0.22" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.70.3" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.0.22" />
 		<PackageReference Include="MessagePack" Version="2.5.198" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">

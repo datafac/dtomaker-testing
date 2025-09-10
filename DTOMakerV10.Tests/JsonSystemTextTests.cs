@@ -41,7 +41,7 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":true}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":true}")]
         public void Roundtrip_Boolean(ValueKind kind, string expectedBytes)
         {
             Boolean value = kind switch
@@ -56,10 +56,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":127}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-128}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":127}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-128}")]
         public void Roundtrip_SByte(ValueKind kind, string expectedBytes)
         {
             SByte value = kind switch
@@ -77,8 +77,8 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":255}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":255}")]
         public void Roundtrip_Byte(ValueKind kind, string expectedBytes)
         {
             Byte value = kind switch
@@ -94,10 +94,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":32767}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-32768}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":32767}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-32768}")]
         public void Roundtrip_Int16(ValueKind kind, string expectedBytes)
         {
             Int16 value = kind switch
@@ -115,8 +115,8 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":65535}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":65535}")]
         public void Roundtrip_UInt16(ValueKind kind, string expectedBytes)
         {
             UInt16 value = kind switch
@@ -132,10 +132,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":2147483647}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-2147483648}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":2147483647}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-2147483648}")]
         public void Roundtrip_Int32(ValueKind kind, string expectedBytes)
         {
             Int32 value = kind switch
@@ -153,8 +153,8 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":4294967295}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":4294967295}")]
         public void Roundtrip_UInt32(ValueKind kind, string expectedBytes)
         {
             UInt32 value = kind switch
@@ -170,10 +170,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":9223372036854775807}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-9223372036854775808}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":9223372036854775807}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-9223372036854775808}")]
         public void Roundtrip_Int64(ValueKind kind, string expectedBytes)
         {
             Int64 value = kind switch
@@ -191,8 +191,8 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":18446744073709551615}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":18446744073709551615}")]
         public void Roundtrip_UInt64(ValueKind kind, string expectedBytes)
         {
             UInt64 value = kind switch
@@ -208,8 +208,8 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":\" \"}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":\"\\uFFFF\"}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":\" \"}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":\"\\uFFFF\"}")]
         public void Roundtrip_Char(ValueKind kind, string expectedBytes)
         {
             Char value = kind switch
@@ -226,14 +226,14 @@ namespace DTOMakerV10.Tests
 #if NET8_0_OR_GREATER
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":65500}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-65500}")]
-        [InlineData(ValueKind.MinInc, "{\"Value\":6E-08}")]
-        [InlineData(ValueKind.NegInf, "{\"Value\":\"-Infinity\"}")]
-        [InlineData(ValueKind.PosInf, "{\"Value\":\"Infinity\"}")]
-        //[InlineData(ValueKind.NotNum, "{\"Value\":\"NaN\"}")] // todo NaN equality check fails
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":65500}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-65500}")]
+        [InlineData(ValueKind.MinInc, "{\"value\":6E-08}")]
+        [InlineData(ValueKind.NegInf, "{\"value\":\"-Infinity\"}")]
+        [InlineData(ValueKind.PosInf, "{\"value\":\"Infinity\"}")]
+        //[InlineData(ValueKind.NotNum, "{\"value\":\"NaN\"}")] // todo NaN equality check fails
         public void Roundtrip_Half(ValueKind kind, string expectedBytes)
         {
             Half value = kind switch
@@ -256,19 +256,19 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
 #if NET8_0_OR_GREATER
-        [InlineData(ValueKind.MaxVal, "{\"Value\":3.4028235E+38}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-3.4028235E+38}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":3.4028235E+38}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-3.4028235E+38}")]
 #else
-        [InlineData(ValueKind.MaxVal, "{\"Value\":3.40282347E+38}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-3.40282347E+38}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":3.40282347E+38}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-3.40282347E+38}")]
 #endif
-        //[InlineData(ValueKind.MinInc, "{\"Value\":1E-45}")] // todo deserialize fails
-        [InlineData(ValueKind.NegInf, "{\"Value\":\"-Infinity\"}")]
-        [InlineData(ValueKind.PosInf, "{\"Value\":\"Infinity\"}")]
-        //[InlineData(ValueKind.NotNum, "{\"Value\":\"NaN\"}")] // todo NaN equality check fails
+        //[InlineData(ValueKind.MinInc, "{\"value\":1E-45}")] // todo deserialize fails
+        [InlineData(ValueKind.NegInf, "{\"value\":\"-Infinity\"}")]
+        [InlineData(ValueKind.PosInf, "{\"value\":\"Infinity\"}")]
+        //[InlineData(ValueKind.NotNum, "{\"value\":\"NaN\"}")] // todo NaN equality check fails
         public void Roundtrip_Single(ValueKind kind, string expectedBytes)
         {
             Single value = kind switch
@@ -290,18 +290,18 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":1.7976931348623157E+308}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-1.7976931348623157E+308}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":1.7976931348623157E+308}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-1.7976931348623157E+308}")]
 #if NET8_0_OR_GREATER
-        [InlineData(ValueKind.MinInc, "{\"Value\":5E-324}")]
+        [InlineData(ValueKind.MinInc, "{\"value\":5E-324}")]
 #else
-        [InlineData(ValueKind.MinInc, "{\"Value\":4.9406564584124654E-324}")]
+        [InlineData(ValueKind.MinInc, "{\"value\":4.9406564584124654E-324}")]
 #endif
-        [InlineData(ValueKind.NegInf, "{\"Value\":\"-Infinity\"}")]
-        [InlineData(ValueKind.PosInf, "{\"Value\":\"Infinity\"}")]
-        //[InlineData(ValueKind.NotNum, "{\"Value\":\"NaN\"}")] // todo NaN equality check fails
+        [InlineData(ValueKind.NegInf, "{\"value\":\"-Infinity\"}")]
+        [InlineData(ValueKind.PosInf, "{\"value\":\"Infinity\"}")]
+        //[InlineData(ValueKind.NotNum, "{\"value\":\"NaN\"}")] // todo NaN equality check fails
         public void Roundtrip_Double(ValueKind kind, string expectedBytes)
         {
             Double value = kind switch
@@ -323,10 +323,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":-1}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":79228162514264337593543950335}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":-79228162514264337593543950335}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":79228162514264337593543950335}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":-79228162514264337593543950335}")]
         public void Roundtrip_Decimal(ValueKind kind, string expectedBytes)
         {
             Decimal value = kind switch
@@ -344,9 +344,9 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.MinInc, "{\"Value\":\"00000000-0000-0000-0000-000000000001\"}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":\"ffffffff-ffff-ffff-ffff-ffffffffffff\"}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":\"cb38a1ff-0470-4e06-9d88-3461eb5257eb\"}")]
+        [InlineData(ValueKind.MinInc, "{\"value\":\"00000000-0000-0000-0000-000000000001\"}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":\"ffffffff-ffff-ffff-ffff-ffffffffffff\"}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":\"cb38a1ff-0470-4e06-9d88-3461eb5257eb\"}")]
         public void Roundtrip_Guid(ValueKind kind, string expectedBytes)
         {
             Guid value = kind switch
@@ -362,8 +362,8 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.MinVal, "{\"Value\":\"\"}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":\"abcdef\"}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":\"\"}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":\"abcdef\"}")]
         public void Roundtrip_String(ValueKind kind, string expectedBytes)
         {
             string value = kind switch
@@ -378,8 +378,8 @@ namespace DTOMakerV10.Tests
         }
 
         [Theory]
-        [InlineData(ValueKind.MinVal, "{\"Value\":\"\"}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":\"YWJjZGVm\"}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":\"\"}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":\"YWJjZGVm\"}")]
         public void Roundtrip_Octets(ValueKind kind, string expectedBytes)
         {
             Octets value = kind switch
@@ -395,10 +395,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":{\"A\":1,\"B\":1}}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":{\"A\":-1,\"B\":-1}}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":{\"A\":32767,\"B\":32767}}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":{\"A\":-32768,\"B\":-32768}}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":{\"a\":1,\"b\":1}}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":{\"a\":-1,\"b\":-1}}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":{\"a\":32767,\"b\":32767}}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":{\"a\":-32768,\"b\":-32768}}")]
         public void Roundtrip_PairOfInt16(ValueKind kind, string expectedBytes)
         {
             PairOfInt16 value = kind switch
@@ -416,10 +416,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":{\"A\":1,\"B\":1}}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":{\"A\":-1,\"B\":-1}}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":{\"A\":2147483647,\"B\":2147483647}}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":{\"A\":-2147483648,\"B\":-2147483648}}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":{\"a\":1,\"b\":1}}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":{\"a\":-1,\"b\":-1}}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":{\"a\":2147483647,\"b\":2147483647}}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":{\"a\":-2147483648,\"b\":-2147483648}}")]
         public void Roundtrip_PairOfInt32(ValueKind kind, string expectedBytes)
         {
             PairOfInt32 value = kind switch
@@ -437,10 +437,10 @@ namespace DTOMakerV10.Tests
 
         [Theory]
         [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"Value\":{\"A\":1,\"B\":1}}")]
-        [InlineData(ValueKind.NegOne, "{\"Value\":{\"A\":-1,\"B\":-1}}")]
-        [InlineData(ValueKind.MaxVal, "{\"Value\":{\"A\":9223372036854775807,\"B\":9223372036854775807}}")]
-        [InlineData(ValueKind.MinVal, "{\"Value\":{\"A\":-9223372036854775808,\"B\":-9223372036854775808}}")]
+        [InlineData(ValueKind.PosOne, "{\"value\":{\"a\":1,\"b\":1}}")]
+        [InlineData(ValueKind.NegOne, "{\"value\":{\"a\":-1,\"b\":-1}}")]
+        [InlineData(ValueKind.MaxVal, "{\"value\":{\"a\":9223372036854775807,\"b\":9223372036854775807}}")]
+        [InlineData(ValueKind.MinVal, "{\"value\":{\"a\":-9223372036854775808,\"b\":-9223372036854775808}}")]
         public void Roundtrip_PairOfInt64(ValueKind kind, string expectedBytes)
         {
             PairOfInt64 value = kind switch
