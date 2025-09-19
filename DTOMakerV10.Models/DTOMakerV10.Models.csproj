@@ -10,19 +10,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.15.2" />
-		<PackageReference Include="DTOMaker.CSPoco" Version="0.71.4" />
-		<PackageReference Include="DTOMaker.JsonNewtonSoft" Version="0.71.5" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.Models" Version="0.71.8" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.71.4" />
-		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="0.71.4" />
-		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.0.23" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.0.25" />
+		<PackageReference Include="DTOMaker.CSPoco" Version="0.71.5" />
+		<PackageReference Include="DTOMaker.JsonNewtonSoft" Version="0.71.6" />
+		<PackageReference Include="DTOMaker.MemBlocks" Version="0.71.7" />
+		<PackageReference Include="DTOMaker.MessagePack" Version="0.71.7" />
+		<PackageReference Include="DTOMaker.Models" Version="0.71.9" />
+		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.71.7" />
+		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.71.7" />
+		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.71.5" />
+		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="0.71.6" />
+		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.0.26" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.71.7" />
+		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.71.7" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.0.26" />
 		<PackageReference Include="MessagePack" Version="2.5.198" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
