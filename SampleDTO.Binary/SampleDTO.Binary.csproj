@@ -9,9 +9,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.16.12" />
-		<PackageReference Include="DTOMaker.Models" Version="1.2.7-dev" />
-		<PackageReference Include="DTOMaker.Runtime" Version="1.2.7-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.2.7-dev" />
+		<PackageReference Include="DTOMaker.Models" Version="1.2.8-dev" />
+		<PackageReference Include="DTOMaker.Runtime" Version="1.2.8-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.2.8-dev" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="System.Text.Json" Version="10.0.1" />
 	</ItemGroup>
