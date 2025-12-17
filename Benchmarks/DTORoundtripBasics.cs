@@ -4,10 +4,8 @@ using BenchmarkDotNet.Order;
 using DataFac.Memory;
 using DataFac.Storage;
 using DTOMaker.Runtime;
-using DTOMaker.Runtime.MessagePack;
+using DTOMaker.Runtime.JsonSystemText;
 using MemoryPack;
-using MessagePack;
-using Newtonsoft.Json;
 using SampleDTO.Basic;
 using System;
 using System.Threading.Tasks;
@@ -27,24 +25,26 @@ namespace Benchmarks
             {
                 Field01 = this.Field01,
                 Field02LE = this.Field02LE,
-                Field02BE = this.Field02BE,
-                Field03 = this.Field03,
-                Field05_Length = this.Field05_Length,
-                Field05_Data = this.Field05_Data,
-                Field05 = this.Field05
+                Field03BE = this.Field03BE,
+                Field04 = this.Field04,
+                Field05 = this.Field05,
+                Field06 = this.Field06,
+                Field07 = this.Field07,
+                Field08 = this.Field08,
+                Field09 = this.Field09
             };
         }
 
         [MemoryPackInclude] public bool Field01 { get; set; }
         [MemoryPackInclude] public double Field02LE { get; set; }
-        [MemoryPackInclude] public double Field02BE { get; set; }
-        [MemoryPackInclude] public Guid Field03 { get; set; }
-        [MemoryPackIgnore] public short Field05_Length { get; set; }
-        [MemoryPackIgnore] public ReadOnlyMemory<byte> Field05_Data { get; set; }
+        [MemoryPackInclude] public double Field03BE { get; set; }
+        [MemoryPackInclude] public Guid Field04 { get; set; }
         [MemoryPackInclude] public string? Field05 { get; set; }
+        [MemoryPackInclude] public ReadOnlyMemory<byte> Field06 { get; set; }
         [MemoryPackInclude] public PairOfInt16 Field07 { get; set; }
         [MemoryPackInclude] public PairOfInt32 Field08 { get; set; }
         [MemoryPackInclude] public PairOfInt64 Field09 { get; set; }
+        [MemoryPackIgnore] Octets? IMyDTO.Field06 { get => Octets.UnsafeWrap(this.Field06); set => this.Field06 = (value is null) ? default : value.AsMemory(); }
     }
 
     [SimpleJob(RuntimeMoniker.Net90)]
@@ -73,9 +73,9 @@ namespace Benchmarks
             "0123456789abcdef" +
             "0123456789abcdef";
 
-        private SampleDTO.Basic.MessagePack.MyDTO MakeMyDTO_MessagePack(ValueKind id)
+        private SampleDTO.Basic.JsonSystemText.MyDTO MakeMyDTO_JsonSystemText(ValueKind id)
         {
-            var dto = new SampleDTO.Basic.MessagePack.MyDTO();
+            var dto = new SampleDTO.Basic.JsonSystemText.MyDTO();
             switch (Kind)
             {
                 case ValueKind.Bool:
@@ -85,45 +85,7 @@ namespace Benchmarks
                     dto.Field02LE = Double.MaxValue;
                     break;
                 case ValueKind.Guid:
-                    dto.Field03 = guidValue;
-                    break;
-                case ValueKind.PairOfInt16:
-                    dto.Field07 = pairOfInt16Value;
-                    break;
-                case ValueKind.PairOfInt32:
-                    dto.Field08 = pairOfInt32Value;
-                    break;
-                case ValueKind.PairOfInt64:
-                    dto.Field09 = pairOfInt64Value;
-                    break;
-                case ValueKind.StringNull:
-                    dto.Field05 = null;
-                    break;
-                case ValueKind.StringZero:
-                    dto.Field05 = string.Empty;
-                    break;
-                case ValueKind.StringFull:
-                    dto.Field05 = StringWith128Chars;
-                    break;
-                default:
-                    break;
-            }
-            return dto;
-        }
-
-        private SampleDTO.Basic.JsonNewtonSoft.MyDTO MakeMyDTO_JsonNewtonSoft(ValueKind id)
-        {
-            var dto = new SampleDTO.Basic.JsonNewtonSoft.MyDTO();
-            switch (Kind)
-            {
-                case ValueKind.Bool:
-                    dto.Field01 = true;
-                    break;
-                case ValueKind.DoubleLE:
-                    dto.Field02LE = Double.MaxValue;
-                    break;
-                case ValueKind.Guid:
-                    dto.Field03 = guidValue;
+                    dto.Field04 = guidValue;
                     break;
                 case ValueKind.PairOfInt16:
                     dto.Field07 = pairOfInt16Value;
@@ -161,45 +123,7 @@ namespace Benchmarks
                     dto.Field02LE = Double.MaxValue;
                     break;
                 case ValueKind.Guid:
-                    dto.Field03 = guidValue;
-                    break;
-                case ValueKind.PairOfInt16:
-                    dto.Field07 = pairOfInt16Value;
-                    break;
-                case ValueKind.PairOfInt32:
-                    dto.Field08 = pairOfInt32Value;
-                    break;
-                case ValueKind.PairOfInt64:
-                    dto.Field09 = pairOfInt64Value;
-                    break;
-                case ValueKind.StringNull:
-                    dto.Field05 = null;
-                    break;
-                case ValueKind.StringZero:
-                    dto.Field05 = string.Empty;
-                    break;
-                case ValueKind.StringFull:
-                    dto.Field05 = StringWith128Chars;
-                    break;
-                default:
-                    break;
-            }
-            return dto;
-        }
-
-        private SampleDTO.Basic.MemBlocks.MyDTO MakeMyDTO_MemBlocks(ValueKind id)
-        {
-            var dto = new SampleDTO.Basic.MemBlocks.MyDTO();
-            switch (Kind)
-            {
-                case ValueKind.Bool:
-                    dto.Field01 = true;
-                    break;
-                case ValueKind.DoubleLE:
-                    dto.Field02LE = Double.MaxValue;
-                    break;
-                case ValueKind.Guid:
-                    dto.Field03 = guidValue;
+                    dto.Field04 = guidValue;
                     break;
                 case ValueKind.PairOfInt16:
                     dto.Field07 = pairOfInt16Value;
@@ -226,35 +150,6 @@ namespace Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public int Roundtrip_MessagePack()
-        {
-            var dto = MakeMyDTO_MessagePack(Kind);
-            dto.Freeze();
-            var buffer = dto.SerializeToMessagePack<SampleDTO.Basic.MessagePack.MyDTO>();
-            var copy = buffer.DeserializeFromMessagePack<SampleDTO.Basic.MessagePack.MyDTO>();
-            copy.Freeze();
-            return buffer.Length;
-        }
-
-        private static readonly JsonSerializerSettings jsonNSSettings = new JsonSerializerSettings()
-        {
-            //Formatting = Formatting.Indented,
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            TypeNameHandling = TypeNameHandling.Auto,
-        };
-
-        [Benchmark]
-        public int Roundtrip_JsonNewtonSoft()
-        {
-            var dto = MakeMyDTO_JsonNewtonSoft(Kind);
-            dto.Freeze();
-            string buffer = JsonConvert.SerializeObject(dto, jsonNSSettings);
-            SampleDTO.Basic.JsonNewtonSoft.MyDTO? recdMsg = JsonConvert.DeserializeObject<SampleDTO.Basic.JsonNewtonSoft.MyDTO>(buffer, jsonNSSettings);
-            recdMsg!.Freeze();
-            return buffer.Length;
-        }
-
-        [Benchmark]
         public int Roundtrip_MemoryPack()
         {
             var dto = MakeMyDTO_MemoryPack(Kind);
@@ -266,14 +161,14 @@ namespace Benchmarks
         }
 
         [Benchmark]
-        public async ValueTask<long> Roundtrip_MemBlocks()
+        public int Roundtrip_JsonSystemText()
         {
-            var dto = MakeMyDTO_MemBlocks(Kind);
-            await dto.Pack(DataStore);
-            var buffers = dto.GetBuffers();
-            var copy = SampleDTO.Basic.MemBlocks.MyDTO.CreateFrom(buffers);
-            return buffers.Length;
+            var dto = MakeMyDTO_JsonSystemText(Kind);
+            dto.Freeze();
+            string buffer = dto.SerializeToJson();
+            var recdMsg = buffer.DeserializeFromJson<SampleDTO.Basic.JsonSystemText.MyDTO>();
+            recdMsg!.Freeze();
+            return buffer.Length;
         }
-
     }
 }

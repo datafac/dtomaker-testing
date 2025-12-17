@@ -1,4 +1,4 @@
-﻿namespace SampleDTO.Strings.JsonNewtonSoft
+﻿namespace SampleDTO.Strings.JsonSystemText
 {
     public partial class StringsDTO
     {

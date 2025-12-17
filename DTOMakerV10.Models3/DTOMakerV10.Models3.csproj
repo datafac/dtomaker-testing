@@ -10,23 +10,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.16.12" />
-		<PackageReference Include="DTOMaker.CSPoco" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.JsonNewtonSoft" Version="0.71.7" />
-		<PackageReference Include="DTOMaker.MemBlocks" Version="0.71.8" />
-		<PackageReference Include="DTOMaker.MessagePack" Version="0.71.8" />
-		<PackageReference Include="DTOMaker.Models" Version="0.72.6" />
-		<PackageReference Include="DTOMaker.Models.MemBlocks" Version="0.71.8" />
-		<PackageReference Include="DTOMaker.Models.MessagePack" Version="0.71.8" />
-		<PackageReference Include="DTOMaker.Runtime.CSPoco" Version="0.71.6" />
-		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="0.71.7" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="0.71.8" />
-		<PackageReference Include="DTOMaker.Runtime.MessagePack" Version="0.71.8" />
-		<PackageReference Include="MessagePack" Version="2.5.198" />
+		<PackageReference Include="DTOMaker.Models" Version="1.2.7-dev" />
+		<PackageReference Include="DTOMaker.Runtime" Version="1.2.7-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.2.7-dev" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="System.Text.Json" Version="10.0.1" />
 	</ItemGroup>
 
 </Project>

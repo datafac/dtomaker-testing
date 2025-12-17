@@ -1,5 +1,0 @@
-﻿{
-  "$type": "DTOMakerV10.Models2.JsonNewtonSoft.Rectangle, DTOMakerV10.Models2",
-  "Length": 3.0,
-  "Height": 2.0
-}

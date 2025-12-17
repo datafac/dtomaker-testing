@@ -1,7 +1,6 @@
 ﻿using System;
 using DataFac.Memory;
 using DTOMaker.Models;
-using DTOMaker.Models.MemBlocks;
 using DTOMaker.Runtime;
 
 namespace DTOMakerV10.Models

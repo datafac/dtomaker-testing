@@ -1,10 +1,12 @@
 using DataFac.Memory;
 using DTOMaker.Runtime;
 using DTOMaker.Runtime.JsonSystemText;
+using DTOMakerV10.Models;
 using Shouldly;
 using System;
 using System.Text;
-using System.Text.Json;
+using System.Threading.Tasks;
+using VerifyXunit;
 using Xunit;
 
 namespace DTOMakerV10.Tests
@@ -39,424 +41,205 @@ namespace DTOMakerV10.Tests
             recdMsg.GetHashCode().ShouldBe(sendMsg.GetHashCode());
         }
 
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":true}")]
-        public void Roundtrip_Boolean(ValueKind kind, string expectedBytes)
+        private string Roundtrip3<TValue, TMsg>(TValue value, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
+            where TMsg : class, IEntityBase, IEquatable<TMsg>, new()
         {
-            Boolean value = kind switch
-            {
-                ValueKind.DefVal => false,
-                ValueKind.PosOne => true,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
+            var sendMsg = new TMsg();
+            setValueFunc(sendMsg, value);
+            sendMsg.Freeze();
 
-            Roundtrip2<Boolean, Models.JsonSystemText.Data_Boolean>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
+            // act
+            string buffer = sendMsg.SerializeToJson<TMsg>();
+            TMsg? recdMsg = buffer.DeserializeFromJson<TMsg>();
+            recdMsg.ShouldNotBeNull();
+            recdMsg.Freeze();
+
+            // assert
+            // - value
+            TValue copyValue = getValueFunc(recdMsg);
+            copyValue.ShouldBe(value);
+
+            // - equality
+            recdMsg.ShouldNotBeNull();
+            recdMsg.Equals(sendMsg).ShouldBeTrue();
+            recdMsg.ShouldBe(sendMsg);
+            recdMsg.GetHashCode().ShouldBe(sendMsg.GetHashCode());
+
+            // return buffer for verification
+            return buffer;
         }
 
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":127}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-128}")]
-        public void Roundtrip_SByte(ValueKind kind, string expectedBytes)
-        {
-            SByte value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.NegOne => -1,
-                ValueKind.MaxVal => SByte.MaxValue,
-                ValueKind.MinVal => SByte.MinValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
+        private string Roundtrip_Boolean_Value(Boolean value) => Roundtrip3<Boolean, Models.JsonSystemText.Data_Boolean>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Boolean_False() => await Verifier.Verify(Roundtrip_Boolean_Value(false));
+        [Fact] public async Task Roundtrip_Boolean_True() => await Verifier.Verify(Roundtrip_Boolean_Value(true));
 
-            Roundtrip2<SByte, Models.JsonSystemText.Data_SByte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
+        private string Roundtrip_SByte_Value(SByte value) => Roundtrip3<SByte, Models.JsonSystemText.Data_SByte>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_SByte_DefVal() => await Verifier.Verify(Roundtrip_SByte_Value(0));
+        [Fact] public async Task Roundtrip_SByte_PosOne() => await Verifier.Verify(Roundtrip_SByte_Value(1));
+        [Fact] public async Task Roundtrip_SByte_NegOne() => await Verifier.Verify(Roundtrip_SByte_Value(-1));
+        [Fact] public async Task Roundtrip_SByte_MaxVal() => await Verifier.Verify(Roundtrip_SByte_Value(SByte.MaxValue));
+        [Fact] public async Task Roundtrip_SByte_MinVal() => await Verifier.Verify(Roundtrip_SByte_Value(SByte.MinValue));
 
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":255}")]
-        public void Roundtrip_Byte(ValueKind kind, string expectedBytes)
-        {
-            Byte value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.MaxVal => Byte.MaxValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
+        private string Roundtrip_Int16_Value(Int16 value) => Roundtrip3<Int16, Models.JsonSystemText.Data_Int16>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Int16_DefVal() => await Verifier.Verify(Roundtrip_Int16_Value(0));
+        [Fact] public async Task Roundtrip_Int16_PosOne() => await Verifier.Verify(Roundtrip_Int16_Value(1));
+        [Fact] public async Task Roundtrip_Int16_NegOne() => await Verifier.Verify(Roundtrip_Int16_Value(-1));
+        [Fact] public async Task Roundtrip_Int16_MaxVal() => await Verifier.Verify(Roundtrip_Int16_Value(Int16.MaxValue));
+        [Fact] public async Task Roundtrip_Int16_MinVal() => await Verifier.Verify(Roundtrip_Int16_Value(Int16.MinValue));
 
-            Roundtrip2<Byte, Models.JsonSystemText.Data_Byte>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
+        private string Roundtrip_Int32_Value(Int32 value) => Roundtrip3<Int32, Models.JsonSystemText.Data_Int32>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Int32_DefVal() => await Verifier.Verify(Roundtrip_Int32_Value(0));
+        [Fact] public async Task Roundtrip_Int32_PosOne() => await Verifier.Verify(Roundtrip_Int32_Value(1));
+        [Fact] public async Task Roundtrip_Int32_NegOne() => await Verifier.Verify(Roundtrip_Int32_Value(-1));
+        [Fact] public async Task Roundtrip_Int32_MaxVal() => await Verifier.Verify(Roundtrip_Int32_Value(Int32.MaxValue));
+        [Fact] public async Task Roundtrip_Int32_MinVal() => await Verifier.Verify(Roundtrip_Int32_Value(Int32.MinValue));
 
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":32767}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-32768}")]
-        public void Roundtrip_Int16(ValueKind kind, string expectedBytes)
-        {
-            Int16 value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.NegOne => -1,
-                ValueKind.MaxVal => Int16.MaxValue,
-                ValueKind.MinVal => Int16.MinValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Int16, Models.JsonSystemText.Data_Int16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":65535}")]
-        public void Roundtrip_UInt16(ValueKind kind, string expectedBytes)
-        {
-            UInt16 value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.MaxVal => UInt16.MaxValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<UInt16, Models.JsonSystemText.Data_UInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":2147483647}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-2147483648}")]
-        public void Roundtrip_Int32(ValueKind kind, string expectedBytes)
-        {
-            Int32 value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.NegOne => -1,
-                ValueKind.MaxVal => Int32.MaxValue,
-                ValueKind.MinVal => Int32.MinValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Int32, Models.JsonSystemText.Data_Int32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":4294967295}")]
-        public void Roundtrip_UInt32(ValueKind kind, string expectedBytes)
-        {
-            UInt32 value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.MaxVal => UInt32.MaxValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<UInt32, Models.JsonSystemText.Data_UInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":9223372036854775807}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-9223372036854775808}")]
-        public void Roundtrip_Int64(ValueKind kind, string expectedBytes)
-        {
-            Int64 value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.NegOne => -1,
-                ValueKind.MaxVal => Int64.MaxValue,
-                ValueKind.MinVal => Int64.MinValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Int64, Models.JsonSystemText.Data_Int64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":18446744073709551615}")]
-        public void Roundtrip_UInt64(ValueKind kind, string expectedBytes)
-        {
-            UInt64 value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.MaxVal => UInt64.MaxValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<UInt64, Models.JsonSystemText.Data_UInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":\" \"}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":\"\\uFFFF\"}")]
-        public void Roundtrip_Char(ValueKind kind, string expectedBytes)
-        {
-            Char value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => ' ',
-                ValueKind.MaxVal => Char.MaxValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Char, Models.JsonSystemText.Data_Char>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
+        private string Roundtrip_Int64_Value(Int64 value) => Roundtrip3<Int64, Models.JsonSystemText.Data_Int64>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Int64_DefVal() => await Verifier.Verify(Roundtrip_Int64_Value(0));
+        [Fact] public async Task Roundtrip_Int64_PosOne() => await Verifier.Verify(Roundtrip_Int64_Value(1));
+        [Fact] public async Task Roundtrip_Int64_NegOne() => await Verifier.Verify(Roundtrip_Int64_Value(-1));
+        [Fact] public async Task Roundtrip_Int64_MaxVal() => await Verifier.Verify(Roundtrip_Int64_Value(Int64.MaxValue));
+        [Fact] public async Task Roundtrip_Int64_MinVal() => await Verifier.Verify(Roundtrip_Int64_Value(Int64.MinValue));
 
 #if NET8_0_OR_GREATER
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":65500}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-65500}")]
-        [InlineData(ValueKind.MinInc, "{\"value\":6E-08}")]
-        [InlineData(ValueKind.NegInf, "{\"value\":\"-Infinity\"}")]
-        [InlineData(ValueKind.PosInf, "{\"value\":\"Infinity\"}")]
-        //[InlineData(ValueKind.NotNum, "{\"value\":\"NaN\"}")] // todo NaN equality check fails
-        public void Roundtrip_Half(ValueKind kind, string expectedBytes)
-        {
-            Half value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => Half.One,
-                ValueKind.NegOne => Half.NegativeOne,
-                ValueKind.MaxVal => Half.MaxValue,
-                ValueKind.MinVal => Half.MinValue,
-                ValueKind.MinInc => Half.Epsilon,
-                ValueKind.NegInf => Half.NegativeInfinity,
-                ValueKind.PosInf => Half.PositiveInfinity,
-                ValueKind.NotNum => Half.NaN,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Half, Models.JsonSystemText.Data_Half>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
+        private string Roundtrip_Int128_Value(Int128 value) => Roundtrip3<Int128, Models.JsonSystemText.Data_Int128>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Int128_DefVal() => await Verifier.Verify(Roundtrip_Int128_Value(0));
+        [Fact] public async Task Roundtrip_Int128_PosOne() => await Verifier.Verify(Roundtrip_Int128_Value(1));
+        [Fact] public async Task Roundtrip_Int128_NegOne() => await Verifier.Verify(Roundtrip_Int128_Value(-1));
+        [Fact] public async Task Roundtrip_Int128_MaxVal() => await Verifier.Verify(Roundtrip_Int128_Value(Int128.MaxValue));
+        [Fact] public async Task Roundtrip_Int128_MinVal() => await Verifier.Verify(Roundtrip_Int128_Value(Int128.MinValue));
 #endif
 
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
+        private string Roundtrip_Byte_Value(Byte value) => Roundtrip3<Byte, Models.JsonSystemText.Data_Byte>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Byte_DefVal() => await Verifier.Verify(Roundtrip_Byte_Value(0));
+        [Fact] public async Task Roundtrip_Byte_PosOne() => await Verifier.Verify(Roundtrip_Byte_Value(1));
+        [Fact] public async Task Roundtrip_Byte_MaxVal() => await Verifier.Verify(Roundtrip_Byte_Value(Byte.MaxValue));
+
+        private string Roundtrip_UInt16_Value(UInt16 value) => Roundtrip3<UInt16, Models.JsonSystemText.Data_UInt16>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_UInt16_DefVal() => await Verifier.Verify(Roundtrip_UInt16_Value(0));
+        [Fact] public async Task Roundtrip_UInt16_PosOne() => await Verifier.Verify(Roundtrip_UInt16_Value(1));
+        [Fact] public async Task Roundtrip_UInt16_MaxVal() => await Verifier.Verify(Roundtrip_UInt16_Value(UInt16.MaxValue));
+
+        private string Roundtrip_UInt32_Value(UInt32 value) => Roundtrip3<UInt32, Models.JsonSystemText.Data_UInt32>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_UInt32_DefVal() => await Verifier.Verify(Roundtrip_UInt32_Value(0));
+        [Fact] public async Task Roundtrip_UInt32_PosOne() => await Verifier.Verify(Roundtrip_UInt32_Value(1));
+        [Fact] public async Task Roundtrip_UInt32_MaxVal() => await Verifier.Verify(Roundtrip_UInt32_Value(UInt32.MaxValue));
+
+        private string Roundtrip_UInt64_Value(UInt64 value) => Roundtrip3<UInt64, Models.JsonSystemText.Data_UInt64>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_UInt64_DefVal() => await Verifier.Verify(Roundtrip_UInt64_Value(0));
+        [Fact] public async Task Roundtrip_UInt64_PosOne() => await Verifier.Verify(Roundtrip_UInt64_Value(1));
+        [Fact] public async Task Roundtrip_UInt64_MaxVal() => await Verifier.Verify(Roundtrip_UInt64_Value(UInt64.MaxValue));
+
 #if NET8_0_OR_GREATER
-        [InlineData(ValueKind.MaxVal, "{\"value\":3.4028235E+38}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-3.4028235E+38}")]
+        private string Roundtrip_UInt128_Value(UInt128 value) => Roundtrip3<UInt128, Models.JsonSystemText.Data_UInt128>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_UInt128_DefVal() => await Verifier.Verify(Roundtrip_UInt128_Value(0));
+        [Fact] public async Task Roundtrip_UInt128_PosOne() => await Verifier.Verify(Roundtrip_UInt128_Value(1));
+        [Fact] public async Task Roundtrip_UInt128_MaxVal() => await Verifier.Verify(Roundtrip_UInt128_Value(UInt128.MaxValue));
+#endif
+
+        private static readonly Guid AnyRndGuid = Guid.Parse("1f4a6e09-8bce-4f76-9bc9-6b9c7f06c7ca");
+        private string Roundtrip_Guid_Value(Guid value) => Roundtrip3<Guid, Models.JsonSystemText.Data_Guid>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Guid_DefVal() => await Verifier.Verify(Roundtrip_Guid_Value(Guid.Empty));
+        [Fact] public async Task Roundtrip_Guid_RndVal() => await Verifier.Verify(Roundtrip_Guid_Value(AnyRndGuid));
+
+        private string Roundtrip_Char_Value(Char value) => Roundtrip3<Char, Models.JsonSystemText.Data_Char>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Char_DefVal() => await Verifier.Verify(Roundtrip_Char_Value(default));
+        [Fact] public async Task Roundtrip_Char_PosOne() => await Verifier.Verify(Roundtrip_Char_Value(' '));
+        [Fact] public async Task Roundtrip_Char_MaxVal() => await Verifier.Verify(Roundtrip_Char_Value(Char.MaxValue));
+
+        private string Roundtrip_Decimal_Value(Decimal value) => Roundtrip3<Decimal, Models.JsonSystemText.Data_Decimal>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Decimal_DefVal() => await Verifier.Verify(Roundtrip_Decimal_Value(Decimal.Zero));
+        [Fact] public async Task Roundtrip_Decimal_PosOne() => await Verifier.Verify(Roundtrip_Decimal_Value(Decimal.One));
+        [Fact] public async Task Roundtrip_Decimal_NegOne() => await Verifier.Verify(Roundtrip_Decimal_Value(Decimal.MinusOne));
+        [Fact] public async Task Roundtrip_Decimal_MaxVal() => await Verifier.Verify(Roundtrip_Decimal_Value(Decimal.MaxValue));
+        [Fact] public async Task Roundtrip_Decimal_MinVal() => await Verifier.Verify(Roundtrip_Decimal_Value(Decimal.MinValue));
+
+        private string Roundtrip_PairOfInt16_Value(PairOfInt16 value) => Roundtrip3<PairOfInt16, Models.JsonSystemText.Data_PairOfInt16>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_PairOfInt16_DefVal() => await Verifier.Verify(Roundtrip_PairOfInt16_Value(default));
+        [Fact] public async Task Roundtrip_PairOfInt16_PosNeg() => await Verifier.Verify(Roundtrip_PairOfInt16_Value(new PairOfInt16(1, -1)));
+        [Fact] public async Task Roundtrip_PairOfInt16_MaxMin() => await Verifier.Verify(Roundtrip_PairOfInt16_Value(new PairOfInt16(Int16.MaxValue, Int16.MinValue)));
+
+        private string Roundtrip_PairOfInt32_Value(PairOfInt32 value) => Roundtrip3<PairOfInt32, Models.JsonSystemText.Data_PairOfInt32>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_PairOfInt32_DefVal() => await Verifier.Verify(Roundtrip_PairOfInt32_Value(default));
+        [Fact] public async Task Roundtrip_PairOfInt32_PosNeg() => await Verifier.Verify(Roundtrip_PairOfInt32_Value(new PairOfInt32(1, -1)));
+        [Fact] public async Task Roundtrip_PairOfInt32_MaxMin() => await Verifier.Verify(Roundtrip_PairOfInt32_Value(new PairOfInt32(Int32.MaxValue, Int32.MinValue)));
+
+        private string Roundtrip_PairOfInt64_Value(PairOfInt64 value) => Roundtrip3<PairOfInt64, Models.JsonSystemText.Data_PairOfInt64>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_PairOfInt64_DefVal() => await Verifier.Verify(Roundtrip_PairOfInt64_Value(default));
+        [Fact] public async Task Roundtrip_PairOfInt64_PosNeg() => await Verifier.Verify(Roundtrip_PairOfInt64_Value(new PairOfInt64(1, -1)));
+        [Fact] public async Task Roundtrip_PairOfInt64_MaxMin() => await Verifier.Verify(Roundtrip_PairOfInt64_Value(new PairOfInt64(Int64.MaxValue, Int64.MinValue)));
+
+        private string Roundtrip_String_Value(String value) => Roundtrip3<String, Models.JsonSystemText.Data_String>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_String_Empty() => await Verifier.Verify(Roundtrip_String_Value(string.Empty));
+        [Fact] public async Task Roundtrip_String_RndVal() => await Verifier.Verify(Roundtrip_String_Value("abcdef"));
+
+        private static readonly Octets AnyRndOctets = new Octets(Encoding.UTF8.GetBytes("abcdef"));
+        private string Roundtrip_Octets_Value(Octets value) => Roundtrip3<Octets, Models.JsonSystemText.Data_Octets>(value, (m, v) => { ((IData_Octets)m).Value = v; }, (m) => ((IData_Octets)m).Value);
+        [Fact] public async Task Roundtrip_Octets_Empty() => await Verifier.Verify(Roundtrip_Octets_Value(Octets.Empty));
+        [Fact] public async Task Roundtrip_Octets_RndVal() => await Verifier.Verify(Roundtrip_Octets_Value(AnyRndOctets));
+
+#if NET8_0_OR_GREATER
+        private string Roundtrip_Half_Value(Half value) => Roundtrip3<Half, Models.JsonSystemText.Data_Half>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Half_DefVal() => await Verifier.Verify(Roundtrip_Half_Value(Half.Zero));
+        [Fact] public async Task Roundtrip_Half_PosOne() => await Verifier.Verify(Roundtrip_Half_Value(Half.One));
+        [Fact] public async Task Roundtrip_Half_NegOne() => await Verifier.Verify(Roundtrip_Half_Value(Half.NegativeOne));
+        [Fact] public async Task Roundtrip_Half_MinInc() => await Verifier.Verify(Roundtrip_Half_Value(Half.Epsilon));
+        [Fact] public async Task Roundtrip_Half_MaxVal() => await Verifier.Verify(Roundtrip_Half_Value(Half.MaxValue));
+        [Fact] public async Task Roundtrip_Half_MinVal() => await Verifier.Verify(Roundtrip_Half_Value(Half.MinValue));
+        [Fact] public async Task Roundtrip_Half_PosInf() => await Verifier.Verify(Roundtrip_Half_Value(Half.PositiveInfinity));
+        [Fact] public async Task Roundtrip_Half_NegInf() => await Verifier.Verify(Roundtrip_Half_Value(Half.NegativeInfinity));
+        //[Fact] public async Task Roundtrip_Half_NotNum() => await Verifier.Verify(Roundtrip_Half_Value(Half.NaN)); todo NaN equality check fails
+        [Fact] public async Task Roundtrip_Half_ValE() => await Verifier.Verify(Roundtrip_Half_Value(Half.E));
+        [Fact] public async Task Roundtrip_Half_ValPi() => await Verifier.Verify(Roundtrip_Half_Value(Half.Pi));
+        [Fact] public async Task Roundtrip_Half_ValTau() => await Verifier.Verify(Roundtrip_Half_Value(Half.Tau));
+#endif
+
+        private string Roundtrip_Double_Value(Double value) => Roundtrip3<Double, Models.JsonSystemText.Data_Double>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Double_DefVal() => await Verifier.Verify(Roundtrip_Double_Value(default));
+        [Fact] public async Task Roundtrip_Double_PosOne() => await Verifier.Verify(Roundtrip_Double_Value(1D));
+        [Fact] public async Task Roundtrip_Double_NegOne() => await Verifier.Verify(Roundtrip_Double_Value(-1D));
+#if NET8_0_OR_GREATER
+        [Fact] public async Task Roundtrip_Double_MinInc_Net80() => await Verifier.Verify(Roundtrip_Double_Value(Double.Epsilon));
 #else
-        [InlineData(ValueKind.MaxVal, "{\"value\":3.40282347E+38}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-3.40282347E+38}")]
+        [Fact] public async Task Roundtrip_Double_MinInc_Net48() => await Verifier.Verify(Roundtrip_Double_Value(Double.Epsilon));
 #endif
-        //[InlineData(ValueKind.MinInc, "{\"value\":1E-45}")] // todo deserialize fails
-        [InlineData(ValueKind.NegInf, "{\"value\":\"-Infinity\"}")]
-        [InlineData(ValueKind.PosInf, "{\"value\":\"Infinity\"}")]
-        //[InlineData(ValueKind.NotNum, "{\"value\":\"NaN\"}")] // todo NaN equality check fails
-        public void Roundtrip_Single(ValueKind kind, string expectedBytes)
-        {
-            Single value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.NegOne => -1,
-                ValueKind.MaxVal => Single.MaxValue,
-                ValueKind.MinVal => Single.MinValue,
-                ValueKind.MinInc => Single.Epsilon,
-                ValueKind.NegInf => Single.NegativeInfinity,
-                ValueKind.PosInf => Single.PositiveInfinity,
-                ValueKind.NotNum => Single.NaN,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Single, Models.JsonSystemText.Data_Single>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":1.7976931348623157E+308}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-1.7976931348623157E+308}")]
+        [Fact] public async Task Roundtrip_Double_MaxVal() => await Verifier.Verify(Roundtrip_Double_Value(Double.MaxValue));
+        [Fact] public async Task Roundtrip_Double_MinVal() => await Verifier.Verify(Roundtrip_Double_Value(Double.MinValue));
+        [Fact] public async Task Roundtrip_Double_PosInf() => await Verifier.Verify(Roundtrip_Double_Value(Double.PositiveInfinity));
+        [Fact] public async Task Roundtrip_Double_NegInf() => await Verifier.Verify(Roundtrip_Double_Value(Double.NegativeInfinity));
+        //[Fact] public async Task Roundtrip_Double_NotNum() => await Verifier.Verify(Roundtrip_Double_Value(Double.NaN)); // todo NaN equality check fails
 #if NET8_0_OR_GREATER
-        [InlineData(ValueKind.MinInc, "{\"value\":5E-324}")]
-#else
-        [InlineData(ValueKind.MinInc, "{\"value\":4.9406564584124654E-324}")]
+        [Fact] public async Task Roundtrip_Double_ValE() => await Verifier.Verify(Roundtrip_Double_Value(Double.E));
+        [Fact] public async Task Roundtrip_Double_ValPi() => await Verifier.Verify(Roundtrip_Double_Value(Double.Pi));
+        [Fact] public async Task Roundtrip_Double_ValTau() => await Verifier.Verify(Roundtrip_Double_Value(Double.Tau));
 #endif
-        [InlineData(ValueKind.NegInf, "{\"value\":\"-Infinity\"}")]
-        [InlineData(ValueKind.PosInf, "{\"value\":\"Infinity\"}")]
-        //[InlineData(ValueKind.NotNum, "{\"value\":\"NaN\"}")] // todo NaN equality check fails
-        public void Roundtrip_Double(ValueKind kind, string expectedBytes)
-        {
-            Double value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => 1,
-                ValueKind.NegOne => -1,
-                ValueKind.MaxVal => Double.MaxValue,
-                ValueKind.MinVal => Double.MinValue,
-                ValueKind.MinInc => Double.Epsilon,
-                ValueKind.NegInf => Double.NegativeInfinity,
-                ValueKind.PosInf => Double.PositiveInfinity,
-                ValueKind.NotNum => Double.NaN,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
 
-            Roundtrip2<Double, Models.JsonSystemText.Data_Double>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":1}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":-1}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":79228162514264337593543950335}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":-79228162514264337593543950335}")]
-        public void Roundtrip_Decimal(ValueKind kind, string expectedBytes)
-        {
-            Decimal value = kind switch
-            {
-                ValueKind.DefVal => default,
-                ValueKind.PosOne => Decimal.One,
-                ValueKind.NegOne => Decimal.MinusOne,
-                ValueKind.MaxVal => Decimal.MaxValue,
-                ValueKind.MinVal => Decimal.MinValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Decimal, Models.JsonSystemText.Data_Decimal>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.MinInc, "{\"value\":\"00000000-0000-0000-0000-000000000001\"}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":\"ffffffff-ffff-ffff-ffff-ffffffffffff\"}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":\"cb38a1ff-0470-4e06-9d88-3461eb5257eb\"}")]
-        public void Roundtrip_Guid(ValueKind kind, string expectedBytes)
-        {
-            Guid value = kind switch
-            {
-                ValueKind.DefVal => Guid.Empty,
-                ValueKind.MinInc => new Guid("00000000-0000-0000-0000-000000000001"),
-                ValueKind.MaxVal => new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                ValueKind.PosOne => new Guid("cb38a1ff-0470-4e06-9d88-3461eb5257eb"),
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Guid, Models.JsonSystemText.Data_Guid>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.MinVal, "{\"value\":\"\"}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":\"abcdef\"}")]
-        public void Roundtrip_String(ValueKind kind, string expectedBytes)
-        {
-            string value = kind switch
-            {
-                //ValueKind.DefVal => null,
-                ValueKind.MinVal => string.Empty,
-                ValueKind.PosOne => "abcdef",
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<string, Models.JsonSystemText.Data_String>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.MinVal, "{\"value\":\"\"}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":\"YWJjZGVm\"}")]
-        public void Roundtrip_Octets(ValueKind kind, string expectedBytes)
-        {
-            Octets value = kind switch
-            {
-                //ValueKind.DefVal => null,
-                ValueKind.MinVal => Octets.Empty,
-                ValueKind.PosOne => new Octets(Encoding.UTF8.GetBytes("abcdef")),
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<Octets, Models.JsonSystemText.Data_Octets>(value, expectedBytes, (m, v) => { m.Value = v.ToByteArray(); }, (m) => new Octets(m.Value));
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":{\"a\":1,\"b\":1}}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":{\"a\":-1,\"b\":-1}}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":{\"a\":32767,\"b\":32767}}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":{\"a\":-32768,\"b\":-32768}}")]
-        public void Roundtrip_PairOfInt16(ValueKind kind, string expectedBytes)
-        {
-            PairOfInt16 value = kind switch
-            {
-                ValueKind.DefVal => new PairOfInt16(default, default),
-                ValueKind.PosOne => new PairOfInt16(1, 1),
-                ValueKind.NegOne => new PairOfInt16(-1, -1),
-                ValueKind.MaxVal => new PairOfInt16(Int16.MaxValue, Int16.MaxValue),
-                ValueKind.MinVal => new PairOfInt16(Int16.MinValue, Int16.MinValue),
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<PairOfInt16, Models.JsonSystemText.Data_PairOfInt16>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":{\"a\":1,\"b\":1}}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":{\"a\":-1,\"b\":-1}}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":{\"a\":2147483647,\"b\":2147483647}}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":{\"a\":-2147483648,\"b\":-2147483648}}")]
-        public void Roundtrip_PairOfInt32(ValueKind kind, string expectedBytes)
-        {
-            PairOfInt32 value = kind switch
-            {
-                ValueKind.DefVal => new PairOfInt32(default, default),
-                ValueKind.PosOne => new PairOfInt32(1, 1),
-                ValueKind.NegOne => new PairOfInt32(-1, -1),
-                ValueKind.MaxVal => new PairOfInt32(Int32.MaxValue, Int32.MaxValue),
-                ValueKind.MinVal => new PairOfInt32(Int32.MinValue, Int32.MinValue),
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<PairOfInt32, Models.JsonSystemText.Data_PairOfInt32>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        [Theory]
-        [InlineData(ValueKind.DefVal, "{}")]
-        [InlineData(ValueKind.PosOne, "{\"value\":{\"a\":1,\"b\":1}}")]
-        [InlineData(ValueKind.NegOne, "{\"value\":{\"a\":-1,\"b\":-1}}")]
-        [InlineData(ValueKind.MaxVal, "{\"value\":{\"a\":9223372036854775807,\"b\":9223372036854775807}}")]
-        [InlineData(ValueKind.MinVal, "{\"value\":{\"a\":-9223372036854775808,\"b\":-9223372036854775808}}")]
-        public void Roundtrip_PairOfInt64(ValueKind kind, string expectedBytes)
-        {
-            PairOfInt64 value = kind switch
-            {
-                ValueKind.DefVal => new PairOfInt64(default, default),
-                ValueKind.PosOne => new PairOfInt64(1, 1),
-                ValueKind.NegOne => new PairOfInt64(-1, -1),
-                ValueKind.MaxVal => new PairOfInt64(Int64.MaxValue, Int64.MaxValue),
-                ValueKind.MinVal => new PairOfInt64(Int64.MinValue, Int64.MinValue),
-                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
-            };
-
-            Roundtrip2<PairOfInt64, Models.JsonSystemText.Data_PairOfInt64>(value, expectedBytes, (m, v) => { m.Value = v; }, (m) => m.Value);
-        }
-
-        // todo int128, uint128, binary
-
+        private string Roundtrip_Single_Value(Single value) => Roundtrip3<Single, Models.JsonSystemText.Data_Single>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        [Fact] public async Task Roundtrip_Single_DefVal() => await Verifier.Verify(Roundtrip_Single_Value(default));
+        [Fact] public async Task Roundtrip_Single_PosOne() => await Verifier.Verify(Roundtrip_Single_Value(1F));
+        [Fact] public async Task Roundtrip_Single_NegOne() => await Verifier.Verify(Roundtrip_Single_Value(-1F));
+#if NET8_0_OR_GREATER
+        [Fact] public async Task Roundtrip_Single_MinInc_Net80() => await Verifier.Verify(Roundtrip_Single_Value(Single.Epsilon));
+#else
+        [Fact] public async Task Roundtrip_Single_MinInc_Net48() => await Verifier.Verify(Roundtrip_Single_Value(Single.Epsilon));
+#endif
+#if NET8_0_OR_GREATER
+        [Fact] public async Task Roundtrip_Single_MaxVal_Net80() => await Verifier.Verify(Roundtrip_Single_Value(Single.MaxValue));
+#else
+        [Fact] public async Task Roundtrip_Single_MaxVal_Net48() => await Verifier.Verify(Roundtrip_Single_Value(Single.MaxValue));
+#endif
+#if NET8_0_OR_GREATER
+        [Fact] public async Task Roundtrip_Single_MinVal_Net80() => await Verifier.Verify(Roundtrip_Single_Value(Single.MinValue));
+#else
+        [Fact] public async Task Roundtrip_Single_MinVal_Net48() => await Verifier.Verify(Roundtrip_Single_Value(Single.MinValue));
+#endif
+        [Fact] public async Task Roundtrip_Single_PosInf() => await Verifier.Verify(Roundtrip_Single_Value(Single.PositiveInfinity));
+        [Fact] public async Task Roundtrip_Single_NegInf() => await Verifier.Verify(Roundtrip_Single_Value(Single.NegativeInfinity));
+        //[Fact] public async Task Roundtrip_Single_NotNum() => await Verifier.Verify(Roundtrip_Single_Value(Single.NaN)); // todo NaN equality check fails
+#if NET8_0_OR_GREATER
+        [Fact] public async Task Roundtrip_Single_ValE() => await Verifier.Verify(Roundtrip_Single_Value(Single.E));
+        [Fact] public async Task Roundtrip_Single_ValPi() => await Verifier.Verify(Roundtrip_Single_Value(Single.Pi));
+        [Fact] public async Task Roundtrip_Single_ValTau() => await Verifier.Verify(Roundtrip_Single_Value(Single.Tau));
+#endif
     }
 }

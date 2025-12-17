@@ -11,40 +11,40 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.PairOfInt16)]
         [InlineData(ValueKind.PairOfInt32)]
         [InlineData(ValueKind.PairOfInt64)]
-        public void Roundtrip_MessagePack(ValueKind valueKind)
+        public void Roundtrip_JsonSystemText(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
             sut.Kind = valueKind;
-            sut.Roundtrip_MessagePack();
+            sut.Roundtrip_JsonSystemText();
         }
 
-        [Theory]
-        [InlineData(ValueKind.Bool)]
-        [InlineData(ValueKind.DoubleLE)]
-        [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16)]
-        [InlineData(ValueKind.PairOfInt32)]
-        [InlineData(ValueKind.PairOfInt64)]
-        public void Roundtrip_JsonNewtonSoft(ValueKind valueKind)
-        {
-            var sut = new DTORoundtripBasics();
-            sut.Kind = valueKind;
-            sut.Roundtrip_JsonNewtonSoft();
-        }
+        //[Theory]
+        //[InlineData(ValueKind.Bool)]
+        //[InlineData(ValueKind.DoubleLE)]
+        //[InlineData(ValueKind.Guid)]
+        //[InlineData(ValueKind.PairOfInt16)]
+        //[InlineData(ValueKind.PairOfInt32)]
+        //[InlineData(ValueKind.PairOfInt64)]
+        //public void Roundtrip_MessagePack(ValueKind valueKind)
+        //{
+        //    var sut = new DTORoundtripBasics();
+        //    sut.Kind = valueKind;
+        //    sut.Roundtrip_MessagePack();
+        //}
 
-        [Theory]
-        [InlineData(ValueKind.Bool)]
-        [InlineData(ValueKind.DoubleLE)]
-        [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16)]
-        [InlineData(ValueKind.PairOfInt32)]
-        [InlineData(ValueKind.PairOfInt64)]
-        public async Task Roundtrip_MemBlocks(ValueKind valueKind)
-        {
-            var sut = new DTORoundtripBasics();
-            sut.Kind = valueKind;
-            await sut.Roundtrip_MemBlocks();
-        }
+        //[Theory]
+        //[InlineData(ValueKind.Bool)]
+        //[InlineData(ValueKind.DoubleLE)]
+        //[InlineData(ValueKind.Guid)]
+        //[InlineData(ValueKind.PairOfInt16)]
+        //[InlineData(ValueKind.PairOfInt32)]
+        //[InlineData(ValueKind.PairOfInt64)]
+        //public async Task Roundtrip_MemBlocks(ValueKind valueKind)
+        //{
+        //    var sut = new DTORoundtripBasics();
+        //    sut.Kind = valueKind;
+        //    await sut.Roundtrip_MemBlocks();
+        //}
 
         [Theory]
         [InlineData(ValueKind.Bool)]

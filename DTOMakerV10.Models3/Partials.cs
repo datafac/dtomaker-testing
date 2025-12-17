@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace DTOMakerV10.Models3.CSPoco
+namespace DTOMakerV10.Models3.JsonSystemText
 {
     public partial class Tree
     {
