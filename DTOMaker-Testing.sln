@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A2C5F85-3380-44E1-9E46-5F1943136416}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,15 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOMakerV10.Models3", "DTOM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{C6A8B527-F47B-4258-A828-2212C2853391}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Basic", "SampleDTO.Basic\SampleDTO.Basic.csproj", "{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Shapes", "SampleDTO.Shapes\SampleDTO.Shapes.csproj", "{F0661630-597D-4B56-97F7-4611DD8BC76E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Strings", "SampleDTO.Strings\SampleDTO.Strings.csproj", "{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.Tests", "Benchmarks.Tests\Benchmarks.Tests.csproj", "{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDTO.Binary", "SampleDTO.Binary\SampleDTO.Binary.csproj", "{0905A6B4-E4B2-48D4-9208-5065406A9D0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox.Generics.Models", "Sandbox.Generics.Models\Sandbox.Generics.Models.csproj", "{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}"
 EndProject
@@ -62,26 +54,10 @@ Global
 		{C6A8B527-F47B-4258-A828-2212C2853391}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6A8B527-F47B-4258-A828-2212C2853391}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6A8B527-F47B-4258-A828-2212C2853391}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6CCD6A3-DFA5-41DC-8AE6-995D6ADD6D74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0661630-597D-4B56-97F7-4611DD8BC76E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15F1A9DF-1D3E-4969-8085-3BDB125A1EE4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30A5774B-9F0D-4FDA-9A75-B0E2DDBE2EB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0905A6B4-E4B2-48D4-9208-5065406A9D0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}.Release|Any CPU.ActiveCfg = Release|Any CPU

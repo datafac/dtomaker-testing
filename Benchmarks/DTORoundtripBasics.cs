@@ -6,7 +6,7 @@ using DataFac.Storage;
 using DTOMaker.Runtime;
 using DTOMaker.Runtime.JsonSystemText;
 using MemoryPack;
-using SampleDTO.Basic;
+using TestModels;
 using System;
 using System.Threading.Tasks;
 
@@ -73,9 +73,9 @@ namespace Benchmarks
             "0123456789abcdef" +
             "0123456789abcdef";
 
-        private SampleDTO.Basic.JsonSystemText.MyDTO MakeMyDTO_JsonSystemText(ValueKind id)
+        private TestModels.JsonSystemText.MyDTO MakeMyDTO_JsonSystemText(ValueKind id)
         {
-            var dto = new SampleDTO.Basic.JsonSystemText.MyDTO();
+            var dto = new TestModels.JsonSystemText.MyDTO();
             switch (Kind)
             {
                 case ValueKind.Bool:
@@ -166,7 +166,7 @@ namespace Benchmarks
             var dto = MakeMyDTO_JsonSystemText(Kind);
             dto.Freeze();
             string buffer = dto.SerializeToJson();
-            var recdMsg = buffer.DeserializeFromJson<SampleDTO.Basic.JsonSystemText.MyDTO>();
+            var recdMsg = buffer.DeserializeFromJson<TestModels.JsonSystemText.MyDTO>();
             recdMsg!.Freeze();
             return buffer.Length;
         }
