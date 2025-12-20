@@ -4,18 +4,25 @@ namespace Benchmarks.Tests
 {
     public class RoundtripPolymorphicTests
     {
-        //[Fact]
-        //public void Roundtrip_MessagePack()
-        //{
-        //    var sut = new DTORoundtripPolymorphic();
-        //    sut.Roundtrip_Polymorphic_MessagePack();
-        //}
+        [Fact]
+        public void Polymorphic_MemoryPack()
+        {
+            var sut = new DTORoundtripPolymorphic();
+            sut.Polymorphic_MemoryPack();
+        }
 
-        //[Fact]
-        //public async Task Roundtrip_MemBlocks()
-        //{
-        //    var sut = new DTORoundtripPolymorphic();
-        //    await sut.Roundtrip_Polymorphic_MemBlocks();
-        //}
+        [Fact]
+        public void Polymorphic_JsonSystemText()
+        {
+            var sut = new DTORoundtripPolymorphic();
+            sut.Polymorphic_JsonSystemText();
+        }
+
+        [Fact]
+        public void Polymorphic_JsonNewtonSoft()
+        {
+            var sut = new DTORoundtripPolymorphic();
+            sut.Polymorphic_JsonNewtonSoft();
+        }
     }
 }

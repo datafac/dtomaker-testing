@@ -18,6 +18,20 @@ namespace Benchmarks.Tests
             sut.Roundtrip_JsonSystemText();
         }
 
+        [Theory]
+        [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.DoubleLE)]
+        [InlineData(ValueKind.Guid)]
+        [InlineData(ValueKind.PairOfInt16)]
+        [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
+        public void Roundtrip_JsonNewtonSoft(ValueKind valueKind)
+        {
+            var sut = new DTORoundtripBasics();
+            sut.Kind = valueKind;
+            sut.Roundtrip_JsonNewtonSoft();
+        }
+
         //[Theory]
         //[InlineData(ValueKind.Bool)]
         //[InlineData(ValueKind.DoubleLE)]
