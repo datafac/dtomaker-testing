@@ -11,9 +11,40 @@ namespace Benchmarks.Tests
         [InlineData(ValueKind.PairOfInt16)]
         [InlineData(ValueKind.PairOfInt32)]
         [InlineData(ValueKind.PairOfInt64)]
+        public void Roundtrip_MemoryPack(ValueKind valueKind)
+        {
+            var sut = new DTORoundtripBasics();
+            sut.CheckValues = true;
+            sut.Kind = valueKind;
+            sut.Roundtrip_MemoryPack();
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.DoubleLE)]
+        [InlineData(ValueKind.Guid)]
+        [InlineData(ValueKind.PairOfInt16)]
+        [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
+        public void Roundtrip_MsgPack2(ValueKind valueKind)
+        {
+            var sut = new DTORoundtripBasics();
+            sut.CheckValues = true;
+            sut.Kind = valueKind;
+            sut.Roundtrip_MsgPack2();
+        }
+
+        [Theory]
+        [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.DoubleLE)]
+        [InlineData(ValueKind.Guid)]
+        [InlineData(ValueKind.PairOfInt16)]
+        [InlineData(ValueKind.PairOfInt32)]
+        [InlineData(ValueKind.PairOfInt64)]
         public void Roundtrip_JsonSystemText(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
+            sut.CheckValues = true;
             sut.Kind = valueKind;
             sut.Roundtrip_JsonSystemText();
         }
@@ -28,6 +59,7 @@ namespace Benchmarks.Tests
         public void Roundtrip_JsonNewtonSoft(ValueKind valueKind)
         {
             var sut = new DTORoundtripBasics();
+            sut.CheckValues = true;
             sut.Kind = valueKind;
             sut.Roundtrip_JsonNewtonSoft();
         }
@@ -42,6 +74,7 @@ namespace Benchmarks.Tests
         //public void Roundtrip_MessagePack(ValueKind valueKind)
         //{
         //    var sut = new DTORoundtripBasics();
+        //    sut.CheckValues = true;
         //    sut.Kind = valueKind;
         //    sut.Roundtrip_MessagePack();
         //}
@@ -56,22 +89,9 @@ namespace Benchmarks.Tests
         //public async Task Roundtrip_MemBlocks(ValueKind valueKind)
         //{
         //    var sut = new DTORoundtripBasics();
+        //    sut.CheckValues = true;
         //    sut.Kind = valueKind;
         //    await sut.Roundtrip_MemBlocks();
         //}
-
-        [Theory]
-        [InlineData(ValueKind.Bool)]
-        [InlineData(ValueKind.DoubleLE)]
-        [InlineData(ValueKind.Guid)]
-        [InlineData(ValueKind.PairOfInt16)]
-        [InlineData(ValueKind.PairOfInt32)]
-        [InlineData(ValueKind.PairOfInt64)]
-        public void Roundtrip_MemoryPack(ValueKind valueKind)
-        {
-            var sut = new DTORoundtripBasics();
-            sut.Kind = valueKind;
-            sut.Roundtrip_MemoryPack();
-        }
     }
 }

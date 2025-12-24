@@ -6,16 +6,22 @@ using DataFac.Storage;
 using MemoryPack;
 using TestModels;
 using System;
+using DTOMaker.Runtime.MsgPack2;
 
 namespace Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net80)]
-    [SimpleJob(RuntimeMoniker.Net90)]
+    //[SimpleJob(RuntimeMoniker.Net80)]
+    //[SimpleJob(RuntimeMoniker.Net90)]
     [SimpleJob(RuntimeMoniker.Net10_0)]
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     public class DTORoundtripBasics
     {
+        /// <summary>
+        /// Unit tests should set this to true to validate that the values are correctly roundtripped.
+        /// </summary>
+        public bool CheckValues = false;
+
         [Params(ValueKind.StringFull)]
         public ValueKind Kind;
 
@@ -76,22 +82,38 @@ namespace Benchmarks
         [Benchmark(Baseline = true)]
         public int Roundtrip_MemoryPack()
         {
-            var dto = new TestModels.MemPack.MemoryPackMyDTO();
-            SetField(dto, Kind);
-            dto.Freeze();
-            ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<TestModels.MemPack.MemoryPackMyDTO>(dto);
+            var orig = new TestModels.MemPack.MemoryPackMyDTO();
+            SetField(orig, Kind);
+            orig.Freeze();
+            ReadOnlyMemory<byte> buffer = MemoryPackSerializer.Serialize<TestModels.MemPack.MemoryPackMyDTO>(orig);
             var copy = MemoryPackSerializer.Deserialize<TestModels.MemPack.MemoryPackMyDTO>(buffer.Span);
             copy!.Freeze();
+            if (CheckValues && !copy.Equals(orig))
+                throw new Exception("Roundtrip values do not match");
+            return buffer.Length;
+        }
+
+        [Benchmark]
+        public int Roundtrip_MsgPack2()
+        {
+            var dto = new TestModels.MsgPack2.MyDTO();
+            SetField(dto, Kind);
+            dto.Freeze();
+            ReadOnlyMemory<byte> buffer = dto.SerializeToMessagePack<TestModels.MsgPack2.MyDTO>();
+            var copy = buffer.DeserializeFromMessagePack<TestModels.MsgPack2.MyDTO>();
+            copy!.Freeze();
+            if (CheckValues && !copy.Equals(dto))
+                throw new Exception("Roundtrip values do not match");
             return buffer.Length;
         }
 
         [Benchmark]
         public int Roundtrip_JsonSystemText()
         {
-            var dto = new TestModels.JsonSystemText.MyDTO();
-            SetField(dto, Kind);
-            dto.Freeze();
-            string buffer = DTOMaker.Runtime.JsonSystemText.SerializationHelpers.SerializeToJson(dto);
+            var orig = new TestModels.JsonSystemText.MyDTO();
+            SetField(orig, Kind);
+            orig.Freeze();
+            string buffer = DTOMaker.Runtime.JsonSystemText.SerializationHelpers.SerializeToJson(orig);
             var recdMsg = DTOMaker.Runtime.JsonSystemText.SerializationHelpers.DeserializeFromJson<TestModels.JsonSystemText.MyDTO>(buffer);
             recdMsg!.Freeze();
             return buffer.Length;
@@ -100,12 +122,14 @@ namespace Benchmarks
         [Benchmark]
         public int Roundtrip_JsonNewtonSoft()
         {
-            var dto = new TestModels.JsonNewtonSoft.MyDTO();
-            SetField(dto, Kind);
-            dto.Freeze();
-            string buffer = DTOMaker.Runtime.JsonNewtonSoft.SerializationHelpers.SerializeToJson(dto);
-            var recdMsg = DTOMaker.Runtime.JsonNewtonSoft.SerializationHelpers.DeserializeFromJson<TestModels.JsonNewtonSoft.MyDTO>(buffer);
-            recdMsg!.Freeze();
+            var orig = new TestModels.JsonNewtonSoft.MyDTO();
+            SetField(orig, Kind);
+            orig.Freeze();
+            string buffer = DTOMaker.Runtime.JsonNewtonSoft.SerializationHelpers.SerializeToJson(orig);
+            var copy = DTOMaker.Runtime.JsonNewtonSoft.SerializationHelpers.DeserializeFromJson<TestModels.JsonNewtonSoft.MyDTO>(buffer);
+            copy!.Freeze();
+            if (CheckValues && !copy.Equals(orig))
+                throw new Exception("Roundtrip values do not match");
             return buffer.Length;
         }
     }
