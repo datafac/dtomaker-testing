@@ -3,49 +3,35 @@ using DTOMaker.Runtime;
 
 namespace DTOMakerV10.Models2
 {
-    [Entity]
-    [Id(1)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(1, LayoutMethod.Linear)]
     public interface IPolygon : IEntityBase { }
 
-    [Entity]
-    [Id(2)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(2, LayoutMethod.Linear)]
     public interface ITriangle : IPolygon { }
 
-    [Entity]
-    [Id(3)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(3, LayoutMethod.Linear)]
     public interface IEquilateral : ITriangle
     {
         [Member(1)] double Length { get; }
     }
 
-    [Entity]
-    [Id(4)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(4, LayoutMethod.Linear)]
     public interface IRightTriangle : ITriangle
     {
         [Member(1)] double Length { get; }
         [Member(2)] double Height { get; }
     }
 
-    [Entity]
-    [Id(5)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(5, LayoutMethod.Linear)]
     public interface IQuadrilateral : IPolygon { }
 
-    [Entity]
-    [Id(6)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(6, LayoutMethod.Linear)]
     public interface ISquare : IQuadrilateral
     {
         [Member(1)] double Length { get; }
     }
 
-    [Entity]
-    [Id(7)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(7, LayoutMethod.Linear)]
     public interface IRectangle : IQuadrilateral
     {
         [Member(1)] double Length { get; }

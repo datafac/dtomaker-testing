@@ -6,9 +6,7 @@ using System.Numerics;
 
 namespace TestModels
 {
-    [Entity]
-    [Id(1)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(1, LayoutMethod.Linear)]
     public interface IMyDTO : IEntityBase
     {
         [Member(1)] bool Field01 { get; set; }
@@ -77,49 +75,35 @@ namespace TestModels
     }
 #endif
 
-    [Entity]
-    [Id(3)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(3, LayoutMethod.Linear)]
     public interface IShape : IEntityBase { }
 
-    [Entity]
-    [Id(4)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(4, LayoutMethod.Linear)]
     public interface ITriangle : IShape { }
 
-    [Entity]
-    [Id(5)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(5, LayoutMethod.Linear)]
     public interface IEquilateral : ITriangle
     {
         [Member(1)] double Length { get; }
     }
 
-    [Entity]
-    [Id(6)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(6, LayoutMethod.Linear)]
     public interface IRightTriangle : ITriangle
     {
         [Member(1)] double Length { get; }
         [Member(2)] double Height { get; }
     }
 
-    [Entity]
-    [Id(7)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(7, LayoutMethod.Linear)]
     public interface IQuadrilateral : IShape { }
 
-    [Entity]
-    [Id(8)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(8, LayoutMethod.Linear)]
     public interface ISquare : IQuadrilateral
     {
         [Member(1)] double Length { get; }
     }
 
-    [Entity]
-    [Id(9)]
-    [Layout(LayoutMethod.Linear)]
+    [Entity(9, LayoutMethod.Linear)]
     public interface IRectangle : IQuadrilateral
     {
         [Member(1)] double Length { get; }

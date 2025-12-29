@@ -3,42 +3,42 @@ using DTOMaker.Runtime;
 using System;
 namespace DTOMakerV10.Models3
 {
-    [Entity][Id(1)][Layout(LayoutMethod.Linear)]
+    [Entity(1, LayoutMethod.Linear)]
     public interface INode : IEntityBase
     {
-        [Member(1)][FixedLength(16)] String Key { get; }
+        [Member(1)][Length(16)] String Key { get; }
     }
 
-    [Entity][Id(2)][Layout(LayoutMethod.Linear)]
+    [Entity(2, LayoutMethod.Linear)]
     public interface IStringNode : INode
     {
-        [Member(1)][FixedLength(64)] String Value { get; }
+        [Member(1)][Length(64)] String Value { get; }
     }
 
-    [Entity][Id(3)][Layout(LayoutMethod.Linear)]
+    [Entity(3, LayoutMethod.Linear)]
     public interface INumericNode : INode
     {
     }
 
-    [Entity][Id(4)][Layout(LayoutMethod.Linear)]
+    [Entity(4, LayoutMethod.Linear)]
     public interface IInt64Node : INumericNode
     {
         [Member(1)] Int64 Value { get; }
     }
 
-    [Entity][Id(5)][Layout(LayoutMethod.Linear)]
+    [Entity(5, LayoutMethod.Linear)]
     public interface IDoubleNode : INumericNode
     {
         [Member(1)] Double Value { get; }
     }
 
-    [Entity][Id(6)][Layout(LayoutMethod.Linear)]
+    [Entity(6, LayoutMethod.Linear)]
     public interface IBooleanNode : INode
     {
         [Member(1)] Boolean Value { get; }
     }
 
-    [Entity][Id(10)][Layout(LayoutMethod.Linear)]
+    [Entity(10, LayoutMethod.Linear)]
     public interface ITree : IEntityBase
     {
         [Member(1)] ITree? Left { get; set; }
