@@ -9,11 +9,13 @@
         PairOfInt32,
         PairOfInt64,
         StringNull,
-        StringZero,
-        StringFull,
+        StringEmpty,
+        StringSmall, // 32 chars
+        StringLarge, // 1K chars
         BinaryNull,
-        BinaryZero,
+        BinaryEmpty,
         BinarySmall,
         BinaryLarge,
+        AllPropsSet,
     }
 }

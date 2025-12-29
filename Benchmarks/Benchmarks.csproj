@@ -16,9 +16,11 @@
 		<PackageReference Include="DTOMaker.Runtime" Version="1.5.18-dev" />
 		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.5.18-dev" />
 		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.5.18-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="1.5.18-dev" />
 		<PackageReference Include="DTOMaker.Runtime.MsgPack2" Version="1.5.18-dev" />
 		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="1.5.18-dev" />
 		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.5.18-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="1.5.18-dev" />
 		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="1.5.18-dev" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="System.Text.Json" Version="10.0.1" />

@@ -1,9 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
+using DataFac.Storage;
+using DataFac.Storage.Testing;
 using DTOMaker.Runtime.MsgPack2;
 using MemoryPack;
 using System;
+using System.Threading.Tasks;
 
 namespace Benchmarks
 {
@@ -19,7 +22,7 @@ namespace Benchmarks
         /// </summary>
         public bool CheckValues = false;
 
-        //private readonly IDataStore DataStore = new DataFac.Storage.Testing.TestDataStore();
+        private readonly TestDataStore DataStore = new TestDataStore();
 
         [Benchmark(Baseline = true)]
         public int Polymorphic_MemoryPack()
@@ -36,6 +39,22 @@ namespace Benchmarks
             if (CheckValues && !copy.Equals(orig))
                 throw new Exception("Roundtrip values do not match");
             return buffer.Length;
+        }
+
+        [Benchmark]
+        public async ValueTask<int> Polymorphic_MemBlocks()
+        {
+            var orig = new TestModels.MemBlocks.Rectangle()
+            {
+                Length = 3.0D,
+                Height = 2.0D,
+            };
+            await orig.Pack(DataStore);
+            var buffers = orig.GetBuffers();
+            var copy = TestModels.MemBlocks.Shape.CreateFrom(buffers);
+            if (CheckValues && !copy.Equals(orig))
+                throw new Exception("Roundtrip values do not match");
+            return 0;
         }
 
         [Benchmark]
@@ -88,22 +107,6 @@ namespace Benchmarks
                 throw new Exception("Roundtrip values do not match");
             return buffer.Length;
         }
-
-        //[Benchmark(Baseline = true)]
-        //public async ValueTask<int> Roundtrip_Polymorphic_MemBlocks()
-        //{
-        //    var dto = new SampleDTO.Shapes.MemBlocks.Rectangle()
-        //    {
-        //        Length = 3.0D,
-        //        Height = 2.0D,
-        //    };
-        //    await dto.Pack(DataStore);
-        //    var buffers = dto.GetBuffers();
-        //    var copy = SampleDTO.Shapes.MemBlocks.Shape.CreateFrom(buffers);
-        //    if (CheckValues && !copy.Equals(orig))
-        //        throw new Exception("Roundtrip values do not match");
-        //    return 0;
-        //}
 
     }
 }

@@ -13,6 +13,14 @@ namespace Benchmarks.Tests
         }
 
         [Fact]
+        public async Task Polymorphic_MemBlocks()
+        {
+            var sut = new DTORoundtripPolymorphic();
+            sut.CheckValues = true;
+            await sut.Polymorphic_MemBlocks();
+        }
+
+        [Fact]
         public void Polymorphic_MsgPack2()
         {
             var sut = new DTORoundtripPolymorphic();

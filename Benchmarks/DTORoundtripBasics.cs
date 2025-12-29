@@ -3,10 +3,14 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using DataFac.Memory;
 using DataFac.Storage;
-using MemoryPack;
-using TestModels;
-using System;
+using DataFac.Storage.Testing;
 using DTOMaker.Runtime.MsgPack2;
+using MemoryPack;
+using System;
+using System.Buffers;
+using System.Text;
+using System.Threading.Tasks;
+using TestModels;
 
 namespace Benchmarks
 {
@@ -22,26 +26,23 @@ namespace Benchmarks
         /// </summary>
         public bool CheckValues = false;
 
-        [Params(ValueKind.StringFull)]
+        //[Params(ValueKind.StringNull, ValueKind.StringEmpty, ValueKind.StringSmall, ValueKind.StringLarge)]
+        [Params(ValueKind.AllPropsSet)]
         public ValueKind Kind;
 
-        private readonly IDataStore DataStore = new DataFac.Storage.Testing.TestDataStore();
+        private readonly TestDataStore DataStore = new TestDataStore();
 
         private static readonly Guid guidValue = new("cc8af561-5172-43e6-8090-5dc1b2d02e07");
 
-        private static readonly PairOfInt16 pairOfInt16Value = new PairOfInt16((Int16)1, (Int16)(-1));
-        private static readonly PairOfInt32 pairOfInt32Value = new PairOfInt32((Int32)1, (Int32)(-1));
-        private static readonly PairOfInt64 pairOfInt64Value = new PairOfInt64((Int64)1, (Int64)(-1));
+        private static readonly PairOfInt16 pairOfInt16Value = new PairOfInt16(1, -1);
+        private static readonly PairOfInt32 pairOfInt32Value = new PairOfInt32(1, -1);
+        private static readonly PairOfInt64 pairOfInt64Value = new PairOfInt64(1, -1);
 
-        private static readonly string StringWith128Chars =
-            "0123456789abcdef" +
-            "0123456789abcdef" +
-            "0123456789abcdef" +
-            "0123456789abcdef" +
-            "0123456789abcdef" +
-            "0123456789abcdef" +
-            "0123456789abcdef" +
-            "0123456789abcdef";
+        private static readonly string SmallString = new string('a', 32);
+        private static readonly string LargeString = new string('z', 1024);
+
+        private static readonly Octets SmallOctets = new Octets(Encoding.UTF8.GetBytes(new string('a', 32)));
+        private static readonly Octets LargeOctets = new Octets(Encoding.UTF8.GetBytes(new string('z', 1024)));
 
         private void SetField(IMyDTO dto, ValueKind id)
         {
@@ -68,14 +69,39 @@ namespace Benchmarks
                 case ValueKind.StringNull:
                     dto.Field05 = null;
                     break;
-                case ValueKind.StringZero:
+                case ValueKind.StringEmpty:
                     dto.Field05 = string.Empty;
                     break;
-                case ValueKind.StringFull:
-                    dto.Field05 = StringWith128Chars;
+                case ValueKind.StringSmall:
+                    dto.Field05 = SmallString;
+                    break;
+                case ValueKind.StringLarge:
+                    dto.Field05 = LargeString;
+                    break;
+                case ValueKind.BinaryNull:
+                    dto.Field06 = null;
+                    break;
+                case ValueKind.BinaryEmpty:
+                    dto.Field06 = Octets.Empty;
+                    break;
+                case ValueKind.BinarySmall:
+                    dto.Field06 = SmallOctets;
+                    break;
+                case ValueKind.BinaryLarge:
+                    dto.Field06 = LargeOctets;
+                    break;
+                case ValueKind.AllPropsSet:
+                    dto.Field01 = true;
+                    dto.Field02LE = Double.MaxValue;
+                    dto.Field04 = guidValue;
+                    dto.Field07 = pairOfInt16Value;
+                    dto.Field08 = pairOfInt32Value;
+                    dto.Field09 = pairOfInt64Value;
+                    dto.Field05 = SmallString;
+                    dto.Field06 = SmallOctets;
                     break;
                 default:
-                    break;
+                    throw new ArgumentOutOfRangeException(nameof(id), id, null);
             }
         }
 
@@ -105,6 +131,22 @@ namespace Benchmarks
             if (CheckValues && !copy.Equals(dto))
                 throw new Exception("Roundtrip values do not match");
             return buffer.Length;
+        }
+
+        [Benchmark]
+        public async Task<long> Roundtrip_MemBlocksAsync()
+        {
+            var orig = new TestModels.MemBlocks.MyDTO();
+            SetField(orig, Kind);
+            await orig.Pack(DataStore);
+            ReadOnlySequence<byte> buffers = orig.GetBuffers();
+            TestModels.MemBlocks.MyDTO copy = new TestModels.MemBlocks.MyDTO(buffers);
+            if (CheckValues)
+            {
+                await copy.UnpackAll(DataStore);
+                if (!copy.Equals(orig)) throw new Exception("Roundtrip values do not match");
+            }
+            return buffers.Length;
         }
 
         [Benchmark]
