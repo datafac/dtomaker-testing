@@ -73,7 +73,7 @@ namespace Benchmarks.Tests
             var sut = new DTORoundtripBasics();
             sut.CheckValues = true;
             sut.Kind = valueKind;
-            await sut.Roundtrip_MemBlocksAsync();
+            await sut.Roundtrip_MemBlocks();
         }
 
         [Theory]

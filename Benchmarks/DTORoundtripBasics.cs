@@ -30,7 +30,7 @@ namespace Benchmarks
         [Params(ValueKind.AllPropsSet)]
         public ValueKind Kind;
 
-        private readonly TestDataStore DataStore = new TestDataStore();
+        private readonly TestDataStore _dataStore = new TestDataStore();
 
         private static readonly Guid guidValue = new("cc8af561-5172-43e6-8090-5dc1b2d02e07");
 
@@ -134,16 +134,16 @@ namespace Benchmarks
         }
 
         [Benchmark]
-        public async Task<long> Roundtrip_MemBlocksAsync()
+        public async Task<long> Roundtrip_MemBlocks()
         {
             var orig = new TestModels.MemBlocks.MyDTO();
             SetField(orig, Kind);
-            await orig.Pack(DataStore);
+            await orig.Pack(_dataStore);
             ReadOnlySequence<byte> buffers = orig.GetBuffers();
             TestModels.MemBlocks.MyDTO copy = new TestModels.MemBlocks.MyDTO(buffers);
             if (CheckValues)
             {
-                await copy.UnpackAll(DataStore);
+                await copy.UnpackAll(_dataStore);
                 if (!copy.Equals(orig)) throw new Exception("Roundtrip values do not match");
             }
             return buffers.Length;
