@@ -51,7 +51,7 @@ namespace Benchmarks
             };
             await orig.Pack(DataStore);
             var buffers = orig.GetBuffers();
-            var copy = TestModels.MemBlocks.Shape.CreateFrom(buffers);
+            var copy = TestModels.MemBlocks.Shape.DeserializeFrom(buffers);
             if (CheckValues && !copy.Equals(orig))
                 throw new Exception("Roundtrip values do not match");
             return 0;
