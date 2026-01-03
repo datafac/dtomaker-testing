@@ -6,7 +6,7 @@ namespace Sandbox.Generics.Models
     public interface IBinaryTree<TKey, TValue> : IEntityBase
     {
         bool HasValue { get; set; }
-        byte Depth { get; set; }
+        byte Depthqqq { get; set; }
         int Count { get; set; }
         TKey Key { get; set; }
         TValue Value { get; set; }

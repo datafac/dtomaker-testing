@@ -46,13 +46,18 @@ namespace Sandbox.Generics.Models
             tree.Count = newCount;
         }
 
+        private static byte GetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        {
+            if (tree is null) return 0;
+            if (tree.IsFrozen) return tree.Depthqqq;
+            return (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
+        }
+
         private static void TrySetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
         {
             if (tree is null) return;
-            byte newDepth = 0;
-            if (tree.HasValue) newDepth = (byte)(1 + Math.Max(tree.Left?.Depth ?? 0, tree.Right?.Depth ?? 0));
-            if (tree.Depth == newDepth) return;
-            tree.Depth = newDepth;
+            if (tree.IsFrozen) return;
+            tree.Depthqqq = (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
         }
 
         private static IBinaryTree<TKey, TValue> Init<TKey, TValue>(this IBinaryTree<TKey, TValue> node, TKey key, TValue value)
@@ -62,7 +67,7 @@ namespace Sandbox.Generics.Models
             node.Key = key;
             node.Value = value;
             node.Count = 1;
-            node.Depth = 1;
+            node.Depthqqq = 1;
             node.Left = null;
             node.Right = null;
             return node;
@@ -145,7 +150,7 @@ namespace Sandbox.Generics.Models
             // rebalance if needed
             bool rotated = false;
             // doco: https://en.wikipedia.org/wiki/Tree_rotation
-            if (result.Left is not null && (result.Left.Depth - (result.Right?.Depth ?? 0)) > 1)
+            if (result.Left is not null && (result.Left.GetDepth() - (result.Right.GetDepth())) > 1)
             {
                 // left-heavy, perform right rotation
                 // todo special case
@@ -157,7 +162,7 @@ namespace Sandbox.Generics.Models
                 result = newRoot;
                 rotated = true;
             }
-            else if (result.Right is not null && (result.Right.Depth - (result.Left?.Depth ?? 0)) > 1)
+            else if (result.Right is not null && (result.Right.GetDepth() - (result.Left.GetDepth())) > 1)
             {
                 // right-heavy, perform left rotation
                 var newRoot = result.Right;
@@ -229,7 +234,7 @@ namespace Sandbox.Generics.Models
             // rebalance if needed
             bool rotated = false;
             // doco: https://en.wikipedia.org/wiki/Tree_rotation
-            if (result.Left is not null && (result.Left.Depth - (result.Right?.Depth ?? 0)) > 1)
+            if (result.Left is not null && (result.Left.GetDepth() - (result.Right.GetDepth())) > 1)
             {
                 // left-heavy, perform right rotation
                 // todo special case
@@ -241,7 +246,7 @@ namespace Sandbox.Generics.Models
                 result = newRoot;
                 rotated = true;
             }
-            else if (result.Right is not null && (result.Right.Depth - (result.Left?.Depth ?? 0)) > 1)
+            else if (result.Right is not null && (result.Right.GetDepth() - (result.Left.GetDepth())) > 1)
             {
                 // right-heavy, perform left rotation
                 var newRoot = result.Right;

@@ -47,7 +47,7 @@ namespace Sandbox.Generics.Tests
             }
             tree.Freeze();
             tree.Count.ShouldBe(0);
-            tree.Depth.ShouldBe((byte)0);
+            tree.Depthqqq.ShouldBe((byte)0);
 
             // add nodes in order
             int count = 0;
@@ -72,7 +72,7 @@ namespace Sandbox.Generics.Tests
                 }
             }
             tree.Count.ShouldBe(count);
-            tree.Depth.ShouldBeLessThanOrEqualTo(maxDepth);
+            tree.Depthqqq.ShouldBeLessThanOrEqualTo(maxDepth);
 
             var node = tree.Get("b");
             node.ShouldNotBeNull();
@@ -112,7 +112,7 @@ namespace Sandbox.Generics.Tests
             }
             tree.Freeze();
             tree.Count.ShouldBe(0);
-            tree.Depth.ShouldBe((byte)0);
+            tree.Depthqqq.ShouldBe((byte)0);
 
             // add nodes in order
             int count = 0;
@@ -155,7 +155,7 @@ namespace Sandbox.Generics.Tests
                     }
                 }
                 tree.Count.ShouldBe(count);
-                tree.Depth.ShouldBeLessThanOrEqualTo(maxDepth);
+                tree.Depthqqq.ShouldBeLessThanOrEqualTo(maxDepth);
             }
         }
 
