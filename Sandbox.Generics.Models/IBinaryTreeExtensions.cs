@@ -49,7 +49,7 @@ namespace Sandbox.Generics.Models
         private static byte GetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
         {
             if (tree is null) return 0;
-            if (tree.IsFrozen) return tree.Depthqqq;
+            if (tree.IsFrozen) return tree.Depth;
             return (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
         }
 
@@ -57,7 +57,7 @@ namespace Sandbox.Generics.Models
         {
             if (tree is null) return;
             if (tree.IsFrozen) return;
-            tree.Depthqqq = (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
+            tree.Depth = (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
         }
 
         private static IBinaryTree<TKey, TValue> Init<TKey, TValue>(this IBinaryTree<TKey, TValue> node, TKey key, TValue value)
@@ -67,7 +67,7 @@ namespace Sandbox.Generics.Models
             node.Key = key;
             node.Value = value;
             node.Count = 1;
-            node.Depthqqq = 1;
+            node.Depth = 1;
             node.Left = null;
             node.Right = null;
             return node;

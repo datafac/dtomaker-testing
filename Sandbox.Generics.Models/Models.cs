@@ -7,7 +7,7 @@ namespace Sandbox.Generics.Models
     public interface IMyBinaryTree : IEntityBase
     {
         [Member(1)] bool HasValue { get; set; }
-        [Member(2)] byte Depthqqq { get; set; }
+        [Member(2)] byte Depth { get; set; }
         [Member(3)] int Count { get; set; }
         [Member(4)] string Key { get; set; }
         [Member(5)] long Value { get; set; }
