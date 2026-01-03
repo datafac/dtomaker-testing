@@ -10,34 +10,6 @@ using Xunit;
 
 namespace Sandbox.Generics.Tests
 {
-    //internal sealed class nodeFactory_MemBlocks : IBinaryTreeFactory<string, long>
-    //{
-    //    public IBinaryTree<string, long> CreateNode(string key, long value)
-    //    {
-    //        var result = new Sandbox.Generics.Models.MemBlocks.MyTree();
-    //        result.HasValue = true;
-    //        result.Key = key;
-    //        result.Value = value;
-    //        result.Count = 1;
-    //        result.Depth = 1;
-    //        return result;
-    //    }
-    //}
-
-    //internal sealed class nodeFactory_MessagePack : IBinaryTreeFactory<string, long>
-    //{
-    //    public IBinaryTree<string, long> CreateNode(string key, long value)
-    //    {
-    //        var result = new Sandbox.Generics.Models.MessagePack.MyTree();
-    //        result.HasValue = true;
-    //        result.Key = key;
-    //        result.Value = value;
-    //        result.Count = 1;
-    //        result.Depth = 1;
-    //        return result;
-    //    }
-    //}
-
     public class GenericsTests_Trees
     {
         private static IBinaryTree<string, long> CreateEmpty(ImplKind kind)
@@ -65,7 +37,7 @@ namespace Sandbox.Generics.Tests
         [InlineData(ImplKind.JsonSystemText, "abcdefg", 3)]
         //[InlineData(ImplKind.MessagePack, "abcdefg", 3)]
         //[InlineData(ImplKind.MemBlocks, "abcdefg", 3)]
-        public void AddValue(ImplKind impl, string order, byte maxDepth)
+        public void AddValues(ImplKind impl, string order, byte maxDepth)
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
@@ -90,7 +62,7 @@ namespace Sandbox.Generics.Tests
                 tree.Freeze();
             }
 
-
+            // checks
             var pairs = tree.GetKeyValuePairs().ToArray();
             for (int i = 0; i < pairs.Length; i++)
             {
@@ -109,6 +81,82 @@ namespace Sandbox.Generics.Tests
 
             node = tree.Get("z");
             node.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData(ImplKind.JsonSystemText, "b", "b", 0)]
+        [InlineData(ImplKind.JsonSystemText, "bac", "a", 2)]
+        [InlineData(ImplKind.JsonSystemText, "bac", "c", 2)]
+        [InlineData(ImplKind.JsonSystemText, "bac", "ac", 1)]
+        [InlineData(ImplKind.JsonSystemText, "bac", "ca", 1)]
+        [InlineData(ImplKind.JsonSystemText, "bac", "acb", 0)]
+        // perfect add/remove orders
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "", 3)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "a", 3)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "ac", 3)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "ace", 3)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "aceg", 2)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "acegb", 2)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "acegbf", 1)]
+        [InlineData(ImplKind.JsonSystemText, "dbfaceg", "acegbfd", 0)]
+        //[InlineData(ImplKind.JsonSystemText, "abcdefg", 3)]
+        //[InlineData(ImplKind.MessagePack, "abcdefg", 3)]
+        //[InlineData(ImplKind.MemBlocks, "abcdefg", 3)]
+        public void RemoveValues(ImplKind impl, string addOrder, string removeOrder, byte maxDepth)
+        {
+            using var dataStore = new DataFac.Storage.Testing.TestDataStore();
+
+            var tree = CreateEmpty(impl);
+            {
+                if (tree is IMemBlocksEntityBase packable) packable.Pack(dataStore);
+            }
+            tree.Freeze();
+            tree.Count.ShouldBe(0);
+            tree.Depth.ShouldBe((byte)0);
+
+            // add nodes in order
+            int count = 0;
+            foreach (char ch in addOrder)
+            {
+                long value = (Char.IsLetter(ch) && Char.IsLower(ch)) ? (ch - 'a') + 1 : throw new ArgumentException($"Unexpected character: {ch}");
+                tree = tree.AddOrUpdate(new string(ch, 1), value, () => CreateEmpty(impl));
+                count++;
+
+                // pack and freeze the tree after each addition
+                if (tree is IMemBlocksEntityBase packable) packable.Pack(dataStore);
+                tree.Freeze();
+            }
+
+            // remove nodes in order
+            foreach (char ch in removeOrder)
+            {
+                long value = (Char.IsLetter(ch) && Char.IsLower(ch)) ? (ch - 'a') + 1 : throw new ArgumentException($"Unexpected character: {ch}");
+                tree = tree?.Remove(new string(ch, 1));
+                count--;
+
+                // pack and freeze the tree after each addition
+                if (tree is IMemBlocksEntityBase packable) packable.Pack(dataStore);
+                tree?.Freeze();
+            }
+
+            if (tree is null)
+            {
+                count.ShouldBe(0);
+                maxDepth.ShouldBe((byte)0);
+            }
+            else
+            {
+                var pairs = tree.GetKeyValuePairs().ToArray();
+                for (int i = 0; i < pairs.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        pairs[i].Key.ShouldBeGreaterThan(pairs[i - 1].Key);
+                    }
+                }
+                tree.Count.ShouldBe(count);
+                tree.Depth.ShouldBeLessThanOrEqualTo(maxDepth);
+            }
         }
 
         private static IEnumerable<string> GetCharCombinations(string chars)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A2C5F85-3380-44E1-9E46-5F1943136416}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox.Generics.Models", "Sandbox.Generics.Models\Sandbox.Generics.Models.csproj", "{89DBF8C1-7BFD-4C15-8FC7-1C6518B6F768}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox.Generics.Tests", "Sandbox.Generics.Tests\Sandbox.Generics.Tests.csproj", "{D10D0A81-AFCD-4397-9D47-3D26A27845D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xperimental.AVLTree", "Xperimental.AVLTree\Xperimental.AVLTree.csproj", "{CFCCF218-ECA1-4391-B585-BE3228DAFB27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,10 @@ Global
 		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D10D0A81-AFCD-4397-9D47-3D26A27845D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFCCF218-ECA1-4391-B585-BE3228DAFB27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFCCF218-ECA1-4391-B585-BE3228DAFB27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFCCF218-ECA1-4391-B585-BE3228DAFB27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFCCF218-ECA1-4391-B585-BE3228DAFB27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

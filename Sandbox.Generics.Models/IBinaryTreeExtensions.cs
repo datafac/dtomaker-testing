@@ -68,6 +68,127 @@ namespace Sandbox.Generics.Models
             return node;
         }
 
+        public static IBinaryTree<TKey, TValue>? Remove<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key)
+            where TKey : notnull, IComparable<TKey>
+        {
+            if (!tree.HasValue) return tree;
+
+            // shallow clone (unfreeze) if needed
+            IBinaryTree<TKey, TValue> result = tree.IsFrozen
+                ? tree.PartCopy() as IBinaryTree<TKey, TValue> ?? throw new InvalidOperationException("Failed to create unfrozen copy.")
+                : tree;
+
+            int comparison = result.Key.CompareTo(key);
+
+            if (comparison == 0)
+            {
+                // remove key/value in this node
+                if (result.Left is null)
+                {
+                    if (result.Right is null)
+                    {
+                        // leaf node
+                        return null;
+                    }
+                    else
+                    {
+                        result = result.Right;
+                    }
+                }
+                else
+                {
+                    if (result.Right is null)
+                    {
+                        result = result.Left;
+                    }
+                    else
+                    {
+                        // two children, find inorder successor (smallest in the right subtree)
+                        var successor = result.Right;
+                        while (successor.Left is not null)
+                        {
+                            successor = successor.Left;
+                        }
+                        // copy successor's key/value to this node
+                        result.Key = successor.Key;
+                        result.Value = successor.Value;
+                        // remove successor node from right subtree
+                        result.Right = result.Right.Remove(successor.Key);
+                    }
+                }
+            }
+            else if (comparison > 0)
+            {
+                // go left
+                if (result.Left is null)
+                {
+                    // key not found
+                }
+                else
+                {
+                    result.Left = result.Left.Remove(key);
+                }
+            }
+            else
+            {
+                // go right
+                if (result.Right is null)
+                {
+                    // key not found
+                }
+                else
+                {
+                    result.Right = result.Right.Remove(key);
+                }
+            }
+
+            // rebalance if needed
+            bool rotated = false;
+            // doco: https://en.wikipedia.org/wiki/Tree_rotation
+            if (result.Left is not null && (result.Left.Depth - (result.Right?.Depth ?? 0)) > 1)
+            {
+                // left-heavy, perform right rotation
+                // todo special case
+                var newRoot = result.Left;
+                result.Left = newRoot.Right;
+                // unfreeze newRoot if needed
+                newRoot = newRoot.Unfrozen();
+                newRoot.Right = result;
+                result = newRoot;
+                rotated = true;
+            }
+            else if (result.Right is not null && (result.Right.Depth - (result.Left?.Depth ?? 0)) > 1)
+            {
+                // right-heavy, perform left rotation
+                var newRoot = result.Right;
+                result.Right = newRoot.Left;
+                // unfreeze newRoot if needed
+                newRoot = newRoot.Unfrozen();
+                newRoot.Left = result;
+                result = newRoot;
+                rotated = true;
+            }
+
+            if (rotated)
+            {
+                // recalc count/depth for children
+                if (result.Left is not null)
+                {
+                    result.Left.TrySetCount();
+                    result.Left.TrySetDepth();
+                }
+                if (result.Right is not null)
+                {
+                    result.Right.TrySetCount();
+                    result.Right.TrySetDepth();
+                }
+            }
+
+            result.TrySetCount();
+            result.TrySetDepth();
+            return result;
+        }
+
         public static IBinaryTree<TKey, TValue> AddOrUpdate<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key, TValue value,
             Func<IBinaryTree<TKey, TValue>> newNodeFn)
             where TKey : notnull, IComparable<TKey>
@@ -92,8 +213,8 @@ namespace Sandbox.Generics.Models
             {
                 // go left
                 var left = result.Left;
-                result.Left = left is null 
-                    ? newNodeFn().Init(key, value) 
+                result.Left = left is null
+                    ? newNodeFn().Init(key, value)
                     : left.AddOrUpdate(key, value, newNodeFn);
             }
             else
