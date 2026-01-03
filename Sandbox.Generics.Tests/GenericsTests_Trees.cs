@@ -39,15 +39,11 @@ namespace Sandbox.Generics.Tests
         //[InlineData(ImplKind.MemBlocks, "abcdefg", 3)]
         public void AddValues(ImplKind impl, string order, byte maxDepth)
         {
+            // todo max depth tests
+
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
-            var tree = CreateEmpty(impl);
-            {
-                if (tree is IMemBlocksEntityBase packable) packable.Pack(dataStore);
-            }
-            tree.Freeze();
-            tree.Count.ShouldBe(0);
-            tree.Depth.ShouldBe((byte)0);
+            IBinaryTree<string, long>? tree = null;
 
             // add nodes in order
             int count = 0;
@@ -71,6 +67,7 @@ namespace Sandbox.Generics.Tests
                     pairs[i].Key.ShouldBeGreaterThan(pairs[i - 1].Key);
                 }
             }
+            tree.ShouldNotBeNull();
             tree.Count.ShouldBe(count);
             tree.Depth.ShouldBeLessThanOrEqualTo(maxDepth);
 
@@ -106,13 +103,7 @@ namespace Sandbox.Generics.Tests
         {
             using var dataStore = new DataFac.Storage.Testing.TestDataStore();
 
-            var tree = CreateEmpty(impl);
-            {
-                if (tree is IMemBlocksEntityBase packable) packable.Pack(dataStore);
-            }
-            tree.Freeze();
-            tree.Count.ShouldBe(0);
-            tree.Depth.ShouldBe((byte)0);
+            IBinaryTree<string, long>? tree = null;
 
             // add nodes in order
             int count = 0;

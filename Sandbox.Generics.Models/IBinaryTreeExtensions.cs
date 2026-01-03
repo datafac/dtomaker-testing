@@ -31,7 +31,7 @@ namespace Sandbox.Generics.Models
             where TKey : notnull, IComparable<TKey>
         {
             // todo sort by descending order if needed
-            if (tree is null || !tree.HasValue) yield break;
+            if (tree is null) yield break;
             foreach (var kvp in tree.Left.GetKeyValuePairs()) yield return kvp;
             yield return new KeyValuePair<TKey, TValue>(tree.Key, tree.Value);
             foreach (var kvp in tree.Right.GetKeyValuePairs()) yield return kvp;
@@ -68,7 +68,6 @@ namespace Sandbox.Generics.Models
         private static IBinaryTree<TKey, TValue> Init<TKey, TValue>(this IBinaryTree<TKey, TValue> node, TKey key, TValue value)
             where TKey : notnull, IComparable<TKey>
         {
-            node.HasValue = true;
             node.Key = key;
             node.Value = value;
             node.Count = 1;
@@ -78,10 +77,10 @@ namespace Sandbox.Generics.Models
             return node;
         }
 
-        public static IBinaryTree<TKey, TValue>? Remove<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key)
+        public static IBinaryTree<TKey, TValue>? Remove<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree, TKey key)
             where TKey : notnull, IComparable<TKey>
         {
-            if (!tree.HasValue) return tree;
+            if (tree is null) return null;
 
             // shallow clone (unfreeze) if needed
             IBinaryTree<TKey, TValue> result = tree.IsFrozen
@@ -199,18 +198,15 @@ namespace Sandbox.Generics.Models
             return result;
         }
 
-        public static IBinaryTree<TKey, TValue> AddOrUpdate<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key, TValue value,
+        public static IBinaryTree<TKey, TValue> AddOrUpdate<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree, TKey key, TValue value,
             Func<IBinaryTree<TKey, TValue>> newNodeFn)
             where TKey : notnull, IComparable<TKey>
         {
+            if (tree is null) return newNodeFn().Init(key, value);
+
             IBinaryTree<TKey, TValue> result = tree.IsFrozen
                 ? tree.PartCopy() as IBinaryTree<TKey, TValue> ?? throw new InvalidOperationException("Failed to create unfrozen copy.")
                 : tree;
-
-            if (!result.HasValue)
-            {
-                return result.Init(key, value);
-            }
 
             int comparison = result.Key.CompareTo(key);
             if (comparison == 0)
