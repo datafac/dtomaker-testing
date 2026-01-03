@@ -37,13 +37,18 @@ namespace Sandbox.Generics.Models
             foreach (var kvp in tree.Right.GetKeyValuePairs()) yield return kvp;
         }
 
+        private static int GetCount<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        {
+            if (tree is null) return 0;
+            if (tree.IsFrozen) return tree.Count;
+            return 1 + tree.Left.GetCount() + tree.Right.GetCount();
+        }
+
         private static void TrySetCount<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
         {
             if (tree is null) return;
-            int newCount = 0;
-            if (tree.HasValue) newCount = 1 + (tree.Left?.Count ?? 0) + (tree.Right?.Count ?? 0);
-            if (tree.Count == newCount) return;
-            tree.Count = newCount;
+            if (tree.IsFrozen) return;
+            tree.Count = 1 + tree.Left.GetCount() + tree.Right.GetCount();
         }
 
         private static byte GetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
