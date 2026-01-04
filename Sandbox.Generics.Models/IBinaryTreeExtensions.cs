@@ -4,6 +4,14 @@ using System.Collections.Generic;
 
 namespace Sandbox.Generics.Models
 {
+    /// <summary>
+    /// Provides extension methods for working with data structures that implement IBinaryTree<TKey, TValue>.
+    /// </summary>
+    /// <remarks>
+    /// These methods enable common operations such as searching, enumeration, addition, and removal
+    /// of nodes in a binary tree. When addition or removal operations are performed tree balance is maintained via
+    /// node rotatations so that the depth difference between left and right subtrees is never more than 1.
+    /// </remarks>
     public static class IBinaryTreeExtensions
     {
         public static IBinaryTree<TKey, TValue>? Get<TKey, TValue>(this IBinaryTree<TKey, TValue> tree, TKey key)
