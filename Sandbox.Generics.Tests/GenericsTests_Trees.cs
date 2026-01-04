@@ -59,7 +59,7 @@ namespace Sandbox.Generics.Tests
             }
 
             // checks
-            var pairs = tree.GetKeyValuePairs().ToArray();
+            var pairs = tree.GetKeyValuePairs(false).ToArray();
             for (int i = 0; i < pairs.Length; i++)
             {
                 if (i > 0)
@@ -137,7 +137,7 @@ namespace Sandbox.Generics.Tests
             }
             else
             {
-                var pairs = tree.GetKeyValuePairs().ToArray();
+                var pairs = tree.GetKeyValuePairs(false).ToArray();
                 for (int i = 0; i < pairs.Length; i++)
                 {
                     if (i > 0)

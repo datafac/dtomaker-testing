@@ -35,14 +35,23 @@ namespace Sandbox.Generics.Models
             }
         }
 
-        public static IEnumerable<KeyValuePair<TKey, TValue>> GetKeyValuePairs<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        public static IEnumerable<KeyValuePair<TKey, TValue>> GetKeyValuePairs<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree, bool reverse)
             where TKey : notnull, IComparable<TKey>
         {
-            // todo sort by descending order if needed
             if (tree is null) yield break;
-            foreach (var kvp in tree.Left.GetKeyValuePairs()) yield return kvp;
-            yield return new KeyValuePair<TKey, TValue>(tree.Key, tree.Value);
-            foreach (var kvp in tree.Right.GetKeyValuePairs()) yield return kvp;
+            if(reverse)
+            {
+                foreach (var kvp in tree.Right.GetKeyValuePairs(true)) yield return kvp;
+                yield return new KeyValuePair<TKey, TValue>(tree.Key, tree.Value);
+                foreach (var kvp in tree.Left.GetKeyValuePairs(true)) yield return kvp;
+            }
+            else
+            {
+                foreach (var kvp in tree.Left.GetKeyValuePairs(false)) yield return kvp;
+                yield return new KeyValuePair<TKey, TValue>(tree.Key, tree.Value);
+                foreach (var kvp in tree.Right.GetKeyValuePairs(false)) yield return kvp;
+
+            }
         }
 
         private static int GetCount<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
