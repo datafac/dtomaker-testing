@@ -44,13 +44,6 @@ namespace Sandbox.Generics.Models
             return 1 + tree.Left.GetCount() + tree.Right.GetCount();
         }
 
-        private static void TrySetCount<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
-        {
-            if (tree is null) return;
-            if (tree.IsFrozen) return;
-            tree.Count = 1 + tree.Left.GetCount() + tree.Right.GetCount();
-        }
-
         private static byte GetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
         {
             if (tree is null) return 0;
@@ -58,14 +51,46 @@ namespace Sandbox.Generics.Models
             return (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
         }
 
-        private static void TrySetDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        private static int GetBalance<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
+        {
+            if (tree is null) return 0;
+            return tree.Left.GetDepth() - tree.Right.GetDepth();
+        }
+
+        private static void TrySetCountAndDepth<TKey, TValue>(this IBinaryTree<TKey, TValue>? tree)
         {
             if (tree is null) return;
             if (tree.IsFrozen) return;
+            tree.Count = 1 + tree.Left.GetCount() + tree.Right.GetCount();
             tree.Depth = (byte)(1 + Math.Max(tree.Left.GetDepth(), tree.Right.GetDepth()));
         }
 
-        private static IBinaryTree<TKey, TValue> Init<TKey, TValue>(this IBinaryTree<TKey, TValue> node, TKey key, TValue value)
+        private static IBinaryTree<TKey, TValue> RotateLeft<TKey, TValue>(this IBinaryTree<TKey, TValue> node)
+            where TKey : notnull, IComparable<TKey>
+        {
+            if (node.Right is null) return node; // cannot rotate left
+            var newRoot = node.Right;
+            node.Right = newRoot.Left;
+            // unfreeze newRoot if needed
+            newRoot = newRoot.Unfrozen();
+            newRoot.Left = node;
+            return newRoot;
+        }
+
+        private static IBinaryTree<TKey, TValue> RotateRight<TKey, TValue>(this IBinaryTree<TKey, TValue> node)
+            where TKey : notnull, IComparable<TKey>
+        {
+            if (node.Left is null) return node; // cannot rotate right
+
+            var newRoot = node.Left;
+            node.Left = newRoot.Right;
+            // unfreeze newRoot if needed
+            newRoot = newRoot.Unfrozen();
+            newRoot.Right = node;
+            return newRoot;
+        }
+
+        private static IBinaryTree<TKey, TValue> InitLeaf<TKey, TValue>(this IBinaryTree<TKey, TValue> node, TKey key, TValue value)
             where TKey : notnull, IComparable<TKey>
         {
             node.Key = key;
@@ -154,47 +179,28 @@ namespace Sandbox.Generics.Models
             // rebalance if needed
             bool rotated = false;
             // doco: https://en.wikipedia.org/wiki/Tree_rotation
-            if (result.Left is not null && (result.Left.GetDepth() - (result.Right.GetDepth())) > 1)
+            int balance = result.GetBalance();
+            if (result.Left is not null && balance > 1)
             {
                 // left-heavy, perform right rotation
-                // todo special case
-                var newRoot = result.Left;
-                result.Left = newRoot.Right;
-                // unfreeze newRoot if needed
-                newRoot = newRoot.Unfrozen();
-                newRoot.Right = result;
-                result = newRoot;
+                result = result.RotateRight();
                 rotated = true;
             }
-            else if (result.Right is not null && (result.Right.GetDepth() - (result.Left.GetDepth())) > 1)
+            else if (result.Right is not null && balance < -1)
             {
                 // right-heavy, perform left rotation
-                var newRoot = result.Right;
-                result.Right = newRoot.Left;
-                // unfreeze newRoot if needed
-                newRoot = newRoot.Unfrozen();
-                newRoot.Left = result;
-                result = newRoot;
+                result = result.RotateLeft();
                 rotated = true;
             }
 
             if (rotated)
             {
                 // recalc count/depth for children
-                if (result.Left is not null)
-                {
-                    result.Left.TrySetCount();
-                    result.Left.TrySetDepth();
-                }
-                if (result.Right is not null)
-                {
-                    result.Right.TrySetCount();
-                    result.Right.TrySetDepth();
-                }
+                result.Left?.TrySetCountAndDepth();
+                result.Right?.TrySetCountAndDepth();
             }
 
-            result.TrySetCount();
-            result.TrySetDepth();
+            result.TrySetCountAndDepth();
             return result;
         }
 
@@ -202,7 +208,7 @@ namespace Sandbox.Generics.Models
             Func<IBinaryTree<TKey, TValue>> newNodeFn)
             where TKey : notnull, IComparable<TKey>
         {
-            if (tree is null) return newNodeFn().Init(key, value);
+            if (tree is null) return newNodeFn().InitLeaf(key, value);
 
             IBinaryTree<TKey, TValue> result = tree.IsFrozen
                 ? tree.PartCopy() as IBinaryTree<TKey, TValue> ?? throw new InvalidOperationException("Failed to create unfrozen copy.")
@@ -220,7 +226,7 @@ namespace Sandbox.Generics.Models
                 // go left
                 var left = result.Left;
                 result.Left = left is null
-                    ? newNodeFn().Init(key, value)
+                    ? newNodeFn().InitLeaf(key, value)
                     : left.AddOrUpdate(key, value, newNodeFn);
             }
             else
@@ -228,54 +234,35 @@ namespace Sandbox.Generics.Models
                 // go right
                 var right = result.Right;
                 result.Right = right is null
-                    ? newNodeFn().Init(key, value)
+                    ? newNodeFn().InitLeaf(key, value)
                     : right.AddOrUpdate(key, value, newNodeFn);
             }
 
             // rebalance if needed
             bool rotated = false;
             // doco: https://en.wikipedia.org/wiki/Tree_rotation
-            if (result.Left is not null && (result.Left.GetDepth() - (result.Right.GetDepth())) > 1)
+            int balance = result.GetBalance();
+            if (result.Left is not null && balance > 1)
             {
                 // left-heavy, perform right rotation
-                // todo special case
-                var newRoot = result.Left;
-                result.Left = newRoot.Right;
-                // unfreeze newRoot if needed
-                newRoot = newRoot.Unfrozen();
-                newRoot.Right = result;
-                result = newRoot;
+                result = result.RotateRight();
                 rotated = true;
             }
-            else if (result.Right is not null && (result.Right.GetDepth() - (result.Left.GetDepth())) > 1)
+            else if (result.Right is not null && balance < -1)
             {
                 // right-heavy, perform left rotation
-                var newRoot = result.Right;
-                result.Right = newRoot.Left;
-                // unfreeze newRoot if needed
-                newRoot = newRoot.Unfrozen();
-                newRoot.Left = result;
-                result = newRoot;
+                result = result.RotateLeft();
                 rotated = true;
             }
 
             if (rotated)
             {
                 // recalc count/depth for children
-                if (result.Left is not null)
-                {
-                    result.Left.TrySetCount();
-                    result.Left.TrySetDepth();
-                }
-                if (result.Right is not null)
-                {
-                    result.Right.TrySetCount();
-                    result.Right.TrySetDepth();
-                }
+                result.Left?.TrySetCountAndDepth();
+                result.Right?.TrySetCountAndDepth();
             }
 
-            result.TrySetCount();
-            result.TrySetDepth();
+            result.TrySetCountAndDepth();
             return result;
         }
     }
