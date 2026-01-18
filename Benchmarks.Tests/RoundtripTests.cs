@@ -2,10 +2,12 @@ using System.Threading.Tasks;
 
 namespace Benchmarks.Tests
 {
+
     public class RoundtripBasicsTests
     {
         [Theory]
         [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.Int32LE)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
         [InlineData(ValueKind.PairOfInt16)]
@@ -30,6 +32,7 @@ namespace Benchmarks.Tests
 
         [Theory]
         [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.Int32LE)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
         [InlineData(ValueKind.PairOfInt16)]
@@ -54,6 +57,7 @@ namespace Benchmarks.Tests
 
         [Theory]
         [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.Int32LE)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
         [InlineData(ValueKind.PairOfInt16)]
@@ -78,6 +82,7 @@ namespace Benchmarks.Tests
 
         [Theory]
         [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.Int32LE)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
         [InlineData(ValueKind.PairOfInt16)]
@@ -102,6 +107,7 @@ namespace Benchmarks.Tests
 
         [Theory]
         [InlineData(ValueKind.Bool)]
+        [InlineData(ValueKind.Int32LE)]
         [InlineData(ValueKind.DoubleLE)]
         [InlineData(ValueKind.Guid)]
         [InlineData(ValueKind.PairOfInt16)]

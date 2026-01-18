@@ -1,5 +1,5 @@
 ﻿using DataFac.Memory;
-using DTOMaker.Runtime;
+using DTOMaker.Models;
 using MemoryPack;
 using System;
 
@@ -67,6 +67,40 @@ namespace TestModels.MemPack
     }
 
     [MemoryPackable]
+    public sealed partial class MemoryPackCustom1 : ICustom1, IEquatable<MemoryPackCustom1>
+    {
+        public void Freeze() { }
+        public bool IsFrozen => false;
+        public IEntityBase PartCopy()
+        {
+            return new MemoryPackCustom1
+            {
+                Field1 = Field1,
+            };
+        }
+
+        [MemoryPackInclude] public DayOfWeek Field1 { get; set; }
+
+        #region IEquatable implementation
+        public bool Equals(MemoryPackCustom1? other)
+        {
+            return other is not null
+                && Field1 == other.Field1
+                ;
+        }
+
+        public override bool Equals(object? obj) => obj is MemoryPackCustom1 other && Equals(other);
+        public override int GetHashCode()
+        {
+            HashCode hasher = new();
+            hasher.Add(GetType());
+            hasher.Add(Field1);
+            return hasher.ToHashCode();
+        }
+        #endregion
+    }
+
+    [MemoryPackable]
     public sealed partial class MemoryPackMyDTO : IMyDTO, IEquatable<MemoryPackMyDTO>
     {
         public void Freeze() { }
@@ -75,7 +109,8 @@ namespace TestModels.MemPack
         {
             return new MemoryPackMyDTO
             {
-                Field01 = Field01,
+                FBool01 = FBool01,
+                FSInt04 = FSInt04,
                 Field02LE = Field02LE,
                 Field03BE = Field03BE,
                 Field04 = Field04,
@@ -87,7 +122,8 @@ namespace TestModels.MemPack
             };
         }
 
-        [MemoryPackInclude] public bool Field01 { get; set; }
+        [MemoryPackInclude] public bool FBool01 { get; set; }
+        [MemoryPackInclude] public int FSInt04 { get; set; }
         [MemoryPackInclude] public double Field02LE { get; set; }
         [MemoryPackInclude] public double Field03BE { get; set; }
         [MemoryPackInclude] public Guid Field04 { get; set; }
@@ -112,7 +148,8 @@ namespace TestModels.MemPack
         public bool Equals(MemoryPackMyDTO? other)
         {
             return other is not null
-                && Field01 == other.Field01
+                && FBool01 == other.FBool01
+                && FSInt04 == other.FSInt04
                 && Field02LE == other.Field02LE
                 && Field03BE == other.Field03BE
                 && Field04 == other.Field04
@@ -128,7 +165,8 @@ namespace TestModels.MemPack
         {
             HashCode hasher = new();
             hasher.Add(GetType());
-            hasher.Add(Field01);
+            hasher.Add(FBool01);
+            hasher.Add(FSInt04);
             hasher.Add(Field02LE);
             hasher.Add(Field03BE);
             hasher.Add(Field04);

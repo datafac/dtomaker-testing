@@ -1,7 +1,4 @@
-﻿using DTOMaker.Models;
-using DTOMaker.Runtime;
-
-namespace Sandbox.Generics.Models
+﻿namespace Sandbox.Generics.Models
 {
 //    [Entity]
 //    [Id(101)]

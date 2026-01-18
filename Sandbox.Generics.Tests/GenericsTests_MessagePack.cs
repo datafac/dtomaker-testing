@@ -1,7 +1,3 @@
-using Shouldly;
-using System;
-using Xunit;
-
 namespace Sandbox.Generics.Tests
 {
     //public class GenericsTests_MessagePack

@@ -3,6 +3,7 @@
     public enum ValueKind
     {
         Bool,
+        Int32LE,
         DoubleLE,
         Guid,
         PairOfInt16,
@@ -16,6 +17,8 @@
         BinaryEmpty,
         BinarySmall,
         BinaryLarge,
+        // custom
+        //DayOfWeek,
         AllPropsSet,
     }
 }

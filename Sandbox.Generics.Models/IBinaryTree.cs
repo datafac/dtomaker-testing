@@ -1,5 +1,4 @@
 ﻿using DTOMaker.Models;
-using DTOMaker.Runtime;
 
 namespace Sandbox.Generics.Models
 {

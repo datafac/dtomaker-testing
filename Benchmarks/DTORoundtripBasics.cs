@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using DataFac.Memory;
-using DataFac.Storage;
 using DataFac.Storage.Testing;
 using DTOMaker.Runtime.MsgPack2;
 using MemoryPack;
@@ -14,6 +13,7 @@ using TestModels;
 
 namespace Benchmarks
 {
+
     //[SimpleJob(RuntimeMoniker.Net80)]
     //[SimpleJob(RuntimeMoniker.Net90)]
     [SimpleJob(RuntimeMoniker.Net10_0)]
@@ -27,7 +27,8 @@ namespace Benchmarks
         public bool CheckValues = false;
 
         //[Params(ValueKind.StringNull, ValueKind.StringEmpty, ValueKind.StringSmall, ValueKind.StringLarge)]
-        [Params(ValueKind.AllPropsSet)]
+        //[Params(ValueKind.AllPropsSet)]
+        [Params(ValueKind.BinaryNull, ValueKind.BinaryEmpty, ValueKind.BinarySmall, ValueKind.BinaryLarge)]
         public ValueKind Kind;
 
         private readonly TestDataStore _dataStore = new TestDataStore();
@@ -49,7 +50,10 @@ namespace Benchmarks
             switch (Kind)
             {
                 case ValueKind.Bool:
-                    dto.Field01 = true;
+                    dto.FBool01 = true;
+                    break;
+                case ValueKind.Int32LE:
+                    dto.FSInt04 = Int32.MaxValue;
                     break;
                 case ValueKind.DoubleLE:
                     dto.Field02LE = Double.MaxValue;
@@ -91,7 +95,8 @@ namespace Benchmarks
                     dto.Field06 = LargeOctets;
                     break;
                 case ValueKind.AllPropsSet:
-                    dto.Field01 = true;
+                    dto.FBool01 = true;
+                    dto.FSInt04 = Int32.MaxValue;
                     dto.Field02LE = Double.MaxValue;
                     dto.Field04 = guidValue;
                     dto.Field07 = pairOfInt16Value;
