@@ -10,11 +10,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.16.14" />
-		<PackageReference Include="DTOMaker.Models" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.7.22" />
+		<PackageReference Include="DTOMaker.Models" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.7.25" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
 			<PrivateAssets>all</PrivateAssets>

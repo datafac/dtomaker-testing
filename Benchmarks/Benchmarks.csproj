@@ -11,16 +11,16 @@
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
 		<PackageReference Include="DataFac.Memory" Version="0.16.14" />
-		<PackageReference Include="DataFac.Storage.Testing" Version="2.0.7" />
-		<PackageReference Include="DTOMaker.Models" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.Runtime.MsgPack2" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="1.7.22" />
-		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="1.7.22" />
+		<PackageReference Include="DataFac.Storage.Testing" Version="2.0.8" />
+		<PackageReference Include="DTOMaker.Models" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.Runtime.MsgPack2" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="1.7.25" />
+		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="1.7.25" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="System.Text.Json" Version="10.0.2" />
 	</ItemGroup>
