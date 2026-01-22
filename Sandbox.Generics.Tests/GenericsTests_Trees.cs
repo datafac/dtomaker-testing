@@ -1,3 +1,4 @@
+using DTOMaker.Models.BinaryTree;
 using DTOMaker.Runtime.MemBlocks;
 using Sandbox.Generics.Models;
 using Shouldly;
