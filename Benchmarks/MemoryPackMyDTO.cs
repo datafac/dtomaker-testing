@@ -1,5 +1,6 @@
 ﻿using DataFac.Memory;
 using DTOMaker.Models;
+using DTOMaker.Models.BinaryTree;
 using MemoryPack;
 using System;
 
@@ -164,7 +165,7 @@ namespace TestModels.MemPack
         public override int GetHashCode()
         {
             HashCode hasher = new();
-            hasher.Add(GetType());
+            hasher.Add(typeof(MemoryPackMyDTO));
             hasher.Add(FBool01);
             hasher.Add(FSInt04);
             hasher.Add(Field02LE);
@@ -182,5 +183,62 @@ namespace TestModels.MemPack
             return hasher.ToHashCode();
         }
         #endregion
+    }
+
+    [MemoryPackable]
+    public sealed partial class TextTree : ITextTree, IEquatable<TextTree>, IBinaryTree<int, string>
+    {
+        public void Freeze() { }
+        public bool IsFrozen => false;
+        public IEntityBase PartCopy()
+        {
+            return new TextTree
+            {
+                Count = this.Count,
+                Depth = this.Depth,
+                Key = this.Key,
+                Value = this.Value,
+                Left = this.Left,
+                Right = this.Right,
+            };
+        }
+
+        [MemoryPackInclude] public string Value { get; set; } = string.Empty;
+        [MemoryPackInclude] public int Key { get; set; }
+        [MemoryPackInclude] public int Count { get; set; }
+        [MemoryPackInclude] public byte Depth { get; set; }
+        [MemoryPackInclude] public TextTree? Left { get; set; }
+        [MemoryPackIgnore] ITextTree? ITextTree.Left { get => Left; set => Left = value is null ? null : (TextTree)value; }
+        [MemoryPackIgnore] IBinaryTree<int, string>? IBinaryTree<int, string>.Left { get => Left; set => Left = value is null ? null : (TextTree)value; }
+        [MemoryPackInclude] public TextTree? Right { get; set; }
+        [MemoryPackIgnore] ITextTree? ITextTree.Right { get => Right; set => Right = value is null ? null : (TextTree)value; }
+        [MemoryPackIgnore] IBinaryTree<int, string>? IBinaryTree<int, string>.Right { get => Right; set => Right = value is null ? null : (TextTree)value; }
+
+        public bool Equals(TextTree? other)
+        {
+            return other is not null
+                && Count == other.Count
+                && Depth == other.Depth
+                && Key == other.Key
+                && Value == other.Value
+                && Left == other.Left
+                && Right == other.Right
+                ;
+        }
+
+        public override bool Equals(object? obj) => obj is TextTree other && Equals(other);
+        public override int GetHashCode()
+        {
+            HashCode hasher = new();
+            hasher.Add(typeof(TextTree));
+            hasher.Add(Count);
+            hasher.Add(Depth);
+            hasher.Add(Key);
+            hasher.Add(Value);
+            return hasher.ToHashCode();
+        }
+
+        public static bool operator ==(TextTree? left, TextTree? right) => left is null ? right is null : left.Equals(right);
+        public static bool operator !=(TextTree? left, TextTree? right) => left is null ? right is not null : !left.Equals(right);
     }
 }

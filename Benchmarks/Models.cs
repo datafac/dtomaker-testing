@@ -1,5 +1,6 @@
 ﻿using DataFac.Memory;
 using DTOMaker.Models;
+using DTOMaker.Models.BinaryTree;
 using System;
 
 namespace TestModels
@@ -62,4 +63,82 @@ namespace TestModels
         [Member(2)] double Height { get; }
     }
 
+    [Entity(10, LayoutMethod.Linear)]
+    public interface ITextTree : IEntityBase
+    {
+        [Member(1)] string Value { get; set; }
+        [Member(2)] int Key { get; set; }
+        [Member(3)] int Count { get; set; }
+        [Member(4)] byte Depth { get; set; }
+        [Member(5)] ITextTree? Left { get; set; }
+        [Member(6)] ITextTree? Right { get; set; }
+    }
+}
+
+namespace TestModels.JsonSystemText
+{
+    public partial class TextTree : IBinaryTree<int, string>
+    {
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
+        {
+            get => Left;
+            set => Left = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
+        }
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
+        {
+            get => Right;
+            set => Right = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
+        }
+    }
+}
+
+namespace TestModels.JsonNewtonSoft
+{
+    public partial class TextTree : IBinaryTree<int, string>
+    {
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
+        {
+            get => Left;
+            set => Left = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
+        }
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
+        {
+            get => Right;
+            set => Right = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
+        }
+    }
+}
+
+namespace TestModels.MsgPack2
+{
+    public partial class TextTree : IBinaryTree<int, string>
+    {
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
+        {
+            get => Left;
+            set => Left = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
+        }
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
+        {
+            get => Right;
+            set => Right = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
+        }
+    }
+}
+
+namespace TestModels.MemBlocks
+{
+    public partial class TextTree : IBinaryTree<int, string>
+    {
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
+        {
+            get => Left;
+            set => Left = value is ITextTree tt ? TextTree.CreateNullable(tt) : null;
+        }
+        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
+        {
+            get => Right;
+            set => Right = value is ITextTree tt ? TextTree.CreateNullable(tt) : null;
+        }
+    }
 }

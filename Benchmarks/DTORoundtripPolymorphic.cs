@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 using DataFac.Storage.Testing;
+using DTOMaker.Models.BinaryTree;
 using DTOMaker.Runtime.MsgPack2;
 using MemoryPack;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Benchmarks
 {
+
     //[SimpleJob(RuntimeMoniker.Net80)]
     //[SimpleJob(RuntimeMoniker.Net90)]
     [SimpleJob(RuntimeMoniker.Net10_0)]
