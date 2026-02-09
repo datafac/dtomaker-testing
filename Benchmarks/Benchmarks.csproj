@@ -13,15 +13,15 @@
 		<PackageReference Include="DataFac.Memory" Version="0.18.11" />
 		<PackageReference Include="DataFac.Storage.Testing" Version="2.1.13" />
 		<PackageReference Include="DTOMaker.Models" Version="1.9.5" />
-		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="1.9.4-dev" />
+		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="1.9.5" />
 		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.9.5" />
 		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.9.5" />
 		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="1.9.5" />
 		<PackageReference Include="DTOMaker.Runtime.MsgPack2" Version="1.9.5" />
 		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="1.9.5" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.9.4-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="1.9.4-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="1.9.4-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.9.5" />
+		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="1.9.5" />
+		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="1.9.5" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="System.Text.Json" Version="10.0.2" />
 	</ItemGroup>
