@@ -10,17 +10,17 @@
 
 	<ItemGroup>
 		<PackageReference Include="DataFac.Memory" Version="0.18.11" />
-		<PackageReference Include="DTOMaker.Models" Version="1.9.5" />
-		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="1.9.5" />
-		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.9.5" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="1.9.5" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.9.5" />
+		<PackageReference Include="DTOMaker.Models" Version="1.10.4" />
+		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="1.10.4" />
+		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.10.4" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="1.10.4" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="1.10.4" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="System.Text.Json" Version="10.0.2" />
+		<PackageReference Include="System.Text.Json" Version="10.0.3" />
 	</ItemGroup>
 
 </Project>
