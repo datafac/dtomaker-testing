@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DataFac.Memory" Version="0.19.5" />
+		<PackageReference Include="DataFac.Memory" Version="0.20.3" />
 		<PackageReference Include="DTOMaker.Models" Version="1.11.8-dev" />
 		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="1.11.8-dev" />
 		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="1.11.8-dev" />
