@@ -2,42 +2,42 @@
 using System;
 namespace DTOMakerV10.Models3
 {
-    [Entity(1, LayoutMethod.Linear)]
+    [Entity(1)]
     public interface INode : IEntityBase
     {
-        [Member(1)][Length(16)] String Key { get; }
+        [Member(1)] String Key { get; }
     }
 
-    [Entity(2, LayoutMethod.Linear)]
+    [Entity(2)]
     public interface IStringNode : INode
     {
-        [Member(1)][Length(64)] String Value { get; }
+        [Member(1)] String Value { get; }
     }
 
-    [Entity(3, LayoutMethod.Linear)]
+    [Entity(3)]
     public interface INumericNode : INode
     {
     }
 
-    [Entity(4, LayoutMethod.Linear)]
+    [Entity(4)]
     public interface IInt64Node : INumericNode
     {
         [Member(1)] Int64 Value { get; }
     }
 
-    [Entity(5, LayoutMethod.Linear)]
+    [Entity(5)]
     public interface IDoubleNode : INumericNode
     {
         [Member(1)] Double Value { get; }
     }
 
-    [Entity(6, LayoutMethod.Linear)]
+    [Entity(6)]
     public interface IBooleanNode : INode
     {
         [Member(1)] Boolean Value { get; }
     }
 
-    [Entity(10, LayoutMethod.Linear)]
+    [Entity(10)]
     public interface ITree : IEntityBase
     {
         [Member(1)] ITree? Left { get; set; }

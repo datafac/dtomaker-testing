@@ -5,7 +5,7 @@ using System;
 
 namespace TestModels
 {
-    [Entity(1, LayoutMethod.Linear)]
+    [Entity(1)]
     public interface IMyDTO : IEntityBase
     {
         [Member(1)] bool FBool01 { get; set; }
@@ -22,48 +22,48 @@ namespace TestModels
         //todo [Member(n)] DayOfWeek Field0n { get; set; }
     }
 
-    [Entity(2, LayoutMethod.Linear)]
+    [Entity(2)]
     public interface ICustom1 : IEntityBase
     {
         [Member(1, NativeType.Int32, typeof(DayOfWeekConverter))] DayOfWeek Field1 { get; set; }
     }
 
-    [Entity(3, LayoutMethod.Linear)]
+    [Entity(3)]
     public interface IShape : IEntityBase { }
 
-    [Entity(4, LayoutMethod.Linear)]
+    [Entity(4)]
     public interface ITriangle : IShape { }
 
-    [Entity(5, LayoutMethod.Linear)]
+    [Entity(5)]
     public interface IEquilateral : ITriangle
     {
         [Member(1)] double Length { get; }
     }
 
-    [Entity(6, LayoutMethod.Linear)]
+    [Entity(6)]
     public interface IRightTriangle : ITriangle
     {
         [Member(1)] double Length { get; }
         [Member(2)] double Height { get; }
     }
 
-    [Entity(7, LayoutMethod.Linear)]
+    [Entity(7)]
     public interface IQuadrilateral : IShape { }
 
-    [Entity(8, LayoutMethod.Linear)]
+    [Entity(8)]
     public interface ISquare : IQuadrilateral
     {
         [Member(1)] double Length { get; }
     }
 
-    [Entity(9, LayoutMethod.Linear)]
+    [Entity(9)]
     public interface IRectangle : IQuadrilateral
     {
         [Member(1)] double Length { get; }
         [Member(2)] double Height { get; }
     }
 
-    [Entity(10, LayoutMethod.Linear)]
+    [Entity(10)]
     public interface ITextTree : IEntityBase
     {
         [Member(1)] string Value { get; set; }
