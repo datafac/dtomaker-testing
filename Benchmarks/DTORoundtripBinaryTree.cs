@@ -28,14 +28,13 @@ namespace Benchmarks
         public Counters GetCounters() => DataStore.GetCounters();
         public void ResetCounters() => DataStore.ResetCounters();
 
-        private static T Populate<T>() where T : class, IBinaryTree<int, string>, new()
+        private static TNode Populate<TNode>() where TNode : class, IBinaryTree<int, string, TNode>, new()
         {
-            static IBinaryTree<int, string> newNodeFn() => new T();
-            IBinaryTree<int, string>? tree = null;
-            tree = tree.AddOrUpdate(1, "Alice", newNodeFn);
-            tree = tree.AddOrUpdate(2, "Brett", newNodeFn);
-            tree = tree.AddOrUpdate(3, "Chloe", newNodeFn);
-            return tree as T ?? throw new InvalidOperationException("Tree is null after adding nodes");
+            TNode tree = new TNode();
+            tree = tree.AddOrUpdate(1, "Alice");
+            tree = tree.AddOrUpdate(2, "Brett");
+            tree = tree.AddOrUpdate(3, "Chloe");
+            return tree;
         }
 
         [Benchmark(Baseline = true)]

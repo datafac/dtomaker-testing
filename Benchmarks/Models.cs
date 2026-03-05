@@ -77,68 +77,20 @@ namespace TestModels
 
 namespace TestModels.JsonSystemText
 {
-    public partial class TextTree : IBinaryTree<int, string>
-    {
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
-        {
-            get => Left;
-            set => Left = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
-        }
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
-        {
-            get => Right;
-            set => Right = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
-        }
-    }
+    public partial class TextTree : IBinaryTree<int, string, TextTree> { }
 }
 
 namespace TestModels.JsonNewtonSoft
 {
-    public partial class TextTree : IBinaryTree<int, string>
-    {
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
-        {
-            get => Left;
-            set => Left = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
-        }
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
-        {
-            get => Right;
-            set => Right = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
-        }
-    }
+    public partial class TextTree : IBinaryTree<int, string, TextTree> { }
 }
 
 namespace TestModels.MsgPack2
 {
-    public partial class TextTree : IBinaryTree<int, string>
-    {
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
-        {
-            get => Left;
-            set => Left = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
-        }
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
-        {
-            get => Right;
-            set => Right = value is ITextTree tt ? TextTree.CreateFrom(tt) : null;
-        }
-    }
+    public partial class TextTree : IBinaryTree<int, string, TextTree> { }
 }
 
 namespace TestModels.MemBlocks
 {
-    public partial class TextTree : IBinaryTree<int, string>
-    {
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Left
-        {
-            get => Left;
-            set => Left = value is ITextTree tt ? TextTree.CreateNullable(tt) : null;
-        }
-        IBinaryTree<int, string>? IBinaryTree<int, string>.Right
-        {
-            get => Right;
-            set => Right = value is ITextTree tt ? TextTree.CreateNullable(tt) : null;
-        }
-    }
+    public partial class TextTree : IBinaryTree<int, string, TextTree> { }
 }

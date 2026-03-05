@@ -186,7 +186,7 @@ namespace TestModels.MemPack
     }
 
     [MemoryPackable]
-    public sealed partial class TextTree : ITextTree, IEquatable<TextTree>, IBinaryTree<int, string>
+    public sealed partial class TextTree : ITextTree, IEquatable<TextTree>, IBinaryTree<int, string, TextTree>
     {
         public void Freeze() { }
         public bool IsFrozen => false;
@@ -209,10 +209,10 @@ namespace TestModels.MemPack
         [MemoryPackInclude] public byte Depth { get; set; }
         [MemoryPackInclude] public TextTree? Left { get; set; }
         [MemoryPackIgnore] ITextTree? ITextTree.Left { get => Left; set => Left = value is null ? null : (TextTree)value; }
-        [MemoryPackIgnore] IBinaryTree<int, string>? IBinaryTree<int, string>.Left { get => Left; set => Left = value is null ? null : (TextTree)value; }
+        //[MemoryPackIgnore] IBinaryTree<int, string, TextTree>? IBinaryTree<int, string, TextTree>.Left { get => Left; set => Left = value is null ? null : (TextTree)value; }
         [MemoryPackInclude] public TextTree? Right { get; set; }
         [MemoryPackIgnore] ITextTree? ITextTree.Right { get => Right; set => Right = value is null ? null : (TextTree)value; }
-        [MemoryPackIgnore] IBinaryTree<int, string>? IBinaryTree<int, string>.Right { get => Right; set => Right = value is null ? null : (TextTree)value; }
+        //[MemoryPackIgnore] IBinaryTree<int, string, TextTree>? IBinaryTree<int, string, TextTree>.Right { get => Right; set => Right = value is null ? null : (TextTree)value; }
 
         public bool Equals(TextTree? other)
         {
