@@ -25,7 +25,7 @@ namespace TestModels
     [Entity(2)]
     public interface ICustom1 : IEntityBase
     {
-        [Member(1, NativeType.Int32, typeof(DayOfWeekConverter))] DayOfWeek Field1 { get; set; }
+        [Member(1, NativeType.Byte, typeof(DayOfWeekConverter))] DayOfWeek Field1 { get; set; }
     }
 
     [Entity(3)]
