@@ -1,6 +1,7 @@
 ﻿using DataFac.Storage;
 using Shouldly;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Benchmarks.Tests
 {
