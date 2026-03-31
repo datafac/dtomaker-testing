@@ -55,11 +55,11 @@ namespace Benchmarks
         {
             var orig = Populate<TestModels.MemBlocks.TextTree>();
             await orig.Pack(DataStore);
-            var buffers = orig.GetBuffers();
-            var copy = TestModels.MemBlocks.TextTree.DeserializeFrom(buffers);
+            var buffer = orig.GetBuffer();
+            var copy = TestModels.MemBlocks.TextTree.DeserializeFrom(buffer);
             if (CheckValues)
             {
-                //await copy.UnpackAll(DataStore);
+                await copy.UnpackAll(DataStore);
                 if (!copy.Equals(orig))
                 {
                     throw new Exception("Roundtrip values do not match");

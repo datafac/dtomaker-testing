@@ -26,9 +26,9 @@ namespace Benchmarks
         /// </summary>
         public bool CheckValues = false;
 
-        //[Params(ValueKind.StringNull, ValueKind.StringEmpty, ValueKind.StringSmall, ValueKind.StringLarge)]
+        [Params(ValueKind.StringNull, ValueKind.StringEmpty, ValueKind.StringSmall, ValueKind.StringLarge)]
         //[Params(ValueKind.AllPropsSet)]
-        [Params(ValueKind.BinaryNull, ValueKind.BinaryEmpty, ValueKind.BinarySmall, ValueKind.BinaryLarge)]
+        //[Params(ValueKind.BinaryNull, ValueKind.BinaryEmpty, ValueKind.BinarySmall, ValueKind.BinaryLarge)]
         public ValueKind Kind;
 
         private readonly TestDataStore _dataStore = new TestDataStore();
@@ -144,14 +144,14 @@ namespace Benchmarks
             var orig = new TestModels.MemBlocks.MyDTO();
             SetField(orig, Kind);
             await orig.Pack(_dataStore);
-            ReadOnlySequence<byte> buffers = orig.GetBuffers();
-            TestModels.MemBlocks.MyDTO copy = new TestModels.MemBlocks.MyDTO(buffers);
+            var buffer = orig.GetBuffer();
+            TestModels.MemBlocks.MyDTO copy = new TestModels.MemBlocks.MyDTO(buffer);
             if (CheckValues)
             {
                 await copy.UnpackAll(_dataStore);
                 if (!copy.Equals(orig)) throw new Exception("Roundtrip values do not match");
             }
-            return buffers.Length;
+            return buffer.Length;
         }
 
         [Benchmark]

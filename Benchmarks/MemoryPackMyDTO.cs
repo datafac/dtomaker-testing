@@ -136,7 +136,7 @@ namespace TestModels.MemPack
         [MemoryPackIgnore]
         Octets? IMyDTO.Field06
         {
-            get => Field06 is null ? null : Octets.UnsafeWrap(Field06.Value);
+            get => Field06 is null ? null : Octets.Wrap(Field06.Value);
             set => Field06 = (value is null) ? null : value.AsMemory();
         }
 

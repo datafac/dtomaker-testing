@@ -10,18 +10,18 @@
 
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
-		<PackageReference Include="DataFac.Memory" Version="0.20.4" />
-		<PackageReference Include="DataFac.Storage.Testing" Version="2.2.2-dev" />
-		<PackageReference Include="DTOMaker.Models" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.Runtime.MsgPack2" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="2.0.29-dev" />
-		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="2.0.29-dev" />
+		<PackageReference Include="DataFac.Memory" Version="1.0.2-dev" />
+		<PackageReference Include="DataFac.Storage.Testing" Version="3.0.4-dev" />
+		<PackageReference Include="DTOMaker.Models" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.Runtime.JsonNewtonSoft" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="2.0.36-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MemBlocks" Version="2.0.36-dev" />
+		<PackageReference Include="DTOMaker.Runtime.MsgPack2" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonNewtonSoft" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.JsonSystemText" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.MemBlocks" Version="2.0.38-dev" />
+		<PackageReference Include="DTOMaker.SrcGen.MsgPack2" Version="2.0.38-dev" />
 		<PackageReference Include="MemoryPack" Version="1.21.4" />
 		<PackageReference Include="System.Text.Json" Version="10.0.5" />
 	</ItemGroup>

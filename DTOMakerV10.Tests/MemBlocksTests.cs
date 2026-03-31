@@ -1,6 +1,7 @@
 ﻿using DataFac.Memory;
 using DataFac.Storage.Testing;
 using DTOMaker.Models;
+using DTOMaker.Runtime;
 using DTOMaker.Runtime.MemBlocks;
 using DTOMakerV10.Models;
 using Shouldly;
@@ -26,11 +27,11 @@ namespace DTOMakerV10.Tests
                 }
             }
         }
-        public static string ToDisplay(this ReadOnlySequence<byte> sequence)
+        public static string ToDisplay(this ReadOnlyMemory<byte> buffer)
         {
             var result = new StringBuilder();
             int i = 0;
-            foreach (byte b in sequence.ToBytes())
+            foreach (byte b in buffer.Span)
             {
                 if (i % 32 == 0)
                 {
@@ -53,8 +54,8 @@ namespace DTOMakerV10.Tests
         private readonly TestDataStore _dataStore = new TestDataStore();
 
 
-        private async Task<string> Roundtrip<TValue, TMsg>(TValue value, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : class, IEntityBase, IMemBlocksEntity<TMsg>, IEquatable<TMsg>, new()
+        private async Task<string> Roundtrip<TValue, TMsg>(TValue value, Func<ReadOnlyMemory<byte>, TMsg> factory, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
+            where TMsg : class, IEntityBase, IMemoryBlockEntity, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
@@ -62,14 +63,8 @@ namespace DTOMakerV10.Tests
             sendMsg.IsFrozen.ShouldBeTrue();
 
             // act
-            var buffers = sendMsg.GetBuffers();
-#if NET8_0_OR_GREATER
-            TMsg recdMsg = TMsg.CreateInstance(buffers);
-#else
-            TMsg temp = new TMsg();
-            var factory = temp.GetFactory();
-            TMsg recdMsg = factory.CreateInstance(buffers);
-#endif
+            var buffer = sendMsg.GetBuffer();
+            TMsg recdMsg = factory(buffer);
             recdMsg.ShouldNotBeNull();
             await recdMsg.UnpackAll(_dataStore);
             recdMsg.IsFrozen.ShouldBeTrue();
@@ -86,35 +81,35 @@ namespace DTOMakerV10.Tests
             recdMsg.GetHashCode().ShouldBe(sendMsg.GetHashCode());
 
             // return buffer for verification
-            return buffers.ToDisplay(); // string.Join("-", buffers.ToArray().Select(x => x.ToString("X2")));
+            return buffer.ToDisplay(); // string.Join("-", buffers.ToArray().Select(x => x.ToString("X2")));
         }
 
-        private async Task<string> Roundtrip_Boolean_Value(Boolean value) => await Roundtrip<Boolean, Models.MemBlocks.Data_Boolean>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Boolean_Value(Boolean value) => await Roundtrip<Boolean, Models.MemBlocks.Data_Boolean>(value, (b) => new Models.MemBlocks.Data_Boolean(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Boolean_False() => await Verifier.Verify(await Roundtrip_Boolean_Value(false));
         [Fact] public async Task Roundtrip_Boolean_True() => await Verifier.Verify(await Roundtrip_Boolean_Value(true));
 
-        private async Task<string> Roundtrip_SByte_Value(SByte value) => await Roundtrip<SByte, Models.MemBlocks.Data_SByte>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_SByte_Value(SByte value) => await Roundtrip<SByte, Models.MemBlocks.Data_SByte>(value, (b) => new Models.MemBlocks.Data_SByte(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_SByte_DefVal() => await Verifier.Verify(await Roundtrip_SByte_Value(0));
         [Fact] public async Task Roundtrip_SByte_PosOne() => await Verifier.Verify(await Roundtrip_SByte_Value(1));
         [Fact] public async Task Roundtrip_SByte_NegOne() => await Verifier.Verify(await Roundtrip_SByte_Value(-1));
         [Fact] public async Task Roundtrip_SByte_MaxVal() => await Verifier.Verify(await Roundtrip_SByte_Value(SByte.MaxValue));
         [Fact] public async Task Roundtrip_SByte_MinVal() => await Verifier.Verify(await Roundtrip_SByte_Value(SByte.MinValue));
 
-        private async Task<string> Roundtrip_Int16_Value(Int16 value) => await Roundtrip<Int16, Models.MemBlocks.Data_Int16>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Int16_Value(Int16 value) => await Roundtrip<Int16, Models.MemBlocks.Data_Int16>(value, (b) => new Models.MemBlocks.Data_Int16(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Int16_DefVal() => await Verifier.Verify(await Roundtrip_Int16_Value(0));
         [Fact] public async Task Roundtrip_Int16_PosOne() => await Verifier.Verify(await Roundtrip_Int16_Value(1));
         [Fact] public async Task Roundtrip_Int16_NegOne() => await Verifier.Verify(await Roundtrip_Int16_Value(-1));
         [Fact] public async Task Roundtrip_Int16_MaxVal() => await Verifier.Verify(await Roundtrip_Int16_Value(Int16.MaxValue));
         [Fact] public async Task Roundtrip_Int16_MinVal() => await Verifier.Verify(await Roundtrip_Int16_Value(Int16.MinValue));
 
-        private async Task<string> Roundtrip_Int32_Value(Int32 value) => await Roundtrip<Int32, Models.MemBlocks.Data_Int32>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Int32_Value(Int32 value) => await Roundtrip<Int32, Models.MemBlocks.Data_Int32>(value, (b) => new Models.MemBlocks.Data_Int32(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Int32_DefVal() => await Verifier.Verify(await Roundtrip_Int32_Value(0));
         [Fact] public async Task Roundtrip_Int32_PosOne() => await Verifier.Verify(await Roundtrip_Int32_Value(1));
         [Fact] public async Task Roundtrip_Int32_NegOne() => await Verifier.Verify(await Roundtrip_Int32_Value(-1));
         [Fact] public async Task Roundtrip_Int32_MaxVal() => await Verifier.Verify(await Roundtrip_Int32_Value(Int32.MaxValue));
         [Fact] public async Task Roundtrip_Int32_MinVal() => await Verifier.Verify(await Roundtrip_Int32_Value(Int32.MinValue));
 
-        private async Task<string> Roundtrip_Int64_Value(Int64 value) => await Roundtrip<Int64, Models.MemBlocks.Data_Int64>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Int64_Value(Int64 value) => await Roundtrip<Int64, Models.MemBlocks.Data_Int64>(value, (b) => new Models.MemBlocks.Data_Int64(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Int64_DefVal() => await Verifier.Verify(await Roundtrip_Int64_Value(0));
         [Fact] public async Task Roundtrip_Int64_PosOne() => await Verifier.Verify(await Roundtrip_Int64_Value(1));
         [Fact] public async Task Roundtrip_Int64_NegOne() => await Verifier.Verify(await Roundtrip_Int64_Value(-1));
@@ -122,7 +117,7 @@ namespace DTOMakerV10.Tests
         [Fact] public async Task Roundtrip_Int64_MinVal() => await Verifier.Verify(await Roundtrip_Int64_Value(Int64.MinValue));
 
 #if NET8_0_OR_GREATER
-        private async Task<string> Roundtrip_Int128_Value(Int128 value) => await Roundtrip<Int128, Models.MemBlocks.Data_Int128>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Int128_Value(Int128 value) => await Roundtrip<Int128, Models.MemBlocks.Data_Int128>(value, (b) => new Models.MemBlocks.Data_Int128(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Int128_DefVal() => await Verifier.Verify(await Roundtrip_Int128_Value(0));
         [Fact] public async Task Roundtrip_Int128_PosOne() => await Verifier.Verify(await Roundtrip_Int128_Value(1));
         [Fact] public async Task Roundtrip_Int128_NegOne() => await Verifier.Verify(await Roundtrip_Int128_Value(-1));
@@ -130,76 +125,76 @@ namespace DTOMakerV10.Tests
         [Fact] public async Task Roundtrip_Int128_MinVal() => await Verifier.Verify(await Roundtrip_Int128_Value(Int128.MinValue));
 #endif
 
-        private async Task<string> Roundtrip_Byte_Value(Byte value) => await Roundtrip<Byte, Models.MemBlocks.Data_Byte>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Byte_Value(Byte value) => await Roundtrip<Byte, Models.MemBlocks.Data_Byte>(value, (b) => new Models.MemBlocks.Data_Byte(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Byte_DefVal() => await Verifier.Verify(await Roundtrip_Byte_Value(0));
         [Fact] public async Task Roundtrip_Byte_PosOne() => await Verifier.Verify(await Roundtrip_Byte_Value(1));
         [Fact] public async Task Roundtrip_Byte_MaxVal() => await Verifier.Verify(await Roundtrip_Byte_Value(Byte.MaxValue));
 
-        private async Task<string> Roundtrip_UInt16_Value(UInt16 value) => await Roundtrip<UInt16, Models.MemBlocks.Data_UInt16>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_UInt16_Value(UInt16 value) => await Roundtrip<UInt16, Models.MemBlocks.Data_UInt16>(value, (b) => new Models.MemBlocks.Data_UInt16(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_UInt16_DefVal() => await Verifier.Verify(await Roundtrip_UInt16_Value(0));
         [Fact] public async Task Roundtrip_UInt16_PosOne() => await Verifier.Verify(await Roundtrip_UInt16_Value(1));
         [Fact] public async Task Roundtrip_UInt16_MaxVal() => await Verifier.Verify(await Roundtrip_UInt16_Value(UInt16.MaxValue));
 
-        private async Task<string> Roundtrip_UInt32_Value(UInt32 value) => await Roundtrip<UInt32, Models.MemBlocks.Data_UInt32>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_UInt32_Value(UInt32 value) => await Roundtrip<UInt32, Models.MemBlocks.Data_UInt32>(value, (b) => new Models.MemBlocks.Data_UInt32(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_UInt32_DefVal() => await Verifier.Verify(await Roundtrip_UInt32_Value(0));
         [Fact] public async Task Roundtrip_UInt32_PosOne() => await Verifier.Verify(await Roundtrip_UInt32_Value(1));
         [Fact] public async Task Roundtrip_UInt32_MaxVal() => await Verifier.Verify(await Roundtrip_UInt32_Value(UInt32.MaxValue));
 
-        private async Task<string> Roundtrip_UInt64_Value(UInt64 value) => await Roundtrip<UInt64, Models.MemBlocks.Data_UInt64>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_UInt64_Value(UInt64 value) => await Roundtrip<UInt64, Models.MemBlocks.Data_UInt64>(value, (b) => new Models.MemBlocks.Data_UInt64(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_UInt64_DefVal() => await Verifier.Verify(await Roundtrip_UInt64_Value(0));
         [Fact] public async Task Roundtrip_UInt64_PosOne() => await Verifier.Verify(await Roundtrip_UInt64_Value(1));
         [Fact] public async Task Roundtrip_UInt64_MaxVal() => await Verifier.Verify(await Roundtrip_UInt64_Value(UInt64.MaxValue));
 
 #if NET8_0_OR_GREATER
-        private async Task<string> Roundtrip_UInt128_Value(UInt128 value) => await Roundtrip<UInt128, Models.MemBlocks.Data_UInt128>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_UInt128_Value(UInt128 value) => await Roundtrip<UInt128, Models.MemBlocks.Data_UInt128>(value, (b) => new Models.MemBlocks.Data_UInt128(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_UInt128_DefVal() => await Verifier.Verify(await Roundtrip_UInt128_Value(0));
         [Fact] public async Task Roundtrip_UInt128_PosOne() => await Verifier.Verify(await Roundtrip_UInt128_Value(1));
         [Fact] public async Task Roundtrip_UInt128_MaxVal() => await Verifier.Verify(await Roundtrip_UInt128_Value(UInt128.MaxValue));
 #endif
 
         private static readonly Guid AnyRndGuid = Guid.Parse("1f4a6e09-8bce-4f76-9bc9-6b9c7f06c7ca");
-        private async Task<string> Roundtrip_Guid_Value(Guid value) => await Roundtrip<Guid, Models.MemBlocks.Data_Guid>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Guid_Value(Guid value) => await Roundtrip<Guid, Models.MemBlocks.Data_Guid>(value, (b) => new Models.MemBlocks.Data_Guid(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Guid_DefVal() => await Verifier.Verify(await Roundtrip_Guid_Value(Guid.Empty));
         [Fact] public async Task Roundtrip_Guid_RndVal() => await Verifier.Verify(await Roundtrip_Guid_Value(AnyRndGuid));
 
-        private async Task<string> Roundtrip_Char_Value(Char value) => await Roundtrip<Char, Models.MemBlocks.Data_Char>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Char_Value(Char value) => await Roundtrip<Char, Models.MemBlocks.Data_Char>(value, (b) => new Models.MemBlocks.Data_Char(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Char_DefVal() => await Verifier.Verify(await Roundtrip_Char_Value(default));
         [Fact] public async Task Roundtrip_Char_PosOne() => await Verifier.Verify(await Roundtrip_Char_Value(' '));
         [Fact] public async Task Roundtrip_Char_MaxVal() => await Verifier.Verify(await Roundtrip_Char_Value(Char.MaxValue));
 
-        private async Task<string> Roundtrip_Decimal_Value(Decimal value) => await Roundtrip<Decimal, Models.MemBlocks.Data_Decimal>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Decimal_Value(Decimal value) => await Roundtrip<Decimal, Models.MemBlocks.Data_Decimal>(value, (b) => new Models.MemBlocks.Data_Decimal(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Decimal_DefVal() => await Verifier.Verify(await Roundtrip_Decimal_Value(Decimal.Zero));
         [Fact] public async Task Roundtrip_Decimal_PosOne() => await Verifier.Verify(await Roundtrip_Decimal_Value(Decimal.One));
         [Fact] public async Task Roundtrip_Decimal_NegOne() => await Verifier.Verify(await Roundtrip_Decimal_Value(Decimal.MinusOne));
         [Fact] public async Task Roundtrip_Decimal_MaxVal() => await Verifier.Verify(await Roundtrip_Decimal_Value(Decimal.MaxValue));
         [Fact] public async Task Roundtrip_Decimal_MinVal() => await Verifier.Verify(await Roundtrip_Decimal_Value(Decimal.MinValue));
 
-        private async Task<string> Roundtrip_PairOfInt16_Value(PairOfInt16 value) => await Roundtrip<PairOfInt16, Models.MemBlocks.Data_PairOfInt16>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_PairOfInt16_Value(PairOfInt16 value) => await Roundtrip<PairOfInt16, Models.MemBlocks.Data_PairOfInt16>(value, (b) => new Models.MemBlocks.Data_PairOfInt16(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_PairOfInt16_DefVal() => await Verifier.Verify(await Roundtrip_PairOfInt16_Value(default));
         [Fact] public async Task Roundtrip_PairOfInt16_PosNeg() => await Verifier.Verify(await Roundtrip_PairOfInt16_Value(new PairOfInt16(1, -1)));
         [Fact] public async Task Roundtrip_PairOfInt16_MaxMin() => await Verifier.Verify(await Roundtrip_PairOfInt16_Value(new PairOfInt16(Int16.MaxValue, Int16.MinValue)));
 
-        private async Task<string> Roundtrip_PairOfInt32_Value(PairOfInt32 value) => await Roundtrip<PairOfInt32, Models.MemBlocks.Data_PairOfInt32>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_PairOfInt32_Value(PairOfInt32 value) => await Roundtrip<PairOfInt32, Models.MemBlocks.Data_PairOfInt32>(value, (b) => new Models.MemBlocks.Data_PairOfInt32(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_PairOfInt32_DefVal() => await Verifier.Verify(await Roundtrip_PairOfInt32_Value(default));
         [Fact] public async Task Roundtrip_PairOfInt32_PosNeg() => await Verifier.Verify(await Roundtrip_PairOfInt32_Value(new PairOfInt32(1, -1)));
         [Fact] public async Task Roundtrip_PairOfInt32_MaxMin() => await Verifier.Verify(await Roundtrip_PairOfInt32_Value(new PairOfInt32(Int32.MaxValue, Int32.MinValue)));
 
-        private async Task<string> Roundtrip_PairOfInt64_Value(PairOfInt64 value) => await Roundtrip<PairOfInt64, Models.MemBlocks.Data_PairOfInt64>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_PairOfInt64_Value(PairOfInt64 value) => await Roundtrip<PairOfInt64, Models.MemBlocks.Data_PairOfInt64>(value, (b) => new Models.MemBlocks.Data_PairOfInt64(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_PairOfInt64_DefVal() => await Verifier.Verify(await Roundtrip_PairOfInt64_Value(default));
         [Fact] public async Task Roundtrip_PairOfInt64_PosNeg() => await Verifier.Verify(await Roundtrip_PairOfInt64_Value(new PairOfInt64(1, -1)));
         [Fact] public async Task Roundtrip_PairOfInt64_MaxMin() => await Verifier.Verify(await Roundtrip_PairOfInt64_Value(new PairOfInt64(Int64.MaxValue, Int64.MinValue)));
 
-        private async Task<string> Roundtrip_String_Value(String value) => await Roundtrip<String, Models.MemBlocks.Data_String>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_String_Value(String value) => await Roundtrip<String, Models.MemBlocks.Data_String>(value, (b) => new Models.MemBlocks.Data_String(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_String_Empty() => await Verifier.Verify(await Roundtrip_String_Value(string.Empty));
         [Fact] public async Task Roundtrip_String_RndVal() => await Verifier.Verify(await Roundtrip_String_Value("abcdef"));
 
         private static readonly Octets AnyRndOctets = new Octets(Encoding.UTF8.GetBytes("abcdef"));
-        private async Task<string> Roundtrip_Octets_Value(Octets value) => await Roundtrip<Octets, Models.MemBlocks.Data_Octets>(value, (m, v) => { ((IData_Octets)m).Value = v; }, (m) => ((IData_Octets)m).Value);
+        private async Task<string> Roundtrip_Octets_Value(Octets value) => await Roundtrip<Octets, Models.MemBlocks.Data_Octets>(value, (b) => new Models.MemBlocks.Data_Octets(b), (m, v) => { ((IData_Octets)m).Value = v; }, (m) => ((IData_Octets)m).Value);
         [Fact] public async Task Roundtrip_Octets_Empty() => await Verifier.Verify(await Roundtrip_Octets_Value(Octets.Empty));
         [Fact] public async Task Roundtrip_Octets_RndVal() => await Verifier.Verify(await Roundtrip_Octets_Value(AnyRndOctets));
 
 #if NET8_0_OR_GREATER
-        private async Task<string> Roundtrip_Half_Value(Half value) => await Roundtrip<Half, Models.MemBlocks.Data_Half>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Half_Value(Half value) => await Roundtrip<Half, Models.MemBlocks.Data_Half>(value, (b) => new Models.MemBlocks.Data_Half(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Half_DefVal() => await Verifier.Verify(await Roundtrip_Half_Value(Half.Zero));
         [Fact] public async Task Roundtrip_Half_PosOne() => await Verifier.Verify(await Roundtrip_Half_Value(Half.One));
         [Fact] public async Task Roundtrip_Half_NegOne() => await Verifier.Verify(await Roundtrip_Half_Value(Half.NegativeOne));
@@ -214,7 +209,7 @@ namespace DTOMakerV10.Tests
         [Fact] public async Task Roundtrip_Half_ValTau() => await Verifier.Verify(await Roundtrip_Half_Value(Half.Tau));
 #endif
 
-        private async Task<string> Roundtrip_Double_Value(Double value) => await Roundtrip<Double, Models.MemBlocks.Data_Double>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Double_Value(Double value) => await Roundtrip<Double, Models.MemBlocks.Data_Double>(value, (b) => new Models.MemBlocks.Data_Double(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Double_DefVal() => await Verifier.Verify(await Roundtrip_Double_Value(default));
         [Fact] public async Task Roundtrip_Double_PosOne() => await Verifier.Verify(await Roundtrip_Double_Value(1D));
         [Fact] public async Task Roundtrip_Double_NegOne() => await Verifier.Verify(await Roundtrip_Double_Value(-1D));
@@ -234,7 +229,7 @@ namespace DTOMakerV10.Tests
         [Fact] public async Task Roundtrip_Double_ValTau() => await Verifier.Verify(await Roundtrip_Double_Value(Double.Tau));
 #endif
 
-        private async Task<string> Roundtrip_Single_Value(Single value) => await Roundtrip<Single, Models.MemBlocks.Data_Single>(value, (m, v) => { m.Value = v; }, (m) => m.Value);
+        private async Task<string> Roundtrip_Single_Value(Single value) => await Roundtrip<Single, Models.MemBlocks.Data_Single>(value, (b) => new Models.MemBlocks.Data_Single(b), (m, v) => { m.Value = v; }, (m) => m.Value);
         [Fact] public async Task Roundtrip_Single_DefVal() => await Verifier.Verify(await Roundtrip_Single_Value(default));
         [Fact] public async Task Roundtrip_Single_PosOne() => await Verifier.Verify(await Roundtrip_Single_Value(1F));
         [Fact] public async Task Roundtrip_Single_NegOne() => await Verifier.Verify(await Roundtrip_Single_Value(-1F));

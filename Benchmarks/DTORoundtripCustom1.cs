@@ -58,14 +58,14 @@ namespace Benchmarks
             var orig = new TestModels.MemBlocks.Custom1();
             orig.Field1 = DayOfWeek.Thursday;
             await orig.Pack(_dataStore);
-            ReadOnlySequence<byte> buffers = orig.GetBuffers();
-            TestModels.MemBlocks.Custom1 copy = new TestModels.MemBlocks.Custom1(buffers);
+            var buffer = orig.GetBuffer();
+            TestModels.MemBlocks.Custom1 copy = new TestModels.MemBlocks.Custom1(buffer);
             if (CheckValues)
             {
                 await copy.UnpackAll(_dataStore);
                 if (!copy.Equals(orig)) throw new Exception("Roundtrip values do not match");
             }
-            return buffers.Length;
+            return buffer.Length;
         }
 
         [Benchmark]
