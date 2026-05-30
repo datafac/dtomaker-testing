@@ -144,7 +144,7 @@ namespace Benchmarks
             var orig = new TestModels.MemBlocks.MyDTO();
             SetField(orig, Kind);
             await orig.Pack(_dataStore);
-            var buffer = orig.GetBuffer();
+            var buffer = orig.GetPacked();
             TestModels.MemBlocks.MyDTO copy = new TestModels.MemBlocks.MyDTO(buffer);
             if (CheckValues)
             {

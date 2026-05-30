@@ -55,7 +55,7 @@ namespace DTOMakerV10.Tests
 
 
         private async Task<string> Roundtrip<TValue, TMsg>(TValue value, Func<ReadOnlyMemory<byte>, TMsg> factory, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : class, IEntityBase, IMemoryBlockEntity, IEquatable<TMsg>, new()
+            where TMsg : class, IEntityBase, IPackable, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
@@ -63,7 +63,7 @@ namespace DTOMakerV10.Tests
             sendMsg.IsFrozen.ShouldBeTrue();
 
             // act
-            var buffer = sendMsg.GetBuffer();
+            var buffer = sendMsg.GetPacked();
             TMsg recdMsg = factory(buffer);
             recdMsg.ShouldNotBeNull();
             await recdMsg.UnpackAll(_dataStore);

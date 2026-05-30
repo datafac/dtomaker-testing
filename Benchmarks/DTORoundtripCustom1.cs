@@ -58,7 +58,7 @@ namespace Benchmarks
             var orig = new TestModels.MemBlocks.Custom1();
             orig.Field1 = DayOfWeek.Thursday;
             await orig.Pack(_dataStore);
-            var buffer = orig.GetBuffer();
+            var buffer = orig.GetPacked();
             TestModels.MemBlocks.Custom1 copy = new TestModels.MemBlocks.Custom1(buffer);
             if (CheckValues)
             {

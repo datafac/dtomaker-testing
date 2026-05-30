@@ -51,7 +51,7 @@ namespace Benchmarks
                 Height = 2.0D,
             };
             await orig.Pack(DataStore);
-            var buffer = orig.GetBuffer();
+            var buffer = orig.GetPacked();
             var copy = TestModels.MemBlocks.Shape.DeserializeFrom(buffer);
             if (CheckValues && !copy.Equals(orig))
                 throw new Exception("Roundtrip values do not match");

@@ -55,7 +55,7 @@ namespace Benchmarks
         {
             var orig = Populate<TestModels.MemBlocks.TextTree>();
             await orig.Pack(DataStore);
-            var buffer = orig.GetBuffer();
+            var buffer = orig.GetPacked();
             var copy = TestModels.MemBlocks.TextTree.DeserializeFrom(buffer);
             if (CheckValues)
             {
