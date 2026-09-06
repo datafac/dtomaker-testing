@@ -6,6 +6,7 @@ using DTOMaker.Models.BinaryTree;
 using DTOMaker.Runtime.MsgPack2;
 using MemoryPack;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Benchmarks
@@ -23,7 +24,7 @@ namespace Benchmarks
         /// </summary>
         public bool CheckValues = false;
 
-        private readonly TestDataStore DataStore = new TestDataStore();
+        private readonly TestBlobStore _blobStore = new TestBlobStore();
 
         [Benchmark(Baseline = true)]
         public int Polymorphic_MemoryPack()
@@ -45,13 +46,14 @@ namespace Benchmarks
         [Benchmark]
         public async ValueTask<int> Polymorphic_MemBlocks()
         {
+            var ct = CancellationToken.None;
             var orig = new TestModels.MemBlocks.Rectangle()
             {
                 Length = 3.0D,
                 Height = 2.0D,
             };
-            await orig.Pack(DataStore);
-            var buffer = orig.GetPacked();
+            await orig.Pack(_blobStore, ct);
+            var buffer = await orig.Serialize(ct);
             var copy = TestModels.MemBlocks.Shape.DeserializeFrom(buffer);
             if (CheckValues && !copy.Equals(orig))
                 throw new Exception("Roundtrip values do not match");

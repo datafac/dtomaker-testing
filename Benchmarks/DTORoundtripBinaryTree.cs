@@ -7,6 +7,7 @@ using DTOMaker.Models.BinaryTree;
 using DTOMaker.Runtime.MsgPack2;
 using MemoryPack;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Benchmarks
@@ -23,10 +24,7 @@ namespace Benchmarks
         /// </summary>
         public bool CheckValues = false;
 
-        private readonly TestDataStore DataStore = new TestDataStore();
-
-        public Counters GetCounters() => DataStore.GetCounters();
-        public void ResetCounters() => DataStore.ResetCounters();
+        private readonly TestBlobStore BlobStore = new TestBlobStore();
 
         private static TNode Populate<TNode>() where TNode : class, IBinaryTree<int, string, TNode>, new()
         {
@@ -53,13 +51,14 @@ namespace Benchmarks
         [Benchmark]
         public async ValueTask<int> BinaryTree_MemBlocks()
         {
+            var ct = CancellationToken.None;
             var orig = Populate<TestModels.MemBlocks.TextTree>();
-            await orig.Pack(DataStore);
-            var buffer = orig.GetPacked();
+            await orig.Pack(BlobStore, ct);
+            var buffer = await orig.Serialize(ct);
             var copy = TestModels.MemBlocks.TextTree.DeserializeFrom(buffer);
             if (CheckValues)
             {
-                await copy.UnpackAll(DataStore);
+                await copy.UnpackAll(BlobStore, ct);
                 if (!copy.Equals(orig))
                 {
                     throw new Exception("Roundtrip values do not match");

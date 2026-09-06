@@ -15,21 +15,21 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="DataFac.Storage.Testing" Version="3.1.3" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
+		<PackageReference Include="DataFac.Storage.Testing" Version="4.0.6-dev" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.10.94">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="PublicApiGenerator" Version="11.5.4" />
 		<PackageReference Include="Shouldly" Version="4.3.0" />
-		<PackageReference Include="Verify" Version="31.18.0" />
-		<PackageReference Include="Verify.XunitV3" Version="31.18.0" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+		<PackageReference Include="Verify" Version="32.0.0" />
+		<PackageReference Include="Verify.XunitV3" Version="32.0.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="xunit.v3" Version="3.2.2" />
+		<PackageReference Include="xunit.v3" Version="4.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

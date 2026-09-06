@@ -1,15 +1,16 @@
-﻿namespace DTOMakerV10.Tests
+﻿using VerifyTests;
+
+namespace DTOMakerV10.Tests;
+
+public enum ValueKind
 {
-    public enum ValueKind
-    {
-        DefVal,
-        PosOne,
-        NegOne,
-        MaxVal,
-        MinVal,
-        MinInc,
-        NegInf,
-        PosInf,
-        NotNum,
-    }
+    DefVal,
+    PosOne,
+    NegOne,
+    MaxVal,
+    MinVal,
+    MinInc,
+    NegInf,
+    PosInf,
+    NotNum,
 }

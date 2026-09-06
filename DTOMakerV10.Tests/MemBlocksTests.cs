@@ -9,6 +9,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
@@ -51,22 +52,25 @@ namespace DTOMakerV10.Tests
 
     public class MemBlocksTests
     {
-        private readonly TestDataStore _dataStore = new TestDataStore();
+        private readonly TestBlobStore _blobStore = new TestBlobStore();
 
 
         private async Task<string> Roundtrip<TValue, TMsg>(TValue value, Func<ReadOnlyMemory<byte>, TMsg> factory, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : class, IEntityBase, IPackable, IEquatable<TMsg>, new()
+            where TMsg : DTOMaker.Runtime.MemBlocks.EntityBase, IEntityBase, IPackable, IEquatable<TMsg>, new()
         {
+            VerifyInitializer.EnsureInitialized();
+
+            var ct = CancellationToken.None;
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
-            await sendMsg.Pack(_dataStore);
+            await sendMsg.Pack(_blobStore, ct);
             sendMsg.IsFrozen.ShouldBeTrue();
 
             // act
-            var buffer = sendMsg.GetPacked();
+            var buffer = await sendMsg.Serialize(ct);
             TMsg recdMsg = factory(buffer);
             recdMsg.ShouldNotBeNull();
-            await recdMsg.UnpackAll(_dataStore);
+            await recdMsg.UnpackAll(_blobStore, ct);
             recdMsg.IsFrozen.ShouldBeTrue();
 
             // assert

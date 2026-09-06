@@ -13,7 +13,7 @@ namespace TestModels.MemPack
     {
         public void Freeze() { }
         public bool IsFrozen => false;
-        public IEntityBase PartCopy()
+        public IEntityBase ShallowCopy()
         {
             throw new NotImplementedException();
         }
@@ -72,7 +72,7 @@ namespace TestModels.MemPack
     {
         public void Freeze() { }
         public bool IsFrozen => false;
-        public IEntityBase PartCopy()
+        public IEntityBase ShallowCopy()
         {
             return new MemoryPackCustom1
             {
@@ -106,7 +106,7 @@ namespace TestModels.MemPack
     {
         public void Freeze() { }
         public bool IsFrozen => false;
-        public IEntityBase PartCopy()
+        public IEntityBase ShallowCopy()
         {
             return new MemoryPackMyDTO
             {
@@ -190,7 +190,7 @@ namespace TestModels.MemPack
     {
         public void Freeze() { }
         public bool IsFrozen => false;
-        public IEntityBase PartCopy()
+        public IEntityBase ShallowCopy()
         {
             return new TextTree
             {

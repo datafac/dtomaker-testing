@@ -6,6 +6,7 @@ using DTOMaker.Runtime.MsgPack2;
 using MemoryPack;
 using System;
 using System.Buffers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Benchmarks
@@ -22,7 +23,7 @@ namespace Benchmarks
         /// </summary>
         public bool CheckValues = false;
 
-        private readonly TestDataStore _dataStore = new TestDataStore();
+        private readonly TestBlobStore _blobStore = new TestBlobStore();
 
         [Benchmark(Baseline = true)]
         public int Roundtrip_MemoryPack()
@@ -55,14 +56,15 @@ namespace Benchmarks
         [Benchmark]
         public async Task<long> Roundtrip_MemBlocks()
         {
+            var ct = CancellationToken.None;
             var orig = new TestModels.MemBlocks.Custom1();
             orig.Field1 = DayOfWeek.Thursday;
-            await orig.Pack(_dataStore);
-            var buffer = orig.GetPacked();
+            await orig.Pack(_blobStore, ct);
+            var buffer = await orig.Serialize(ct);
             TestModels.MemBlocks.Custom1 copy = new TestModels.MemBlocks.Custom1(buffer);
             if (CheckValues)
             {
-                await copy.UnpackAll(_dataStore);
+                await copy.UnpackAll(_blobStore, ct);
                 if (!copy.Equals(orig)) throw new Exception("Roundtrip values do not match");
             }
             return buffer.Length;

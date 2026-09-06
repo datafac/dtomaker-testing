@@ -20,7 +20,7 @@ namespace Benchmarks.Tests
         {
             var sut = new DTORoundtripBinaryTree();
             sut.CheckValues = true;
-            sut.ResetCounters();
+            //sut.ResetCounters();
             await sut.BinaryTree_MemBlocks();
 
             //Counters counters = sut.GetCounters();

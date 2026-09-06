@@ -8,6 +8,7 @@ using MemoryPack;
 using System;
 using System.Buffers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TestModels;
 
@@ -31,7 +32,7 @@ namespace Benchmarks
         //[Params(ValueKind.BinaryNull, ValueKind.BinaryEmpty, ValueKind.BinarySmall, ValueKind.BinaryLarge)]
         public ValueKind Kind;
 
-        private readonly TestDataStore _dataStore = new TestDataStore();
+        private readonly TestBlobStore _dataStore = new TestBlobStore();
 
         private static readonly Guid guidValue = new("cc8af561-5172-43e6-8090-5dc1b2d02e07");
 
@@ -141,14 +142,15 @@ namespace Benchmarks
         [Benchmark]
         public async Task<long> Roundtrip_MemBlocks()
         {
+            var ct = CancellationToken.None;
             var orig = new TestModels.MemBlocks.MyDTO();
             SetField(orig, Kind);
-            await orig.Pack(_dataStore);
-            var buffer = orig.GetPacked();
+            await orig.Pack(_dataStore, ct);
+            var buffer = await orig.Serialize(ct);
             TestModels.MemBlocks.MyDTO copy = new TestModels.MemBlocks.MyDTO(buffer);
             if (CheckValues)
             {
-                await copy.UnpackAll(_dataStore);
+                await copy.UnpackAll(_dataStore, ct);
                 if (!copy.Equals(orig)) throw new Exception("Roundtrip values do not match");
             }
             return buffer.Length;
