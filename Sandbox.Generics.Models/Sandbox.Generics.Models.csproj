@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DataFac.Memory" Version="2.0.15" />
+		<PackageReference Include="DataFac.Memory" Version="2.0.18" />
 		<PackageReference Include="DTOMaker.Models" Version="3.0.45-dev" />
 		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="3.0.45-dev" />
 		<PackageReference Include="DTOMaker.Runtime.JsonSystemText" Version="3.0.45-dev" />
@@ -20,7 +20,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="System.Text.Json" Version="10.0.11" />
+		<PackageReference Include="System.Text.Json" Version="10.0.12" />
 	</ItemGroup>
 
 </Project>
