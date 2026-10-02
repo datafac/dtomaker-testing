@@ -5,22 +5,7 @@ using System;
 
 namespace TestModels
 {
-    [Entity(1)]
-    public interface IMyDTO : IEntityBase
-    {
-        [Member(1)] bool FBool01 { get; set; }
-        [Member(2)] int  FSInt04 { get; set; }
-        [Member(3)][Endian(false)] double Field02LE { get; set; }
-        [Member(4)][Endian(true)] double Field03BE { get; set; }
-        [Member(5)] Guid Field04 { get; set; }
-        [Member(6)] string? Field05 { get; set; }
-        [Member(7)] Octets? Field06 { get; set; }
-        [Member(8)] PairOfInt16 Field07 { get; set; }
-        [Member(9)] PairOfInt32 Field08 { get; set; }
-        [Member(10)] PairOfInt64 Field09 { get; set; }
-
-        //todo [Member(n)] DayOfWeek Field0n { get; set; }
-    }
+    //[Entity(1)] not used
 
     [Entity(2)]
     public interface ICustom1 : IEntityBase
@@ -73,6 +58,13 @@ namespace TestModels
         [Member(5)] ITextTree? Left { get; set; }
         [Member(6)] ITextTree? Right { get; set; }
     }
+
+    [Entity(11)]
+    public interface IStringDTO : IEntityBase
+    {
+        [Member(1)] string? Field1 { get; set; }
+    }
+
 }
 
 namespace TestModels.JsonSystemText
