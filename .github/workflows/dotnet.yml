@@ -39,5 +39,6 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
 
-    - name: Push
-      run: dotnet nuget push **/D*.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+#
+# No push - these are tests only.
+#
