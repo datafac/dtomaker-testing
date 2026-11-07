@@ -1,5 +1,5 @@
 #
-# Builds, tests and publishes package(s)
+# Builds and tests only.
 #
 
 name: Build-Deploy

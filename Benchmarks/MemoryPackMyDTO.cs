@@ -12,7 +12,7 @@ namespace TestModels.MemPack
     public abstract partial class Shape : IShape, IEquatable<Shape>
     {
         public void Freeze() { }
-        public bool IsFrozen => false;
+        public bool IsFrozen() => false;
         public IEntityBase ShallowCopy()
         {
             throw new NotImplementedException();
@@ -71,7 +71,7 @@ namespace TestModels.MemPack
     public sealed partial class MemoryPackCustom1 : ICustom1, IEquatable<MemoryPackCustom1>
     {
         public void Freeze() { }
-        public bool IsFrozen => false;
+        public bool IsFrozen() => false;
         public IEntityBase ShallowCopy()
         {
             return new MemoryPackCustom1
@@ -107,7 +107,7 @@ namespace TestModels.MemPack
         [MemoryPackInclude] public String? Field1 { get; set; }
 
         public void Freeze() { }
-        public bool IsFrozen => false;
+        public bool IsFrozen() => false;
         public IEntityBase ShallowCopy() => new MemoryPackStringDTO { Field1 = Field1, };
         public bool Equals(MemoryPackStringDTO? other) { return other is not null && Field1 == other.Field1; }
         public override bool Equals(object? obj) => obj is MemoryPackStringDTO other && Equals(other);
@@ -118,7 +118,7 @@ namespace TestModels.MemPack
     public sealed partial class TextTree : ITextTree, IEquatable<TextTree>, IBinaryTree<int, string, TextTree>
     {
         public void Freeze() { }
-        public bool IsFrozen => false;
+        public bool IsFrozen() => false;
         public IEntityBase ShallowCopy()
         {
             return new TextTree

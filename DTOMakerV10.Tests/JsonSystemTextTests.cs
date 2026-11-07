@@ -14,7 +14,7 @@ namespace DTOMakerV10.Tests
     public class JsonSystemTextTests
     {
         private void Roundtrip2<TValue, TMsg>(TValue value, string expectedBuffer, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : class, IEntityBase, IEquatable<TMsg>, new()
+            where TMsg : EntityBase, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
@@ -42,7 +42,7 @@ namespace DTOMakerV10.Tests
         }
 
         private string Roundtrip3<TValue, TMsg>(TValue value, Action<TMsg, TValue> setValueFunc, Func<TMsg, TValue> getValueFunc)
-            where TMsg : class, IEntityBase, IEquatable<TMsg>, new()
+            where TMsg : EntityBase, IEquatable<TMsg>, new()
         {
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);

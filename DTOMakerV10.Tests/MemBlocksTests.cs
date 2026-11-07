@@ -64,14 +64,14 @@ namespace DTOMakerV10.Tests
             var sendMsg = new TMsg();
             setValueFunc(sendMsg, value);
             await sendMsg.Pack(_blobStore, ct);
-            sendMsg.IsFrozen.ShouldBeTrue();
+            sendMsg.IsFrozen().ShouldBeTrue();
 
             // act
             var buffer = await sendMsg.Serialize(ct);
             TMsg recdMsg = factory(buffer);
             recdMsg.ShouldNotBeNull();
             await recdMsg.UnpackAll(_blobStore, ct);
-            recdMsg.IsFrozen.ShouldBeTrue();
+            recdMsg.IsFrozen().ShouldBeTrue();
 
             // assert
             // - value
