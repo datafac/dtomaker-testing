@@ -15,6 +15,7 @@ namespace Benchmarks
     //[SimpleJob(RuntimeMoniker.Net80)]
     //[SimpleJob(RuntimeMoniker.Net90)]
     [SimpleJob(RuntimeMoniker.Net10_0)]
+    //[SimpleJob(RuntimeMoniker.Net11_0)] todo
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     public class DTORoundtripBinaryTree
