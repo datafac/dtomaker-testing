@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
-		<PackageReference Include="DataFac.Memory" Version="2.1.2" />
+		<PackageReference Include="DataFac.Memory" Version="2.1.5" />
 		<PackageReference Include="DataFac.Storage.Testing" Version="4.0.29-dev" />
 		<PackageReference Include="DTOMaker.Models" Version="3.0.67-dev" />
 		<PackageReference Include="DTOMaker.Models.BinaryTree" Version="3.0.67-dev" />
