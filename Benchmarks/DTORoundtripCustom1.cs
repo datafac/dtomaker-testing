@@ -60,7 +60,7 @@ namespace Benchmarks
             var orig = new TestModels.MemBlocks.Custom1();
             orig.Field1 = DayOfWeek.Thursday;
             await orig.Pack(_blobStore, ct);
-            var buffer = await orig.Serialize(ct);
+            var buffer = orig.SerializeSync();
             TestModels.MemBlocks.Custom1 copy = new TestModels.MemBlocks.Custom1(buffer);
             if (CheckValues)
             {

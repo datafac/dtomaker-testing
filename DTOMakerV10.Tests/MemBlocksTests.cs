@@ -67,7 +67,7 @@ namespace DTOMakerV10.Tests
             sendMsg.IsFrozen().ShouldBeTrue();
 
             // act
-            var buffer = await sendMsg.Serialize(ct);
+            var buffer = sendMsg.SerializeSync();
             TMsg recdMsg = factory(buffer);
             recdMsg.ShouldNotBeNull();
             await recdMsg.UnpackAll(_blobStore, ct);

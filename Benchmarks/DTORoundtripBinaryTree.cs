@@ -55,7 +55,7 @@ namespace Benchmarks
             var ct = CancellationToken.None;
             var orig = Populate<TestModels.MemBlocks.TextTree>();
             await orig.Pack(BlobStore, ct);
-            var buffer = await orig.Serialize(ct);
+            var buffer = orig.SerializeSync();
             var copy = TestModels.MemBlocks.TextTree.DeserializeFrom(buffer);
             if (CheckValues)
             {

@@ -98,7 +98,7 @@ namespace Benchmarks
             var orig = new TestModels.MemBlocks.StringDTO();
             orig.Field1 = GetString(Kind);
             await orig.Pack(_blobStore, ct);
-            var buffer = await orig.Serialize(ct);
+            var buffer = orig.SerializeSync();
             TestModels.MemBlocks.StringDTO copy = new TestModels.MemBlocks.StringDTO(buffer);
             if (CheckValues)
             {
